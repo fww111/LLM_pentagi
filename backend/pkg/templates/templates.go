@@ -307,6 +307,7 @@ var PromptVariables = map[PromptType][]string{
 		"BarrierTools",
 		"CurrentTime",
 		"ExecutionContext",
+		"ExecutedToolCalls",
 		"Request",
 	},
 	PromptTypeQuestionReflector: {

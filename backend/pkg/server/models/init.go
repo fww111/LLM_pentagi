@@ -69,18 +69,36 @@ func strongPasswordValidatorString() validator.Func {
 	numberRegex := regexp.MustCompile("[0-9]")
 	alphaLRegex := regexp.MustCompile("[a-z]")
 	alphaURegex := regexp.MustCompile("[A-Z]")
-	specRegex := regexp.MustCompile("[!@#$&*]")
+	specRegex := regexp.MustCompile(`[^A-Za-z0-9]`)
+	weakPasswords := map[string]struct{}{
+		"admin":       {},
+		"admin123":    {},
+		"password":    {},
+		"password1":   {},
+		"password123": {},
+		"qwerty":      {},
+		"qwerty123":   {},
+		"123456":      {},
+		"12345678":    {},
+		"123456789":   {},
+		"1234567890":  {},
+	}
 	return func(fl validator.FieldLevel) bool {
 		field := fl.Field()
 
 		switch field.Kind() {
 		case reflect.String:
-			password := fl.Field().String()
-			return len(password) > 15 || (len(password) >= 8 &&
+			password := field.String()
+			trimmed := strings.TrimSpace(password)
+			if _, ok := weakPasswords[strings.ToLower(trimmed)]; ok {
+				return false
+			}
+
+			return len(trimmed) >= 12 &&
 				numberRegex.MatchString(password) &&
 				alphaLRegex.MatchString(password) &&
 				alphaURegex.MatchString(password) &&
-				specRegex.MatchString(password))
+				specRegex.MatchString(password)
 		default:
 			return false
 		}

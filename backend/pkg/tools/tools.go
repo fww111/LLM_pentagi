@@ -728,6 +728,19 @@ func (fte *flowToolsExecutor) GetPrimaryExecutor(cfg PrimaryExecutorConfig) (Con
 		return nil, fmt.Errorf("searcher handler is required")
 	}
 
+	container, err := fte.db.GetFlowPrimaryContainer(context.Background(), fte.flowID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get container %d: %w", fte.flowID, err)
+	}
+
+	term := NewTerminalTool(
+		fte.flowID, &cfg.TaskID, &cfg.SubtaskID,
+		container.ID,
+		container.LocalID.String,
+		fte.docker,
+		fte.tlp,
+	)
+
 	ce := &customExecutor{
 		flowID:    fte.flowID,
 		taskID:    &cfg.TaskID,
@@ -737,6 +750,8 @@ func (fte *flowToolsExecutor) GetPrimaryExecutor(cfg PrimaryExecutorConfig) (Con
 		db:        fte.db,
 		store:     fte.store,
 		definitions: []llms.FunctionDefinition{
+			registryDefinitions[TerminalToolName],
+			registryDefinitions[FileToolName],
 			registryDefinitions[FinalyToolName],
 			registryDefinitions[AdviceToolName],
 			registryDefinitions[CoderToolName],
@@ -746,6 +761,8 @@ func (fte *flowToolsExecutor) GetPrimaryExecutor(cfg PrimaryExecutorConfig) (Con
 			registryDefinitions[SearchToolName],
 		},
 		handlers: map[string]ExecutorHandler{
+			TerminalToolName:    term.Handle,
+			FileToolName:        term.Handle,
 			FinalyToolName:      cfg.Barrier,
 			AdviceToolName:      cfg.Adviser,
 			CoderToolName:       cfg.Coder,

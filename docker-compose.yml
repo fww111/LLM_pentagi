@@ -29,6 +29,7 @@ services:
     hostname: pentagi
     expose:
       - 8443/tcp
+      - 8081/tcp
     ports:
       - ${PENTAGI_LISTEN_IP:-127.0.0.1}:${PENTAGI_LISTEN_PORT:-8443}:8443
     depends_on:
@@ -39,6 +40,12 @@ services:
       - DOCKER_GID=998
       - CORS_ORIGINS=${CORS_ORIGINS:-}
       - COOKIE_SIGNING_SALT=${COOKIE_SIGNING_SALT:-}
+      - SECURITY_STRICT=${SECURITY_STRICT:-false}
+      - MAX_BODY_BYTES=${MAX_BODY_BYTES:-10485760}
+      - RATE_LIMIT_ENABLE=${RATE_LIMIT_ENABLE:-true}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY:-}
+      - INTERNAL_PORT=${INTERNAL_PORT:-8081}
+      - LANGGRAPH_URL=${LANGGRAPH_URL:-}
       - INSTALLATION_ID=${INSTALLATION_ID:-}
       - LICENSE_KEY=${LICENSE_KEY:-}
       - ASK_USER=${ASK_USER:-false}

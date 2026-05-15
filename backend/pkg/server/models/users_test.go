@@ -152,15 +152,6 @@ func TestPasswordValid(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "valid long password over 15 chars",
-			pw: Password{
-				CurrentPassword: "oldpasswordvalue",
-				Password:        "newpasswordvalue1",
-				ConfirmPassword: "newpasswordvalue1",
-			},
-			wantErr: false,
-		},
-		{
 			name: "confirm password mismatch",
 			pw: Password{
 				CurrentPassword: "OldPass1!abc",
@@ -271,6 +262,38 @@ func TestUserPasswordValid(t *testing.T) {
 		t.Parallel()
 		up := UserPassword{
 			Password: "somepassword",
+			User: User{
+				ID:     1,
+				Hash:   "abcdef1234567890abcdef1234567890",
+				Type:   UserTypeLocal,
+				Mail:   "test@example.com",
+				Status: UserStatusActive,
+				RoleID: RoleUser,
+			},
+		}
+		assert.Error(t, up.Valid())
+	})
+
+	t.Run("valid strong user password", func(t *testing.T) {
+		t.Parallel()
+		up := UserPassword{
+			Password: "SomePass123!",
+			User: User{
+				ID:     1,
+				Hash:   "abcdef1234567890abcdef1234567890",
+				Type:   UserTypeLocal,
+				Mail:   "test@example.com",
+				Status: UserStatusActive,
+				RoleID: RoleUser,
+			},
+		}
+		assert.NoError(t, up.Valid())
+	})
+
+	t.Run("stored bcrypt hash skips strong password validation", func(t *testing.T) {
+		t.Parallel()
+		up := UserPassword{
+			Password: "$2a$10$abcdefghijklmnopqrstuuJqW4H9AiaZbC8tJ3CE1ERvp4kq7wz2",
 			User: User{
 				ID:     1,
 				Hash:   "abcdef1234567890abcdef1234567890",

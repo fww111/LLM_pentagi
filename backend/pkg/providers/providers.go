@@ -19,6 +19,7 @@ import (
 	"pentagi/pkg/docker"
 	"pentagi/pkg/graphiti"
 	obs "pentagi/pkg/observability"
+	pentestpolicy "pentagi/pkg/pentest"
 	"pentagi/pkg/providers/anthropic"
 	"pentagi/pkg/providers/bedrock"
 	"pentagi/pkg/providers/custom"
@@ -43,7 +44,7 @@ const deltaCallCounter = 10000
 
 const defaultTestParallelWorkersNumber = 16
 
-const pentestDockerImage = "vxcontrol/kali-linux"
+const pentestDockerImage = pentestpolicy.KaliImage
 
 type ProviderController interface {
 	NewFlowProvider(
@@ -393,20 +394,29 @@ func (pc *providerController) NewFlowProvider(
 		return nil, fmt.Errorf("failed to get provider: %w", err)
 	}
 
-	imageTmpl, err := prompter.RenderTemplate(templates.PromptTypeImageChooser, map[string]any{
-		"DefaultImage":           pc.docker.GetDefaultImage(),
-		"DefaultImageForPentest": pc.defaultDockerImageForPentest,
-		"Input":                  input,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to get primary docker image template: %w", err)
-	}
+	image := strings.ToLower(strings.TrimSpace(pc.defaultDockerImageForPentest))
+	if !shouldForcePentestImage(input) {
+		imageTmpl, err := prompter.RenderTemplate(templates.PromptTypeImageChooser, map[string]any{
+			"DefaultImage":           pc.docker.GetDefaultImage(),
+			"DefaultImageForPentest": pc.defaultDockerImageForPentest,
+			"Input":                  input,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("failed to get primary docker image template: %w", err)
+		}
 
-	image, err := prv.Call(ctx, pconfig.OptionsTypeSimple, imageTmpl)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get primary docker image: %w", err)
+		image, err = prv.Call(ctx, pconfig.OptionsTypeSimple, imageTmpl)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get primary docker image: %w", err)
+		}
+		image = strings.ToLower(strings.TrimSpace(image))
+	} else {
+		image = pentestDockerImage
+		logrus.WithContext(ctx).WithFields(logrus.Fields{
+			"flow_id": flowID,
+			"image":   image,
+		}).Info("forced pentest docker image for security testing input")
 	}
-	image = strings.ToLower(strings.TrimSpace(image))
 
 	languageTmpl, err := prompter.RenderTemplate(templates.PromptTypeLanguageChooser, map[string]any{
 		"Input": input,
@@ -473,6 +483,10 @@ func (pc *providerController) NewFlowProvider(
 	}
 
 	return fp, nil
+}
+
+func shouldForcePentestImage(input string) bool {
+	return pentestpolicy.ShouldForceKali(input)
 }
 
 func (pc *providerController) LoadFlowProvider(

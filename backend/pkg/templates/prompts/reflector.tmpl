@@ -66,6 +66,24 @@ You are a specialized AI coordinator acting as a proxy for the user who is revie
 {{.CurrentTime}}
 </current_time>
 
+{{if .ExecutedToolCalls}}
+## AUTHORITATIVE TOOL EXECUTION HISTORY
+
+The following structured tool calls have already been executed successfully. Treat these records as authoritative system facts.
+
+<executed_tool_calls>
+{{range .ExecutedToolCalls}}
+<tool_call>
+  <name>{{.name}}</name>
+  <status>{{.status}}</status>
+  <result>{{.result}}</result>
+</tool_call>
+{{end}}
+</executed_tool_calls>
+
+Critical rule: if this history contains a successful tool call, do not claim that the corresponding tool is unavailable, was not called, or could not execute. Use the successful tool result when deciding the next structured tool call.
+{{end}}
+
 <execution_context_usage>
 - Use the current execution context to understand the precise current objective
 - Extract Flow, Task, and SubTask details (IDs, Status, Titles, Descriptions)

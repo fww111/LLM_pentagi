@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -50,6 +51,16 @@ type Config struct {
 
 	// === Authentication & Session Security ===
 	CookieSigningSalt string `env:"COOKIE_SIGNING_SALT"`
+
+	// === Security Baseline ===
+	SecurityStrict  bool  `env:"SECURITY_STRICT" envDefault:"false"`
+	MaxBodyBytes    int64 `env:"MAX_BODY_BYTES" envDefault:"10485760"`
+	RateLimitEnable bool  `env:"RATE_LIMIT_ENABLE" envDefault:"true"`
+
+	// === Internal Orchestration API ===
+	InternalAPIKey string `env:"INTERNAL_API_KEY"`
+	InternalPort   int    `env:"INTERNAL_PORT" envDefault:"8081"`
+	LangGraphURL   string `env:"LANGGRAPH_URL"`
 
 	// === Web Scraper Service Endpoints ===
 	ScraperPublicURL  string `env:"SCRAPER_PUBLIC_URL"`
@@ -245,8 +256,50 @@ func NewConfig() (*Config, error) {
 
 	ensureInstallationID(&config)
 	ensureLicenseKey(&config)
+	if err := config.ValidateSecurity(); err != nil {
+		return nil, err
+	}
 
 	return &config, nil
+}
+
+func (c *Config) ValidateSecurity() error {
+	if c.MaxBodyBytes <= 0 {
+		return fmt.Errorf("MAX_BODY_BYTES must be greater than zero")
+	}
+	if c.InternalPort <= 0 || c.InternalPort > 65535 {
+		return fmt.Errorf("INTERNAL_PORT must be a valid TCP port")
+	}
+
+	if !c.SecurityStrict {
+		return nil
+	}
+
+	if IsWeakCookieSigningSalt(c.CookieSigningSalt) {
+		return fmt.Errorf("COOKIE_SIGNING_SALT must be set to a secure value when SECURITY_STRICT=true")
+	}
+	if len(c.InternalAPIKey) < 32 {
+		return fmt.Errorf("INTERNAL_API_KEY must be at least 32 characters when SECURITY_STRICT=true")
+	}
+	if len(c.CorsOrigins) == 0 {
+		return fmt.Errorf("CORS_ORIGINS must be configured when SECURITY_STRICT=true")
+	}
+	for _, origin := range c.CorsOrigins {
+		if strings.TrimSpace(origin) == "" || origin == "*" {
+			return fmt.Errorf("CORS_ORIGINS must not contain '*' when SECURITY_STRICT=true")
+		}
+	}
+
+	return nil
+}
+
+func IsWeakCookieSigningSalt(salt string) bool {
+	switch strings.TrimSpace(strings.ToLower(salt)) {
+	case "", "salt", "pentagi", "changeme", "change-me", "default":
+		return true
+	default:
+		return len(strings.TrimSpace(salt)) < 16
+	}
 }
 
 func ensureInstallationID(config *Config) {

@@ -120,13 +120,14 @@ func main() {
 	}
 
 	r := router.NewRouter(queries, orm, cfg, providers, controller, subscriptions)
+	internalRouter := router.NewInternalRouter(cfg)
 
 	// Launch HTTP/HTTPS server in background goroutine
-	serverErrChan := make(chan error, 1)
+	serverErrChan := make(chan error, 2)
 	go func() {
 		listen := net.JoinHostPort(cfg.ServerHost, strconv.Itoa(cfg.ServerPort))
 		logrus.Infof("API server listening on %s", listen)
-		
+
 		var startErr error
 		if cfg.ServerUseSSL && cfg.ServerSSLCrt != "" && cfg.ServerSSLKey != "" {
 			logrus.Info("Starting server with TLS enabled")
@@ -135,9 +136,17 @@ func main() {
 			logrus.Info("Starting server without TLS (HTTP only)")
 			startErr = r.Run(listen)
 		}
-		
+
 		if startErr != nil {
 			serverErrChan <- fmt.Errorf("API server startup failed: %w", startErr)
+		}
+	}()
+	go func() {
+		listen := net.JoinHostPort("0.0.0.0", strconv.Itoa(cfg.InternalPort))
+		logrus.Infof("Internal API server listening on %s", listen)
+
+		if err := internalRouter.Run(listen); err != nil {
+			serverErrChan <- fmt.Errorf("internal API server startup failed: %w", err)
 		}
 	}()
 

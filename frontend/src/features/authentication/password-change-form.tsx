@@ -30,25 +30,43 @@ const passwordChangeSchema = z
         currentPassword: z.string().min(1, { message: 'Current password is required' }),
         newPassword: z
             .string()
-            .min(8, { message: 'Password must be at least 8 characters' })
+            .min(12, { message: 'Password must be at least 12 characters' })
             .max(100, { message: 'Password must not exceed 100 characters' })
             .refine(
                 (password) => {
-                    if (password.length > 15) {
-                        return true;
-                    }
-
                     return (
-                        password.length >= 8 &&
+                        password.length >= 12 &&
                         /[0-9]/.test(password) &&
                         /[a-z]/.test(password) &&
                         /[A-Z]/.test(password) &&
-                        /[!@#$&*]/.test(password)
+                        /[^A-Za-z0-9]/.test(password)
                     );
                 },
                 {
                     message:
-                        'Password must be either longer than 15 characters, or at least 8 characters with a number, lowercase, uppercase, and special character (!@#$&*)',
+                        'Password must be at least 12 characters and include a number, lowercase letter, uppercase letter, and special character',
+                },
+            )
+            .refine(
+                (password) => {
+                    const weakPasswords = new Set([
+                        'admin',
+                        'admin123',
+                        'password',
+                        'password1',
+                        'password123',
+                        'qwerty',
+                        'qwerty123',
+                        '123456',
+                        '12345678',
+                        '123456789',
+                        '1234567890',
+                    ]);
+
+                    return !weakPasswords.has(password.trim().toLowerCase());
+                },
+                {
+                    message: 'Password is too common',
                 },
             ),
     })
@@ -224,8 +242,7 @@ export function PasswordChangeForm({
                                 </div>
                             </FormControl>
                             <FormDescription className="text-xs">
-                                Must be 16+ characters, or 8+ with number, lowercase, uppercase, and special character
-                                (!@#$&*)
+                                Must be 12+ characters with number, lowercase, uppercase, and special character.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>

@@ -1,0 +1,15 @@
+services:
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    container_name: dvwa
+    restart: unless-stopped
+    networks:
+      pentagi-network:
+        aliases:
+          - dvwa
+    ports:
+      - "127.0.0.1:8081:80"
+
+networks:
+  pentagi-network:
+    external: true

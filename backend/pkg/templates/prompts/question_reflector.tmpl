@@ -7,6 +7,8 @@
 
   IMPORTANT: Clearly emphasize that the agent MUST use structured tool calls instead of plain text (completion mode) responses.
   Explain that the system can only process properly formatted tool calls and that unstructured responses block the workflow.
+  If execution history shows a successful tool result, treat it as authoritative evidence and never tell the agent that the tool is unavailable.
+  If the agent already has enough successful tool evidence to finish, tell it to use the proper barrier tool with that exact evidence instead of contradicting the history.
   Remind the agent that to finish the task, it must use one of the following tools:
   <barrier_tools>
     {{range .BarrierToolNames}}

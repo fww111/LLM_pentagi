@@ -148,6 +148,7 @@ type Querier interface {
 	GetTaskSearchLogs(ctx context.Context, taskID sql.NullInt64) ([]Searchlog, error)
 	GetTaskSubtasks(ctx context.Context, taskID int64) ([]Subtask, error)
 	GetTaskTermLogs(ctx context.Context, taskID sql.NullInt64) ([]Termlog, error)
+	GetTaskToolcalls(ctx context.Context, taskID sql.NullInt64) ([]Toolcall, error)
 	// Get total execution time and count of toolcalls for a specific task
 	GetTaskToolcallsStats(ctx context.Context, taskID sql.NullInt64) (GetTaskToolcallsStatsRow, error)
 	GetTaskTypeMsgChains(ctx context.Context, arg GetTaskTypeMsgChainsParams) ([]Msgchain, error)

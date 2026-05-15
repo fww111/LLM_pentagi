@@ -13,6 +13,7 @@ import (
 	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/observability/langfuse"
+	pentestpolicy "pentagi/pkg/pentest"
 	"pentagi/pkg/schema"
 
 	"github.com/vxcontrol/langchaingo/documentloaders"
@@ -300,6 +301,30 @@ func (ce *customExecutor) Execute(
 	if err != nil {
 		obsWrapper.end("", err, time.Since(startTime).Seconds())
 		return "", fmt.Errorf("failed to create toolcall: %w", err)
+	}
+
+	if name == TerminalToolName {
+		if policyResult := pentestpolicy.ValidateDVWATerminalArgs(args); policyResult != "" {
+			durationDelta := time.Since(startTime).Seconds()
+			result := database.SanitizeUTF8(policyResult)
+			_, err = ce.db.UpdateToolcallFinishedResult(ctx, database.UpdateToolcallFinishedResultParams{
+				Result:          result,
+				DurationSeconds: durationDelta,
+				ID:              tc.ID,
+			})
+			if err != nil {
+				obsWrapper.end(result, err, durationDelta)
+				return "", fmt.Errorf("failed to update toolcall policy result: %w", err)
+			}
+			if msgID != 0 {
+				if err := ce.mlp.UpdateMsgResult(ctx, msgID, streamID, result, getMessageResultFormat(name)); err != nil {
+					obsWrapper.end(result, err, durationDelta)
+					return "", err
+				}
+			}
+			obsWrapper.end(result, nil, durationDelta)
+			return result, nil
+		}
 	}
 
 	wrapHandler := func(ctx context.Context, name string, args json.RawMessage) (string, database.MsglogResultFormat, error) {

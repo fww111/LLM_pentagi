@@ -601,6 +601,10 @@ func (fp *flowProvider) performReflector(
 		},
 	}
 
+	if executedToolCalls := fp.loadExecutedToolCalls(ctx, taskID, subtaskID); len(executedToolCalls) > 0 {
+		reflectorContext["system"]["ExecutedToolCalls"] = executedToolCalls
+	}
+
 	if humanMessage != "" {
 		reflectorContext["system"]["Request"] = humanMessage
 	}
@@ -780,6 +784,56 @@ func (fp *flowProvider) getLastHumanMessage(chain []llms.MessageContent) string 
 	}
 
 	return ""
+}
+
+func (fp *flowProvider) loadExecutedToolCalls(ctx context.Context, taskID, subtaskID *int64) []map[string]string {
+	const maxToolCalls = 10
+
+	toolcalls := make([]database.Toolcall, 0, maxToolCalls)
+	if taskID != nil {
+		items, err := fp.db.GetTaskToolcalls(ctx, database.Int64ToNullInt64(taskID))
+		if err != nil {
+			logrus.WithContext(ctx).WithError(err).Warn("failed to load task toolcalls for reflector context")
+		} else {
+			toolcalls = append(toolcalls, items...)
+		}
+	}
+	if subtaskID != nil {
+		items, err := fp.db.GetSubtaskToolcalls(ctx, database.Int64ToNullInt64(subtaskID))
+		if err != nil {
+			logrus.WithContext(ctx).WithError(err).Warn("failed to load subtask toolcalls for reflector context")
+		} else {
+			toolcalls = append(toolcalls, items...)
+		}
+	}
+
+	seen := map[int64]struct{}{}
+	executed := make([]map[string]string, 0, min(maxToolCalls, len(toolcalls)))
+	for _, toolcall := range toolcalls {
+		if _, ok := seen[toolcall.ID]; ok {
+			continue
+		}
+		seen[toolcall.ID] = struct{}{}
+
+		if toolcall.Status != database.ToolcallStatusFinished {
+			continue
+		}
+
+		result := strings.TrimSpace(toolcall.Result)
+		if len(result) > 500 {
+			result = result[:500] + "... [truncated]"
+		}
+		executed = append(executed, map[string]string{
+			"name":   toolcall.Name,
+			"status": string(toolcall.Status),
+			"result": result,
+		})
+		if len(executed) >= maxToolCalls {
+			break
+		}
+	}
+
+	return executed
 }
 
 func (fp *flowProvider) processAssistantResult(

@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -117,7 +118,20 @@ func (up UserPassword) Valid() error {
 	if err := up.User.Valid(); err != nil {
 		return err
 	}
-	return validate.Struct(up)
+	if err := validate.Struct(up); err != nil {
+		return err
+	}
+	if isBcryptPasswordHash(up.Password) {
+		return nil
+	}
+	return validate.Var(up.Password, "stpass")
+}
+
+func isBcryptPasswordHash(password string) bool {
+	return strings.HasPrefix(password, "$2a$") ||
+		strings.HasPrefix(password, "$2b$") ||
+		strings.HasPrefix(password, "$2x$") ||
+		strings.HasPrefix(password, "$2y$")
 }
 
 // Validate is function to use callback to control input/output data
@@ -167,7 +181,7 @@ func (au AuthCallback) Valid() error {
 // Password is model to contain user password to change it
 // nolint:lll
 type Password struct {
-	CurrentPassword string `form:"current_password" json:"current_password" validate:"nefield=Password,min=5,max=100,required" gorm:"-"`
+	CurrentPassword string `form:"current_password" json:"current_password" validate:"nefield=Password,min=1,max=100,required" gorm:"-"`
 	Password        string `form:"password" json:"password" validate:"stpass,max=100,required" gorm:"type:TEXT"`
 	ConfirmPassword string `form:"confirm_password" json:"confirm_password" validate:"eqfield=Password" gorm:"-"`
 }

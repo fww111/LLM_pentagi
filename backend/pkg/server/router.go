@@ -19,6 +19,7 @@ import (
 	"pentagi/pkg/graph/subscriptions"
 	"pentagi/pkg/providers"
 	"pentagi/pkg/server/auth"
+	"pentagi/pkg/server/internalapi"
 	"pentagi/pkg/server/logger"
 	"pentagi/pkg/server/oauth"
 	"pentagi/pkg/server/services"
@@ -34,6 +35,7 @@ import (
 	"github.com/sirupsen/logrus"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"golang.org/x/time/rate"
 )
 
 const baseURL = "/api/v1"
@@ -181,6 +183,7 @@ func NewRouter(
 
 	router.Use(gin.Recovery())
 	router.Use(logger.WithGinLogger("pentagi-api"))
+	router.Use(maxBodySizeMiddleware(cfg.MaxBodyBytes))
 
 	cookieStore := cookie.NewStore(auth.MakeCookieStoreKey(cfg.CookieSigningSalt)...)
 	router.Use(sessions.Sessions("auth", cookieStore))
@@ -207,6 +210,9 @@ func NewRouter(
 
 		authGroup := publicGroup.Group("/auth")
 		{
+			if cfg.RateLimitEnable {
+				authGroup.Use(rateLimitMiddleware(rate.Every(time.Second), 5))
+			}
 			authGroup.POST("/login", authService.AuthLogin)
 			authGroup.GET("/logout", authService.AuthLogout)
 			authGroup.GET("/authorize", authService.AuthAuthorize)
@@ -219,14 +225,14 @@ func NewRouter(
 	privateGroup := api.Group("/")
 	privateGroup.Use(authMiddleware.AuthTokenRequired)
 	{
-		setGraphqlGroup(privateGroup, graphqlService)
+		setGraphqlGroup(privateGroup, graphqlService, cfg.RateLimitEnable)
 
 		setProvidersGroup(privateGroup, providerService)
-		setFlowsGroup(privateGroup, flowService)
+		setFlowsGroup(privateGroup, flowService, cfg.RateLimitEnable)
 		setTasksGroup(privateGroup, taskService)
 		setSubtasksGroup(privateGroup, subtaskService)
 		setContainersGroup(privateGroup, containerService)
-		setAssistantsGroup(privateGroup, assistantService)
+		setAssistantsGroup(privateGroup, assistantService, cfg.RateLimitEnable)
 		setAgentlogsGroup(privateGroup, agentlogService)
 		setAssistantlogsGroup(privateGroup, assistantlogService)
 		setMsglogsGroup(privateGroup, msglogService)
@@ -307,6 +313,23 @@ func NewRouter(
 	return router
 }
 
+func NewInternalRouter(cfg *config.Config) *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+	if cfg.Debug {
+		gin.SetMode(gin.DebugMode)
+	}
+
+	router := gin.New()
+	router.Use(gin.Recovery())
+	router.Use(logger.WithGinLogger("pentagi-internal-api"))
+	router.Use(maxBodySizeMiddleware(cfg.MaxBodyBytes))
+
+	internalService := internalapi.NewService(cfg)
+	setInternalGroup(router.Group("/internal"), internalService)
+
+	return router
+}
+
 func setProvidersGroup(parent *gin.RouterGroup, svc *services.ProviderService) {
 	providersGroup := parent.Group("/providers")
 	{
@@ -314,8 +337,27 @@ func setProvidersGroup(parent *gin.RouterGroup, svc *services.ProviderService) {
 	}
 }
 
-func setGraphqlGroup(parent *gin.RouterGroup, svc *services.GraphqlService) {
+func setInternalGroup(parent *gin.RouterGroup, svc *internalapi.Service) {
+	parent.GET("/health", svc.Health)
+
+	protected := parent.Group("/")
+	protected.Use(svc.AuthRequired())
+	{
+		protected.POST("/tools/execute", svc.ExecuteTool)
+		protected.POST("/runtime-events", svc.WriteRuntimeEvent)
+		protected.POST("/artifacts/register", svc.RegisterArtifact)
+		protected.POST("/workspace/write", svc.WriteWorkspace)
+		protected.POST("/provider-config/resolve", svc.ResolveProviderConfig)
+		protected.GET("/provider-runtime-profile/:taskID", svc.GetProviderRuntimeProfile)
+		protected.POST("/llm/call-with-tools", svc.CallWithTools)
+	}
+}
+
+func setGraphqlGroup(parent *gin.RouterGroup, svc *services.GraphqlService, rateLimit bool) {
 	graphqlGroup := parent.Group("/")
+	if rateLimit {
+		graphqlGroup.Use(rateLimitMiddleware(rate.Every(time.Second), 20))
+	}
 	{
 		graphqlGroup.Any("/graphql", svc.ServeGraphql)
 	}
@@ -343,8 +385,11 @@ func setTasksGroup(parent *gin.RouterGroup, svc *services.TaskService) {
 	}
 }
 
-func setFlowsGroup(parent *gin.RouterGroup, svc *services.FlowService) {
+func setFlowsGroup(parent *gin.RouterGroup, svc *services.FlowService, rateLimit bool) {
 	flowCreateGroup := parent.Group("/flows")
+	if rateLimit {
+		flowCreateGroup.Use(rateLimitMiddleware(rate.Every(time.Second), 5))
+	}
 	{
 		flowCreateGroup.POST("/", svc.CreateFlow)
 	}
@@ -380,8 +425,11 @@ func setContainersGroup(parent *gin.RouterGroup, svc *services.ContainerService)
 	}
 }
 
-func setAssistantsGroup(parent *gin.RouterGroup, svc *services.AssistantService) {
+func setAssistantsGroup(parent *gin.RouterGroup, svc *services.AssistantService, rateLimit bool) {
 	flowCreateGroup := parent.Group("/flows/:flowID/assistants")
+	if rateLimit {
+		flowCreateGroup.Use(rateLimitMiddleware(rate.Every(time.Second), 5))
+	}
 	{
 		flowCreateGroup.POST("/", svc.CreateFlowAssistant)
 	}

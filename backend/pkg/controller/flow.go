@@ -16,6 +16,7 @@ import (
 	"pentagi/pkg/graph/subscriptions"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/observability/langfuse"
+	pentestpolicy "pentagi/pkg/pentest"
 	"pentagi/pkg/providers"
 	"pentagi/pkg/providers/pconfig"
 	"pentagi/pkg/providers/provider"
@@ -113,6 +114,8 @@ func NewFlowWorker(
 ) (FlowWorker, error) {
 	ctx, span := obs.Observer.NewSpan(ctx, obs.SpanKindInternal, "controller.NewFlowWorker")
 	defer span.End()
+
+	fwc.input = pentestpolicy.ApplyTaskProfile(fwc.input)
 
 	flow, err := fwc.db.CreateFlow(ctx, database.CreateFlowParams{
 		Title:              "untitled",
@@ -574,6 +577,8 @@ func (fw *flowWorker) PutInput(
 ) error {
 	ctx, span := obs.Observer.NewSpan(ctx, obs.SpanKindInternal, "controller.flowWorker.PutInput")
 	defer span.End()
+
+	input = pentestpolicy.ApplyTaskProfile(input)
 
 	if err := fw.switchProvider(ctx, prv); err != nil {
 		return fmt.Errorf("failed to switch provider: %w", err)

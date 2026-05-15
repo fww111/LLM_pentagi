@@ -211,6 +211,54 @@ func (q *Queries) GetSubtaskToolcalls(ctx context.Context, subtaskID sql.NullInt
 	return items, nil
 }
 
+const getTaskToolcalls = `-- name: GetTaskToolcalls :many
+SELECT
+  tc.id, tc.call_id, tc.status, tc.name, tc.args, tc.result, tc.flow_id, tc.task_id, tc.subtask_id, tc.created_at, tc.updated_at, tc.duration_seconds
+FROM toolcalls tc
+LEFT JOIN subtasks s ON tc.subtask_id = s.id
+INNER JOIN tasks t ON tc.task_id = t.id OR s.task_id = t.id
+INNER JOIN flows f ON t.flow_id = f.id
+WHERE (tc.task_id = $1 OR s.task_id = $1) AND f.deleted_at IS NULL
+  AND (tc.subtask_id IS NULL OR s.id IS NOT NULL)
+ORDER BY tc.created_at DESC
+`
+
+func (q *Queries) GetTaskToolcalls(ctx context.Context, taskID sql.NullInt64) ([]Toolcall, error) {
+	rows, err := q.db.QueryContext(ctx, getTaskToolcalls, taskID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Toolcall
+	for rows.Next() {
+		var i Toolcall
+		if err := rows.Scan(
+			&i.ID,
+			&i.CallID,
+			&i.Status,
+			&i.Name,
+			&i.Args,
+			&i.Result,
+			&i.FlowID,
+			&i.TaskID,
+			&i.SubtaskID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DurationSeconds,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getSubtaskToolcallsStats = `-- name: GetSubtaskToolcallsStats :one
 SELECT
   COALESCE(COUNT(CASE WHEN tc.status IN ('finished', 'failed') THEN 1 END), 0)::bigint AS total_count,
