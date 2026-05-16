@@ -16,6 +16,7 @@ import (
 	"pentagi/pkg/graph/subscriptions"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/observability/langfuse"
+	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers"
 	"pentagi/pkg/providers/pconfig"
 	"pentagi/pkg/providers/provider"
@@ -34,6 +35,7 @@ type FlowWorker interface {
 	GetContext() *FlowContext
 	GetStatus(ctx context.Context) (database.FlowStatus, error)
 	SetStatus(ctx context.Context, status database.FlowStatus) error
+	GetTask(ctx context.Context, taskID int64) (TaskWorker, error)
 	AddAssistant(ctx context.Context, aw AssistantWorker) error
 	GetAssistant(ctx context.Context, assistantID int64) (AssistantWorker, error)
 	DeleteAssistant(ctx context.Context, assistantID int64) error
@@ -216,16 +218,17 @@ func NewFlowWorker(
 	executor.SetGraphitiClient(fwc.provs.GraphitiClient())
 
 	flowCtx := &FlowContext{
-		DB:         fwc.db,
-		UserID:     fwc.userID,
-		FlowID:     flow.ID,
-		TraceID:    observation.TraceID(),
-		Executor:   executor,
-		Provider:   flowProvider,
-		Publisher:  pub,
-		MsgLog:     workers.mlw,
-		TermLog:    workers.tlw,
-		Screenshot: workers.sw,
+		DB:           fwc.db,
+		UserID:       fwc.userID,
+		FlowID:       flow.ID,
+		TraceID:      observation.TraceID(),
+		Executor:     executor,
+		Provider:     flowProvider,
+		Orchestrator: orchestrator.NewTaskClient(fwc.cfg),
+		Publisher:    pub,
+		MsgLog:       workers.mlw,
+		TermLog:      workers.tlw,
+		Screenshot:   workers.sw,
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx, _ = obs.Observer.NewObservation(ctx, langfuse.WithObservationTraceID(observation.TraceID()))
@@ -366,16 +369,17 @@ func LoadFlowWorker(ctx context.Context, flow database.Flow, fwc flowWorkerCtx) 
 	executor.SetGraphitiClient(fwc.provs.GraphitiClient())
 
 	flowCtx := &FlowContext{
-		DB:         fwc.db,
-		UserID:     flow.UserID,
-		FlowID:     flow.ID,
-		TraceID:    observation.TraceID(),
-		Executor:   executor,
-		Provider:   flowProvider,
-		Publisher:  pub,
-		MsgLog:     workers.mlw,
-		TermLog:    workers.tlw,
-		Screenshot: workers.sw,
+		DB:           fwc.db,
+		UserID:       flow.UserID,
+		FlowID:       flow.ID,
+		TraceID:      observation.TraceID(),
+		Executor:     executor,
+		Provider:     flowProvider,
+		Orchestrator: orchestrator.NewTaskClient(fwc.cfg),
+		Publisher:    pub,
+		MsgLog:       workers.mlw,
+		TermLog:      workers.tlw,
+		Screenshot:   workers.sw,
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx, _ = obs.Observer.NewObservation(ctx, langfuse.WithObservationTraceID(observation.TraceID()))
@@ -462,6 +466,10 @@ func (fw *flowWorker) GetTitle() string {
 
 func (fw *flowWorker) GetContext() *FlowContext {
 	return fw.flowCtx
+}
+
+func (fw *flowWorker) GetTask(ctx context.Context, taskID int64) (TaskWorker, error) {
+	return fw.tc.GetTask(ctx, taskID)
 }
 
 func (fw *flowWorker) GetStatus(ctx context.Context) (database.FlowStatus, error) {

@@ -8,6 +8,7 @@ import (
 	"pentagi/pkg/database"
 	"pentagi/pkg/graph/subscriptions"
 	"pentagi/pkg/observability/langfuse"
+	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers"
 	"pentagi/pkg/tools"
 
@@ -23,9 +24,10 @@ type FlowContext struct {
 	FlowID  int64
 	TraceID string
 
-	Executor  tools.FlowToolsExecutor
-	Provider  providers.FlowProvider
-	Publisher subscriptions.FlowPublisher
+	Executor     tools.FlowToolsExecutor
+	Provider     providers.FlowProvider
+	Orchestrator orchestrator.TaskClient
+	Publisher    subscriptions.FlowPublisher
 
 	TermLog    FlowTermLogWorker
 	MsgLog     FlowMsgLogWorker

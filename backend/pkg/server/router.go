@@ -1,6 +1,7 @@
 package router
 
 import (
+	"crypto/subtle"
 	"encoding/gob"
 	"net"
 	"net/http"
@@ -144,6 +145,7 @@ func NewRouter(
 	promptService := services.NewPromptService(orm)
 	analyticsService := services.NewAnalyticsService(orm)
 	tokenService := services.NewTokenService(orm, cfg.CookieSigningSalt, tokenCache, subscriptions)
+	orchestratorService := services.NewOrchestratorService(controller)
 	graphqlService := services.NewGraphqlService(
 		db, cfg, baseURL, cfg.CorsOrigins, tokenCache, providers, controller, subscriptions,
 	)
@@ -187,6 +189,12 @@ func NewRouter(
 
 	api := router.Group(baseURL)
 	api.Use(noCacheMiddleware())
+
+	internalGroup := api.Group("/internal/orchestrator")
+	internalGroup.Use(internalOrchestratorAuth(cfg.LangGraphInternalToken))
+	{
+		setInternalOrchestratorGroup(internalGroup, orchestratorService)
+	}
 
 	// Special case for local user own password change
 	changePasswordGroup := api.Group("/user")
@@ -311,6 +319,44 @@ func setProvidersGroup(parent *gin.RouterGroup, svc *services.ProviderService) {
 	providersGroup := parent.Group("/providers")
 	{
 		providersGroup.GET("/", svc.GetProviders)
+	}
+}
+
+func setInternalOrchestratorGroup(parent *gin.RouterGroup, svc *services.OrchestratorService) {
+	tasksGroup := parent.Group("/tasks/:taskID")
+	{
+		tasksGroup.POST("/generate-subtasks", svc.GenerateSubtasks)
+		tasksGroup.POST("/select-next-subtask", svc.SelectNextSubtask)
+		tasksGroup.POST("/refine-subtasks", svc.RefineSubtasks)
+		tasksGroup.POST("/report-task-result", svc.ReportTaskResult)
+		tasksGroup.POST("/fail-task", svc.FailTask)
+		tasksGroup.POST("/subtasks/:subtaskID/prepare-primary-agent-context", svc.PreparePrimaryAgentContext)
+		tasksGroup.POST("/subtasks/:subtaskID/primary-agent-step", svc.PrimaryAgentStep)
+		tasksGroup.POST("/subtasks/:subtaskID/execute-agent", svc.ExecuteAgent)
+		tasksGroup.POST("/subtasks/:subtaskID/write-primary-agent-result", svc.WritePrimaryAgentResult)
+	}
+}
+
+func internalOrchestratorAuth(token string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if token != "" {
+			headerToken := c.GetHeader("X-Pentagi-Internal-Token")
+			if subtle.ConstantTimeCompare([]byte(headerToken), []byte(token)) == 1 {
+				c.Next()
+				return
+			}
+
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			return
+		}
+
+		ip := net.ParseIP(c.ClientIP())
+		if ip != nil && ip.IsLoopback() {
+			c.Next()
+			return
+		}
+
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "loopback access required"})
 	}
 }
 

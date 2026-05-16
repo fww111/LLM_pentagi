@@ -291,6 +291,7 @@ type FlowToolsExecutor interface {
 	Release(ctx context.Context) error
 	GetCustomExecutor(cfg CustomExecutorConfig) (ContextToolsExecutor, error)
 	GetAssistantExecutor(cfg AssistantExecutorConfig) (ContextToolsExecutor, error)
+	GetPrimaryDecisionExecutor(cfg PrimaryExecutorConfig) (ContextToolsExecutor, error)
 	GetPrimaryExecutor(cfg PrimaryExecutorConfig) (ContextToolsExecutor, error)
 	GetInstallerExecutor(cfg InstallerExecutorConfig) (ContextToolsExecutor, error)
 	GetCoderExecutor(cfg CoderExecutorConfig) (ContextToolsExecutor, error)
@@ -756,6 +757,82 @@ func (fte *flowToolsExecutor) GetPrimaryExecutor(cfg PrimaryExecutorConfig) (Con
 		},
 		barriers: map[string]struct{}{
 			FinalyToolName: {},
+		},
+		summarizer: cfg.Summarizer,
+	}
+
+	if fte.cfg.AskUser {
+		ce.definitions = append(ce.definitions, registryDefinitions[AskUserToolName])
+		ce.handlers[AskUserToolName] = cfg.Barrier
+		ce.barriers[AskUserToolName] = struct{}{}
+	}
+
+	return ce, nil
+}
+
+func (fte *flowToolsExecutor) GetPrimaryDecisionExecutor(cfg PrimaryExecutorConfig) (ContextToolsExecutor, error) {
+	if cfg.Barrier == nil {
+		return nil, fmt.Errorf("barrier handler is required")
+	}
+
+	if cfg.Adviser == nil {
+		return nil, fmt.Errorf("adviser handler is required")
+	}
+
+	if cfg.Coder == nil {
+		return nil, fmt.Errorf("coder handler is required")
+	}
+
+	if cfg.Installer == nil {
+		return nil, fmt.Errorf("installer handler is required")
+	}
+
+	if cfg.Memorist == nil {
+		return nil, fmt.Errorf("memorist handler is required")
+	}
+
+	if cfg.Pentester == nil {
+		return nil, fmt.Errorf("pentester handler is required")
+	}
+
+	if cfg.Searcher == nil {
+		return nil, fmt.Errorf("searcher handler is required")
+	}
+
+	ce := &customExecutor{
+		flowID:    fte.flowID,
+		taskID:    &cfg.TaskID,
+		subtaskID: &cfg.SubtaskID,
+		mlp:       fte.mlp,
+		vslp:      fte.vslp,
+		db:        fte.db,
+		store:     fte.store,
+		definitions: []llms.FunctionDefinition{
+			registryDefinitions[FinalyToolName],
+			registryDefinitions[AdviceToolName],
+			registryDefinitions[CoderToolName],
+			registryDefinitions[MaintenanceToolName],
+			registryDefinitions[MemoristToolName],
+			registryDefinitions[PentesterToolName],
+			registryDefinitions[SearchToolName],
+		},
+		handlers: map[string]ExecutorHandler{
+			FinalyToolName:      cfg.Barrier,
+			AdviceToolName:      cfg.Adviser,
+			CoderToolName:       cfg.Coder,
+			MaintenanceToolName: cfg.Installer,
+			MemoristToolName:    cfg.Memorist,
+			PentesterToolName:   cfg.Pentester,
+			SearchToolName:      cfg.Searcher,
+		},
+		barriers: map[string]struct{}{
+			FinalyToolName:      {},
+			AdviceToolName:      {},
+			CoderToolName:       {},
+			MaintenanceToolName: {},
+			MemoristToolName:    {},
+			PentesterToolName:   {},
+			SearchToolName:      {},
 		},
 		summarizer: cfg.Summarizer,
 	}

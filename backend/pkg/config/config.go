@@ -186,6 +186,12 @@ type Config struct {
 	AssistantSummarizerMaxQABytes     int  `env:"ASSISTANT_SUMMARIZER_MAX_QA_BYTES" envDefault:"76800"`
 	AssistantSummarizerKeepQASections int  `env:"ASSISTANT_SUMMARIZER_KEEP_QA_SECTIONS" envDefault:"3"`
 
+	// === Python LangGraph Orchestrator ===
+	LangGraphEnabled       bool   `env:"LANGGRAPH_ENABLED" envDefault:"false"`
+	LangGraphURL           string `env:"LANGGRAPH_URL" envDefault:"http://127.0.0.1:8091"`
+	LangGraphInternalToken string `env:"LANGGRAPH_INTERNAL_TOKEN"`
+	LangGraphTimeout       int    `env:"LANGGRAPH_TIMEOUT" envDefault:"600"`
+
 	// === Network Proxy Settings ===
 	ProxyURL string `env:"PROXY_URL"`
 

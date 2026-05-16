@@ -2,12 +2,14 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
 
 	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
+	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers"
 )
 
@@ -30,6 +32,10 @@ type SubtaskWorker interface {
 	GetResult(ctx context.Context) (string, error)
 	SetResult(ctx context.Context, result string) error
 	PutInput(ctx context.Context, input string) error
+	EnsurePrepared(ctx context.Context) (int64, error)
+	StepPrimaryAgent(ctx context.Context) (*orchestrator.PrimaryAgentDecision, error)
+	ExecuteAgent(ctx context.Context, agentType string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
+	WritePrimaryAgentToolResult(ctx context.Context, agentType, toolCallID, result string) error
 	Run(ctx context.Context) error
 	Finish(ctx context.Context) error
 }
@@ -269,6 +275,136 @@ func (stw *subtaskWorker) PutInput(ctx context.Context, input string) error {
 	stw.waiting = false
 
 	return nil
+}
+
+func (stw *subtaskWorker) EnsurePrepared(ctx context.Context) (int64, error) {
+	if stw.subtaskCtx.MsgChainID != 0 {
+		return stw.subtaskCtx.MsgChainID, nil
+	}
+
+	msgChainID, err := stw.subtaskCtx.Provider.PrepareAgentChain(
+		ctx,
+		stw.subtaskCtx.TaskID,
+		stw.subtaskCtx.SubtaskID,
+	)
+	if err != nil {
+		return 0, fmt.Errorf("failed to prepare primary agent chain for subtask %d: %w", stw.subtaskCtx.SubtaskID, err)
+	}
+
+	stw.mx.Lock()
+	stw.subtaskCtx.MsgChainID = msgChainID
+	stw.mx.Unlock()
+
+	return msgChainID, nil
+}
+
+func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.PrimaryAgentDecision, error) {
+	if stw.IsCompleted() {
+		return nil, fmt.Errorf("subtask has already completed")
+	}
+
+	if _, err := stw.EnsurePrepared(ctx); err != nil {
+		return nil, err
+	}
+
+	status, err := stw.GetStatus(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get subtask %d status: %w", stw.subtaskCtx.SubtaskID, err)
+	}
+
+	if status != database.SubtaskStatusRunning {
+		if err := stw.SetStatus(ctx, database.SubtaskStatusRunning); err != nil {
+			return nil, err
+		}
+	}
+
+	decision, err := stw.subtaskCtx.Provider.DecidePrimaryAgentStep(
+		ctx,
+		stw.subtaskCtx.TaskID,
+		stw.subtaskCtx.SubtaskID,
+		stw.subtaskCtx.MsgChainID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decide primary agent step for subtask %d: %w", stw.subtaskCtx.SubtaskID, err)
+	}
+
+	if decision.MsgChainID == 0 {
+		decision.MsgChainID = stw.subtaskCtx.MsgChainID
+	}
+
+	switch decision.Action {
+	case orchestrator.PrimaryAgentActionInputRequired:
+		if err := stw.SetStatus(ctx, database.SubtaskStatusWaiting); err != nil {
+			return nil, err
+		}
+	case orchestrator.PrimaryAgentActionCompleted:
+		if err := stw.SetResult(ctx, decision.Result); err != nil {
+			return nil, err
+		}
+		if err := stw.SetStatus(ctx, database.SubtaskStatusFinished); err != nil {
+			return nil, err
+		}
+		if _, err := stw.subtaskCtx.MsgLog.PutSubtaskMsgResult(
+			ctx,
+			database.MsglogTypeReport,
+			stw.subtaskCtx.TaskID,
+			stw.subtaskCtx.SubtaskID,
+			"",
+			stw.subtaskCtx.SubtaskDescription,
+			decision.Result,
+			database.MsglogResultFormatMarkdown,
+		); err != nil {
+			return nil, fmt.Errorf("failed to put subtask %d report: %w", stw.subtaskCtx.SubtaskID, err)
+		}
+	case orchestrator.PrimaryAgentActionFailed:
+		if err := stw.SetResult(ctx, decision.Error); err != nil {
+			return nil, err
+		}
+		if err := stw.SetStatus(ctx, database.SubtaskStatusFailed); err != nil {
+			return nil, err
+		}
+		if _, err := stw.subtaskCtx.MsgLog.PutSubtaskMsgResult(
+			ctx,
+			database.MsglogTypeReport,
+			stw.subtaskCtx.TaskID,
+			stw.subtaskCtx.SubtaskID,
+			"",
+			stw.subtaskCtx.SubtaskDescription,
+			decision.Error,
+			database.MsglogResultFormatMarkdown,
+		); err != nil {
+			return nil, fmt.Errorf("failed to put failed report for subtask %d: %w", stw.subtaskCtx.SubtaskID, err)
+		}
+	}
+
+	return decision, nil
+}
+
+func (stw *subtaskWorker) ExecuteAgent(
+	ctx context.Context,
+	agentType string,
+	payload json.RawMessage,
+) (*orchestrator.AgentExecutionResult, error) {
+	return stw.subtaskCtx.Provider.ExecuteDelegatedAgent(
+		ctx,
+		stw.subtaskCtx.TaskID,
+		stw.subtaskCtx.SubtaskID,
+		agentType,
+		payload,
+	)
+}
+
+func (stw *subtaskWorker) WritePrimaryAgentToolResult(
+	ctx context.Context,
+	agentType, toolCallID, result string,
+) error {
+	return stw.subtaskCtx.Provider.WritePrimaryAgentToolResult(
+		ctx,
+		stw.subtaskCtx.MsgChainID,
+		agentType,
+		toolCallID,
+		result,
+	)
 }
 
 func (stw *subtaskWorker) Run(ctx context.Context) error {

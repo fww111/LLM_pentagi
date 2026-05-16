@@ -14,6 +14,7 @@ import (
 	"pentagi/pkg/graphiti"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/observability/langfuse"
+	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers/embeddings"
 	"pentagi/pkg/providers/pconfig"
 	"pentagi/pkg/providers/provider"
@@ -97,6 +98,9 @@ type FlowProvider interface {
 	PerformAgentChain(ctx context.Context, taskID, subtaskID, msgChainID int64) (PerformResult, error)
 	PutInputToAgentChain(ctx context.Context, msgChainID int64, input string) error
 	EnsureChainConsistency(ctx context.Context, msgChainID int64) error
+	DecidePrimaryAgentStep(ctx context.Context, taskID, subtaskID, msgChainID int64) (*orchestrator.PrimaryAgentDecision, error)
+	ExecuteDelegatedAgent(ctx context.Context, taskID, subtaskID int64, agentType string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
+	WritePrimaryAgentToolResult(ctx context.Context, msgChainID int64, agentType, toolCallID, result string) error
 
 	FlowProviderHandlers
 }

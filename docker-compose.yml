@@ -1,6 +1,8 @@
 volumes:
   pentagi-data:
     driver: local
+  pentagi-langgraph-data:
+    driver: local
   pentagi-ssl:
     driver: local
   pentagi-ollama:
@@ -102,6 +104,10 @@ services:
       - ASSISTANT_SUMMARIZER_MAX_QA_SECTIONS=${ASSISTANT_SUMMARIZER_MAX_QA_SECTIONS:-}
       - ASSISTANT_SUMMARIZER_MAX_QA_BYTES=${ASSISTANT_SUMMARIZER_MAX_QA_BYTES:-}
       - ASSISTANT_SUMMARIZER_KEEP_QA_SECTIONS=${ASSISTANT_SUMMARIZER_KEEP_QA_SECTIONS:-}
+      - LANGGRAPH_ENABLED=${LANGGRAPH_ENABLED:-false}
+      - LANGGRAPH_URL=${LANGGRAPH_URL:-http://orchestrator:8091}
+      - LANGGRAPH_INTERNAL_TOKEN=${LANGGRAPH_INTERNAL_TOKEN:-pentagi-internal-dev-token}
+      - LANGGRAPH_TIMEOUT=${LANGGRAPH_TIMEOUT:-600}
       - EXECUTION_MONITOR_ENABLED=${EXECUTION_MONITOR_ENABLED:-}
       - EXECUTION_MONITOR_SAME_TOOL_LIMIT=${EXECUTION_MONITOR_SAME_TOOL_LIMIT:-}
       - EXECUTION_MONITOR_TOTAL_TOOL_LIMIT=${EXECUTION_MONITOR_TOTAL_TOOL_LIMIT:-}
@@ -182,6 +188,31 @@ services:
       - pentagi-network
       - observability-network
       - langfuse-network
+
+  orchestrator:
+    build:
+      context: ./orchestrator
+    restart: unless-stopped
+    container_name: pentagi-orchestrator
+    hostname: orchestrator
+    expose:
+      - 8091/tcp
+    environment:
+      - PENTAGI_INTERNAL_BASE_URL=${PENTAGI_INTERNAL_BASE_URL:-https://pentagi:8443/api/v1/internal/orchestrator}
+      - PENTAGI_INTERNAL_VERIFY_SSL=${PENTAGI_INTERNAL_VERIFY_SSL:-false}
+      - LANGGRAPH_INTERNAL_TOKEN=${LANGGRAPH_INTERNAL_TOKEN:-pentagi-internal-dev-token}
+      - LANGGRAPH_CHECKPOINT_PATH=${LANGGRAPH_CHECKPOINT_PATH:-/var/lib/pentagi-langgraph/langgraph-checkpoints.sqlite}
+      - LANGGRAPH_HOST=${LANGGRAPH_HOST:-0.0.0.0}
+      - LANGGRAPH_PORT=${LANGGRAPH_PORT:-8091}
+      - ORCHESTRATOR_LOG_LEVEL=${ORCHESTRATOR_LOG_LEVEL:-INFO}
+    logging:
+      options:
+        max-size: 50m
+        max-file: "7"
+    volumes:
+      - ${PENTAGI_LANGGRAPH_DATA_DIR:-pentagi-langgraph-data}:/var/lib/pentagi-langgraph
+    networks:
+      - pentagi-network
 
   pgvector:
     image: vxcontrol/pgvector:latest

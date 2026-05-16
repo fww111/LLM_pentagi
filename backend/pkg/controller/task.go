@@ -28,6 +28,12 @@ type TaskWorker interface {
 	GetResult(ctx context.Context) (string, error)
 	SetResult(ctx context.Context, result string) error
 	PutInput(ctx context.Context, input string) error
+	GenerateSubtasks(ctx context.Context) error
+	RefineSubtasks(ctx context.Context) error
+	SelectNextSubtask(ctx context.Context) (SubtaskWorker, error)
+	GetSubtask(ctx context.Context, subtaskID int64) (SubtaskWorker, error)
+	ReportTaskResult(ctx context.Context) error
+	Fail(ctx context.Context, result string) error
 	Run(ctx context.Context) error
 	Finish(ctx context.Context) error
 }
@@ -88,9 +94,11 @@ func NewTaskWorker(
 		return nil, fmt.Errorf("failed to put input for task %d: %w", taskCtx.TaskID, err)
 	}
 
-	err = stc.GenerateSubtasks(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate subtasks: %w", err)
+	if flowCtx.Orchestrator == nil {
+		err = stc.GenerateSubtasks(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to generate subtasks: %w", err)
+		}
 	}
 
 	subtasks, err := flowCtx.DB.GetTaskSubtasks(ctx, task.ID)
@@ -278,8 +286,110 @@ func (tw *taskWorker) PutInput(ctx context.Context, input string) error {
 	return nil
 }
 
+func (tw *taskWorker) GenerateSubtasks(ctx context.Context) error {
+	if err := tw.stc.GenerateSubtasks(ctx); err != nil {
+		return err
+	}
+
+	task, err := tw.taskCtx.DB.GetTask(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return fmt.Errorf("failed to get task %d: %w", tw.taskCtx.TaskID, err)
+	}
+
+	subtasks, err := tw.taskCtx.DB.GetTaskSubtasks(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return fmt.Errorf("failed to get subtasks for task %d: %w", tw.taskCtx.TaskID, err)
+	}
+
+	tw.taskCtx.Publisher.TaskUpdated(ctx, task, subtasks)
+
+	return nil
+}
+
+func (tw *taskWorker) RefineSubtasks(ctx context.Context) error {
+	if err := tw.stc.RefineSubtasks(ctx); err != nil {
+		return err
+	}
+
+	task, err := tw.taskCtx.DB.GetTask(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return fmt.Errorf("failed to get task %d: %w", tw.taskCtx.TaskID, err)
+	}
+
+	subtasks, err := tw.taskCtx.DB.GetTaskSubtasks(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return fmt.Errorf("failed to get subtasks for task %d: %w", tw.taskCtx.TaskID, err)
+	}
+
+	tw.taskCtx.Publisher.TaskUpdated(ctx, task, subtasks)
+
+	return nil
+}
+
+func (tw *taskWorker) SelectNextSubtask(ctx context.Context) (SubtaskWorker, error) {
+	return tw.stc.PopSubtask(ctx, tw)
+}
+
+func (tw *taskWorker) GetSubtask(ctx context.Context, subtaskID int64) (SubtaskWorker, error) {
+	return tw.stc.GetSubtask(ctx, subtaskID)
+}
+
+func (tw *taskWorker) ReportTaskResult(ctx context.Context) error {
+	jobResult, err := tw.taskCtx.Provider.GetTaskResult(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return fmt.Errorf("failed to get task %d result: %w", tw.taskCtx.TaskID, err)
+	}
+
+	var taskStatus database.TaskStatus
+	if jobResult.Success {
+		taskStatus = database.TaskStatusFinished
+	} else {
+		taskStatus = database.TaskStatusFailed
+	}
+
+	return tw.finalizeTask(ctx, taskStatus, jobResult.Result)
+}
+
+func (tw *taskWorker) Fail(ctx context.Context, result string) error {
+	if result == "" {
+		result = "task failed"
+	}
+
+	return tw.finalizeTask(ctx, database.TaskStatusFailed, result)
+}
+
+func (tw *taskWorker) finalizeTask(ctx context.Context, status database.TaskStatus, result string) error {
+	if err := tw.SetResult(ctx, result); err != nil {
+		return err
+	}
+
+	if err := tw.SetStatus(ctx, status); err != nil {
+		return err
+	}
+
+	format := database.MsglogResultFormatMarkdown
+	_, err := tw.taskCtx.MsgLog.PutTaskMsgResult(
+		ctx,
+		database.MsglogTypeReport,
+		tw.taskCtx.TaskID,
+		"",
+		tw.taskCtx.TaskTitle,
+		result,
+		format,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to put report for task %d: %w", tw.taskCtx.TaskID, err)
+	}
+
+	return nil
+}
+
 func (tw *taskWorker) Run(ctx context.Context) error {
 	ctx = tools.PutAgentContext(ctx, database.MsgchainTypePrimaryAgent)
+
+	if tw.taskCtx.Orchestrator != nil {
+		return tw.runWithOrchestrator(ctx)
+	}
 
 	for len(tw.stc.ListSubtasks(ctx)) < providers.TasksNumberLimit+3 {
 		st, err := tw.stc.PopSubtask(ctx, tw)
@@ -310,41 +420,7 @@ func (tw *taskWorker) Run(ctx context.Context) error {
 		}
 	}
 
-	jobResult, err := tw.taskCtx.Provider.GetTaskResult(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return fmt.Errorf("failed to get task %d result: %w", tw.taskCtx.TaskID, err)
-	}
-
-	var taskStatus database.TaskStatus
-	if jobResult.Success {
-		taskStatus = database.TaskStatusFinished
-	} else {
-		taskStatus = database.TaskStatusFailed
-	}
-
-	if err := tw.SetResult(ctx, jobResult.Result); err != nil {
-		return err
-	}
-
-	if err := tw.SetStatus(ctx, taskStatus); err != nil {
-		return err
-	}
-
-	format := database.MsglogResultFormatMarkdown
-	_, err = tw.taskCtx.MsgLog.PutTaskMsgResult(
-		ctx,
-		database.MsglogTypeReport,
-		tw.taskCtx.TaskID,
-		"", // thinking is empty because agent can't return it
-		tw.taskCtx.TaskTitle,
-		jobResult.Result,
-		format,
-	)
-	if err != nil {
-		return fmt.Errorf("failed to put report for task %d: %w", tw.taskCtx.TaskID, err)
-	}
-
-	return nil
+	return tw.ReportTaskResult(ctx)
 }
 
 func (tw *taskWorker) Finish(ctx context.Context) error {
@@ -362,6 +438,25 @@ func (tw *taskWorker) Finish(ctx context.Context) error {
 
 	if err := tw.SetStatus(ctx, database.TaskStatusFinished); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (tw *taskWorker) runWithOrchestrator(ctx context.Context) error {
+	status, err := tw.GetStatus(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get task %d status before orchestration: %w", tw.taskCtx.TaskID, err)
+	}
+
+	switch status {
+	case database.TaskStatusCreated:
+		err = tw.taskCtx.Orchestrator.StartTask(ctx, tw.taskCtx.FlowID, tw.taskCtx.TaskID)
+	default:
+		err = tw.taskCtx.Orchestrator.ResumeTask(ctx, tw.taskCtx.FlowID, tw.taskCtx.TaskID)
+	}
+	if err != nil {
+		return fmt.Errorf("failed to orchestrate task %d via langgraph: %w", tw.taskCtx.TaskID, err)
 	}
 
 	return nil

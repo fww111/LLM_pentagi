@@ -19,7 +19,7 @@ import (
 //go:embed config.yml models.yml
 var configFS embed.FS
 
-const GLMAgentModel = "glm-4.7-flashx"
+const GLMAgentModel = "glm-4.5-air"
 
 const GLMToolCallIDTemplate = "call_-{r:19:d}"
 
