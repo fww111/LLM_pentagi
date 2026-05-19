@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 	"sync"
 
 	"pentagi/pkg/database"
@@ -298,6 +300,55 @@ func (stw *subtaskWorker) EnsurePrepared(ctx context.Context) (int64, error) {
 	return msgChainID, nil
 }
 
+func (stw *subtaskWorker) putAgentStateLog(ctx context.Context, agent, status string, fields map[string]string) error {
+	parts := []string{
+		"[agent-state]",
+		fmt.Sprintf("agent=%s", agent),
+		fmt.Sprintf("status=%s", status),
+		fmt.Sprintf("task_id=%d", stw.subtaskCtx.TaskID),
+		fmt.Sprintf("subtask_id=%d", stw.subtaskCtx.SubtaskID),
+	}
+
+	keys := make([]string, 0, len(fields))
+	for key := range fields {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		value := fields[key]
+		if value == "" {
+			continue
+		}
+		parts = append(parts, fmt.Sprintf("%s=%q", key, trimAgentStateValue(value)))
+	}
+
+	_, err := stw.subtaskCtx.MsgLog.PutSubtaskMsg(
+		ctx,
+		database.MsglogTypeThoughts,
+		stw.subtaskCtx.TaskID,
+		stw.subtaskCtx.SubtaskID,
+		"",
+		strings.Join(parts, " "),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to put agent state log for %s/%s: %w", agent, status, err)
+	}
+
+	return nil
+}
+
+func trimAgentStateValue(value string) string {
+	const maxAgentStateValueLength = 512
+
+	value = strings.TrimSpace(value)
+	if len(value) <= maxAgentStateValueLength {
+		return value
+	}
+
+	return value[:maxAgentStateValueLength] + "..."
+}
+
 func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.PrimaryAgentDecision, error) {
 	if stw.IsCompleted() {
 		return nil, fmt.Errorf("subtask has already completed")
@@ -318,6 +369,10 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 		}
 	}
 
+	_ = stw.putAgentStateLog(ctx, "primary_agent", "running", map[string]string{
+		"msg_chain_id": fmt.Sprintf("%d", stw.subtaskCtx.MsgChainID),
+	})
+
 	decision, err := stw.subtaskCtx.Provider.DecidePrimaryAgentStep(
 		ctx,
 		stw.subtaskCtx.TaskID,
@@ -325,6 +380,9 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 		stw.subtaskCtx.MsgChainID,
 	)
 	if err != nil {
+		_ = stw.putAgentStateLog(ctx, "primary_agent", "failed", map[string]string{
+			"reason": err.Error(),
+		})
 		return nil, fmt.Errorf("failed to decide primary agent step for subtask %d: %w", stw.subtaskCtx.SubtaskID, err)
 	}
 
@@ -334,10 +392,18 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 
 	switch decision.Action {
 	case orchestrator.PrimaryAgentActionInputRequired:
+		_ = stw.putAgentStateLog(ctx, "primary_agent", "waiting_input", map[string]string{
+			"message":      decision.Message,
+			"tool_call_id": decision.ToolCallID,
+		})
 		if err := stw.SetStatus(ctx, database.SubtaskStatusWaiting); err != nil {
 			return nil, err
 		}
 	case orchestrator.PrimaryAgentActionCompleted:
+		_ = stw.putAgentStateLog(ctx, "primary_agent", "completed", map[string]string{
+			"tool_call_id":     decision.ToolCallID,
+			"result_available": fmt.Sprintf("%t", decision.Result != ""),
+		})
 		if err := stw.SetResult(ctx, decision.Result); err != nil {
 			return nil, err
 		}
@@ -357,6 +423,10 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 			return nil, fmt.Errorf("failed to put subtask %d report: %w", stw.subtaskCtx.SubtaskID, err)
 		}
 	case orchestrator.PrimaryAgentActionFailed:
+		_ = stw.putAgentStateLog(ctx, "primary_agent", "failed", map[string]string{
+			"tool_call_id": decision.ToolCallID,
+			"reason":       decision.Error,
+		})
 		if err := stw.SetResult(ctx, decision.Error); err != nil {
 			return nil, err
 		}
@@ -375,6 +445,11 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 		); err != nil {
 			return nil, fmt.Errorf("failed to put failed report for subtask %d: %w", stw.subtaskCtx.SubtaskID, err)
 		}
+	case orchestrator.PrimaryAgentActionCallAgent:
+		_ = stw.putAgentStateLog(ctx, "primary_agent", "delegated", map[string]string{
+			"agent_type":   decision.AgentType,
+			"tool_call_id": decision.ToolCallID,
+		})
 	}
 
 	return decision, nil
@@ -385,26 +460,59 @@ func (stw *subtaskWorker) ExecuteAgent(
 	agentType string,
 	payload json.RawMessage,
 ) (*orchestrator.AgentExecutionResult, error) {
-	return stw.subtaskCtx.Provider.ExecuteDelegatedAgent(
+	_ = stw.putAgentStateLog(ctx, agentType, "running", nil)
+
+	result, err := stw.subtaskCtx.Provider.ExecuteDelegatedAgent(
 		ctx,
 		stw.subtaskCtx.TaskID,
 		stw.subtaskCtx.SubtaskID,
 		agentType,
 		payload,
 	)
+	if err != nil {
+		_ = stw.putAgentStateLog(ctx, agentType, "failed", map[string]string{
+			"reason": err.Error(),
+		})
+		return nil, err
+	}
+
+	if result.Success {
+		_ = stw.putAgentStateLog(ctx, agentType, "completed", map[string]string{
+			"result_available": fmt.Sprintf("%t", result.Result != ""),
+		})
+	} else {
+		_ = stw.putAgentStateLog(ctx, agentType, "failed", map[string]string{
+			"reason": result.Error,
+		})
+	}
+
+	return result, nil
 }
 
 func (stw *subtaskWorker) WritePrimaryAgentToolResult(
 	ctx context.Context,
 	agentType, toolCallID, result string,
 ) error {
-	return stw.subtaskCtx.Provider.WritePrimaryAgentToolResult(
+	if err := stw.subtaskCtx.Provider.WritePrimaryAgentToolResult(
 		ctx,
 		stw.subtaskCtx.MsgChainID,
 		agentType,
 		toolCallID,
 		result,
-	)
+	); err != nil {
+		_ = stw.putAgentStateLog(ctx, agentType, "writeback_failed", map[string]string{
+			"tool_call_id": toolCallID,
+			"reason":       err.Error(),
+		})
+		return err
+	}
+
+	_ = stw.putAgentStateLog(ctx, agentType, "writeback_completed", map[string]string{
+		"tool_call_id":     toolCallID,
+		"result_available": fmt.Sprintf("%t", result != ""),
+	})
+
+	return nil
 }
 
 func (stw *subtaskWorker) Run(ctx context.Context) error {
