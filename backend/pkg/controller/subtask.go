@@ -5,15 +5,46 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"sort"
+	"regexp"
 	"strings"
 	"sync"
+	"time"
 
 	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers"
 )
+
+type agentExecuteState string
+
+const (
+	agentStateUnspecified agentExecuteState = "AGENT_STATE_UNSPECIFIED"
+	agentStateWorking     agentExecuteState = "AGENT_STATE_WORKING"
+	agentStateCompleted   agentExecuteState = "AGENT_STATE_COMPLETED"
+	agentStateFailed      agentExecuteState = "AGENT_STATE_FAILED"
+)
+
+type agentStateLogEntry struct {
+	SchemaVersion string            `json:"schema_version"`
+	MessageID     string            `json:"message_id"`
+	Event         string            `json:"event"`
+	Node          string            `json:"node"`
+	Role          string            `json:"role"`
+	AgentStatus   agentExecuteState `json:"agent_status"`
+	TaskID        string            `json:"task_id"`
+	ContextID     string            `json:"context_id"`
+	SubtaskID     string            `json:"subtask_id"`
+	Timestamp     string            `json:"timestamp"`
+	Details       map[string]string `json:"details,omitempty"`
+}
+
+var agentStateSecretPatterns = []*regexp.Regexp{
+	regexp.MustCompile(`(?i)(api[_-]?key|token|authorization|cookie|password)=\S+`),
+	regexp.MustCompile(`(?i)"(api[_-]?key|token|authorization|cookie|password)"\s*:\s*"[^"]+"`),
+	regexp.MustCompile(`(?i)bearer\s+[A-Za-z0-9._~+/-]+=*`),
+	regexp.MustCompile(`sk-[A-Za-z0-9_-]{8,}`),
+}
 
 type TaskUpdater interface {
 	SetStatus(ctx context.Context, status database.TaskStatus) error
@@ -300,48 +331,91 @@ func (stw *subtaskWorker) EnsurePrepared(ctx context.Context) (int64, error) {
 	return msgChainID, nil
 }
 
-func (stw *subtaskWorker) putAgentStateLog(ctx context.Context, agent, status string, fields map[string]string) error {
-	parts := []string{
-		"[agent-state]",
-		fmt.Sprintf("agent=%s", agent),
-		fmt.Sprintf("status=%s", status),
-		fmt.Sprintf("task_id=%d", stw.subtaskCtx.TaskID),
-		fmt.Sprintf("subtask_id=%d", stw.subtaskCtx.SubtaskID),
-	}
-
-	keys := make([]string, 0, len(fields))
-	for key := range fields {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-
-	for _, key := range keys {
-		value := fields[key]
+func (stw *subtaskWorker) putAgentStateLog(
+	ctx context.Context,
+	node string,
+	agentStatus agentExecuteState,
+	fields map[string]string,
+) error {
+	details := make(map[string]string, len(fields))
+	for key, value := range fields {
+		value = trimAgentStateValue(value)
 		if value == "" {
 			continue
 		}
-		parts = append(parts, fmt.Sprintf("%s=%q", key, trimAgentStateValue(value)))
+		details[key] = value
+	}
+	if len(details) == 0 {
+		details = nil
 	}
 
-	_, err := stw.subtaskCtx.MsgLog.PutSubtaskMsg(
+	now := time.Now().UTC()
+	entry := agentStateLogEntry{
+		SchemaVersion: "agent-state.v1",
+		MessageID:     fmt.Sprintf("agent_state_%d_%d_%d", stw.subtaskCtx.TaskID, stw.subtaskCtx.SubtaskID, now.UnixNano()),
+		Event:         "status",
+		Node:          node,
+		Role:          agentRoleForNode(node),
+		AgentStatus:   agentStatus,
+		TaskID:        fmt.Sprintf("%d", stw.subtaskCtx.TaskID),
+		ContextID:     fmt.Sprintf("flow_%d", stw.subtaskCtx.FlowID),
+		SubtaskID:     fmt.Sprintf("%d", stw.subtaskCtx.SubtaskID),
+		Timestamp:     now.Format(time.RFC3339Nano),
+		Details:       details,
+	}
+
+	data, err := json.Marshal(entry)
+	if err != nil {
+		return fmt.Errorf("failed to marshal agent state log for %s/%s: %w", node, agentStatus, err)
+	}
+
+	_, err = stw.subtaskCtx.MsgLog.PutSubtaskMsg(
 		ctx,
 		database.MsglogTypeThoughts,
 		stw.subtaskCtx.TaskID,
 		stw.subtaskCtx.SubtaskID,
 		"",
-		strings.Join(parts, " "),
+		fmt.Sprintf("[agent-state] %s", string(data)),
 	)
 	if err != nil {
-		return fmt.Errorf("failed to put agent state log for %s/%s: %w", agent, status, err)
+		return fmt.Errorf("failed to put agent state log for %s/%s: %w", node, agentStatus, err)
 	}
 
 	return nil
+}
+
+func agentRoleForNode(node string) string {
+	switch strings.ToLower(strings.TrimSpace(node)) {
+	case "primary_agent", "supervisor":
+		return "Supervisor"
+	case "designer":
+		return "Designer"
+	case "planner":
+		return "Planner"
+	case "generator", "coder":
+		return "Generator"
+	case "integrator":
+		return "Integrator"
+	case "reviewer":
+		return "Reviewer"
+	case "builder", "installer":
+		return "Builder"
+	case "tester":
+		return "Tester"
+	case "pentester":
+		return "Pentester"
+	default:
+		return "Supervisor"
+	}
 }
 
 func trimAgentStateValue(value string) string {
 	const maxAgentStateValueLength = 512
 
 	value = strings.TrimSpace(value)
+	for _, pattern := range agentStateSecretPatterns {
+		value = pattern.ReplaceAllString(value, "[REDACTED]")
+	}
 	if len(value) <= maxAgentStateValueLength {
 		return value
 	}
@@ -369,7 +443,8 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 		}
 	}
 
-	_ = stw.putAgentStateLog(ctx, "primary_agent", "running", map[string]string{
+	_ = stw.putAgentStateLog(ctx, "primary_agent", agentStateWorking, map[string]string{
+		"state_event":  "started",
 		"msg_chain_id": fmt.Sprintf("%d", stw.subtaskCtx.MsgChainID),
 	})
 
@@ -380,8 +455,10 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 		stw.subtaskCtx.MsgChainID,
 	)
 	if err != nil {
-		_ = stw.putAgentStateLog(ctx, "primary_agent", "failed", map[string]string{
-			"reason": err.Error(),
+		_ = stw.putAgentStateLog(ctx, "primary_agent", agentStateFailed, map[string]string{
+			"state_event": "failed",
+			"error_type":  "agent_execution_error",
+			"reason":      err.Error(),
 		})
 		return nil, fmt.Errorf("failed to decide primary agent step for subtask %d: %w", stw.subtaskCtx.SubtaskID, err)
 	}
@@ -392,7 +469,9 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 
 	switch decision.Action {
 	case orchestrator.PrimaryAgentActionInputRequired:
-		_ = stw.putAgentStateLog(ctx, "primary_agent", "waiting_input", map[string]string{
+		_ = stw.putAgentStateLog(ctx, "primary_agent", agentStateCompleted, map[string]string{
+			"state_event":  "input_required",
+			"task_status":  "TASK_STATE_INPUT_REQUIRED",
 			"message":      decision.Message,
 			"tool_call_id": decision.ToolCallID,
 		})
@@ -400,7 +479,8 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 			return nil, err
 		}
 	case orchestrator.PrimaryAgentActionCompleted:
-		_ = stw.putAgentStateLog(ctx, "primary_agent", "completed", map[string]string{
+		_ = stw.putAgentStateLog(ctx, "primary_agent", agentStateCompleted, map[string]string{
+			"state_event":      "completed",
 			"tool_call_id":     decision.ToolCallID,
 			"result_available": fmt.Sprintf("%t", decision.Result != ""),
 		})
@@ -423,7 +503,9 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 			return nil, fmt.Errorf("failed to put subtask %d report: %w", stw.subtaskCtx.SubtaskID, err)
 		}
 	case orchestrator.PrimaryAgentActionFailed:
-		_ = stw.putAgentStateLog(ctx, "primary_agent", "failed", map[string]string{
+		_ = stw.putAgentStateLog(ctx, "primary_agent", agentStateFailed, map[string]string{
+			"state_event":  "failed",
+			"error_type":   "agent_execution_error",
 			"tool_call_id": decision.ToolCallID,
 			"reason":       decision.Error,
 		})
@@ -446,9 +528,11 @@ func (stw *subtaskWorker) StepPrimaryAgent(ctx context.Context) (*orchestrator.P
 			return nil, fmt.Errorf("failed to put failed report for subtask %d: %w", stw.subtaskCtx.SubtaskID, err)
 		}
 	case orchestrator.PrimaryAgentActionCallAgent:
-		_ = stw.putAgentStateLog(ctx, "primary_agent", "delegated", map[string]string{
-			"agent_type":   decision.AgentType,
-			"tool_call_id": decision.ToolCallID,
+		_ = stw.putAgentStateLog(ctx, "primary_agent", agentStateWorking, map[string]string{
+			"state_event":    "delegated",
+			"delegated_node": decision.AgentType,
+			"delegated_role": agentRoleForNode(decision.AgentType),
+			"tool_call_id":   decision.ToolCallID,
 		})
 	}
 
@@ -460,7 +544,9 @@ func (stw *subtaskWorker) ExecuteAgent(
 	agentType string,
 	payload json.RawMessage,
 ) (*orchestrator.AgentExecutionResult, error) {
-	_ = stw.putAgentStateLog(ctx, agentType, "running", nil)
+	_ = stw.putAgentStateLog(ctx, agentType, agentStateWorking, map[string]string{
+		"state_event": "started",
+	})
 
 	result, err := stw.subtaskCtx.Provider.ExecuteDelegatedAgent(
 		ctx,
@@ -470,19 +556,24 @@ func (stw *subtaskWorker) ExecuteAgent(
 		payload,
 	)
 	if err != nil {
-		_ = stw.putAgentStateLog(ctx, agentType, "failed", map[string]string{
-			"reason": err.Error(),
+		_ = stw.putAgentStateLog(ctx, agentType, agentStateFailed, map[string]string{
+			"state_event": "failed",
+			"error_type":  "agent_execution_error",
+			"reason":      err.Error(),
 		})
 		return nil, err
 	}
 
 	if result.Success {
-		_ = stw.putAgentStateLog(ctx, agentType, "completed", map[string]string{
+		_ = stw.putAgentStateLog(ctx, agentType, agentStateCompleted, map[string]string{
+			"state_event":      "completed",
 			"result_available": fmt.Sprintf("%t", result.Result != ""),
 		})
 	} else {
-		_ = stw.putAgentStateLog(ctx, agentType, "failed", map[string]string{
-			"reason": result.Error,
+		_ = stw.putAgentStateLog(ctx, agentType, agentStateFailed, map[string]string{
+			"state_event": "failed",
+			"error_type":  "agent_execution_error",
+			"reason":      result.Error,
 		})
 	}
 
@@ -500,14 +591,17 @@ func (stw *subtaskWorker) WritePrimaryAgentToolResult(
 		toolCallID,
 		result,
 	); err != nil {
-		_ = stw.putAgentStateLog(ctx, agentType, "writeback_failed", map[string]string{
+		_ = stw.putAgentStateLog(ctx, agentType, agentStateFailed, map[string]string{
+			"state_event":  "writeback_failed",
+			"error_type":   "writeback_error",
 			"tool_call_id": toolCallID,
 			"reason":       err.Error(),
 		})
 		return err
 	}
 
-	_ = stw.putAgentStateLog(ctx, agentType, "writeback_completed", map[string]string{
+	_ = stw.putAgentStateLog(ctx, agentType, agentStateCompleted, map[string]string{
+		"state_event":      "writeback_completed",
 		"tool_call_id":     toolCallID,
 		"result_available": fmt.Sprintf("%t", result != ""),
 	})
