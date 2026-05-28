@@ -344,3 +344,302 @@ func marshalRawMessage(value any) (json.RawMessage, error) {
 
 	return json.RawMessage(raw), nil
 }
+
+// ========================================
+// Multi-agent migration: new service methods
+// ========================================
+
+type orchestratorAgentExecuteRequest struct {
+	FlowID    int64  `json:"flow_id" binding:"required,min=1"`
+	AgentRole string `json:"agent_role" binding:"required"`
+	TodoID    string `json:"todo_id"`
+	Payload   any    `json:"payload"`
+}
+
+type orchestratorStoreArtifactRequest struct {
+	FlowID       int64  `json:"flow_id" binding:"required,min=1"`
+	ArtifactID   string `json:"artifact_id" binding:"required"`
+	Name         string `json:"name" binding:"required"`
+	ArtifactType string `json:"artifact_type" binding:"required"`
+	Content      string `json:"content"`
+}
+
+type orchestratorAuthRequest struct {
+	FlowID        int64  `json:"flow_id" binding:"required,min=1"`
+	TodoID        string `json:"todo_id"`
+	Action        string `json:"action" binding:"required"`
+	RiskLevel     string `json:"risk_level" binding:"required"`
+	Justification string `json:"justification" binding:"required"`
+}
+
+type orchestratorResolveAuthRequest struct {
+	FlowID  int64  `json:"flow_id" binding:"required,min=1"`
+	Status  string `json:"status" binding:"required"`
+	Response string `json:"response"`
+}
+
+type orchestratorStoreFindingRequest struct {
+	FlowID      int64  `json:"flow_id" binding:"required,min=1"`
+	TodoID      string `json:"todo_id"`
+	FindingType string `json:"finding_type"`
+	Severity    string `json:"severity"`
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description"`
+	RawOutput   string `json:"raw_output"`
+}
+
+type orchestratorRejectTaskRequest struct {
+	FlowID int64  `json:"flow_id" binding:"required,min=1"`
+	Result string `json:"result"`
+}
+
+type orchestratorUpdateSharedStateRequest struct {
+	FlowID       int64                  `json:"flow_id" binding:"required,min=1"`
+	ActiveNode   string                 `json:"active_node"`
+	ActiveTodoID string                 `json:"active_todo_id"`
+	StatusCode   *int                   `json:"task_status_code"`
+	Updates      map[string]interface{} `json:"updates"`
+}
+
+func (s *OrchestratorService) DesignerStep(c *gin.Context) {
+	var req orchestratorFlowTaskRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	decision, err := task.DesignerStep(c)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error in designer step")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"decision": decision})
+}
+
+func (s *OrchestratorService) PlannerStep(c *gin.Context) {
+	var req orchestratorFlowTaskRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	decision, err := task.PlannerStep(c)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error in planner step")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"decision": decision})
+}
+
+func (s *OrchestratorService) SupervisorStep(c *gin.Context) {
+	var req orchestratorFlowTaskRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	decision, err := task.SupervisorStep(c)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error in supervisor step")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"decision": decision})
+}
+
+func (s *OrchestratorService) GenerateTodoPlan(c *gin.Context) {
+	var req orchestratorFlowTaskRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.GenerateTodoPlan(c); err != nil {
+		logger.FromContext(c).WithError(err).Error("error generating todo plan")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) RefineTodoPlan(c *gin.Context) {
+	var req orchestratorFlowTaskRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.RefineTodoPlan(c); err != nil {
+		logger.FromContext(c).WithError(err).Error("error refining todo plan")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) AgentExecute(c *gin.Context) {
+	var req orchestratorAgentExecuteRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	payload, err := marshalRawMessage(req.Payload)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	result, err := task.AgentExecute(c, req.AgentRole, req.TodoID, payload)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error executing agent")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"result": result})
+}
+
+func (s *OrchestratorService) StoreArtifact(c *gin.Context) {
+	var req orchestratorStoreArtifactRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.StoreArtifact(c, req.ArtifactID, req.Name, req.ArtifactType, req.Content); err != nil {
+		logger.FromContext(c).WithError(err).Error("error storing artifact")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) StoreAuthRequest(c *gin.Context) {
+	var req orchestratorAuthRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.StoreAuthRequest(c, req.TodoID, req.Action, req.RiskLevel, req.Justification); err != nil {
+		logger.FromContext(c).WithError(err).Error("error storing auth request")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) ResolveAuthRequest(c *gin.Context) {
+	var req orchestratorResolveAuthRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.ResolveAuthRequest(c, c.Param("authID"), req.Status, req.Response); err != nil {
+		logger.FromContext(c).WithError(err).Error("error resolving auth request")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) StoreFinding(c *gin.Context) {
+	var req orchestratorStoreFindingRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.StoreFinding(c, req.TodoID, req.FindingType, req.Severity, req.Title, req.Description, req.RawOutput); err != nil {
+		logger.FromContext(c).WithError(err).Error("error storing finding")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) RejectTask(c *gin.Context) {
+	var req orchestratorRejectTaskRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.RejectTask(c, req.Result); err != nil {
+		logger.FromContext(c).WithError(err).Error("error rejecting task")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) CompleteTask(c *gin.Context) {
+	var req orchestratorFlowTaskRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.CompleteTask(c); err != nil {
+		logger.FromContext(c).WithError(err).Error("error completing task")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (s *OrchestratorService) UpdateSharedState(c *gin.Context) {
+	var req orchestratorUpdateSharedStateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.UpdateSharedState(c, req.ActiveNode, req.ActiveTodoID, req.StatusCode, req.Updates); err != nil {
+		logger.FromContext(c).WithError(err).Error("error updating shared state")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}

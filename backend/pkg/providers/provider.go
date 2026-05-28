@@ -102,6 +102,9 @@ type FlowProvider interface {
 	ExecuteDelegatedAgent(ctx context.Context, taskID, subtaskID int64, agentType string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
 	WritePrimaryAgentToolResult(ctx context.Context, msgChainID int64, agentType, toolCallID, result string) error
 
+	// Multi-agent migration: supervisor step for multi-agent orchestration
+	DecideSupervisorStep(ctx context.Context, taskID int64, nodeRole string) (*orchestrator.SupervisorDecision, error)
+
 	FlowProviderHandlers
 }
 

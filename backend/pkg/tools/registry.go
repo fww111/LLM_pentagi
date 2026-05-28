@@ -44,6 +44,27 @@ const (
 	SubtaskPatchToolName      = "subtask_patch"
 	TerminalToolName          = "terminal"
 	FileToolName              = "file"
+
+	// Multi-agent migration: new tool constants
+	ScopeContractToolName       = "scope_contract"
+	TodoListToolName            = "todo_list"
+	TodoPatchToolName           = "todo_patch"
+	IntegrationResultToolName   = "integration_result"
+	TestResultToolName          = "test_result"
+	ReviewResultToolName        = "review_result"
+	AuthRequestToolName         = "auth_request"
+	SharedStatePatchToolName    = "shared_state_patch"
+	ArtifactToolName            = "artifact"
+
+	// Route-to-agent tools for supervisor delegation
+	RouteToBuilderToolName     = "route_to_builder"
+	RouteToGeneratorToolName   = "route_to_generator"
+	RouteToIntegratorToolName  = "route_to_integrator"
+	RouteToTesterToolName      = "route_to_tester"
+	RouteToPentesterToolName   = "route_to_pentester"
+	RouteToReviewerToolName    = "route_to_reviewer"
+	RouteToReporterToolName    = "route_to_reporter"
+	RouteToResearcherToolName  = "route_to_researcher"
 )
 
 type ToolType int
@@ -124,6 +145,24 @@ var toolsTypeMapping = map[string]ToolType{
 	SubtaskPatchToolName:      StoreAgentResultToolType,
 	TerminalToolName:          EnvironmentToolType,
 	FileToolName:              EnvironmentToolType,
+	// Multi-agent migration: new type mappings
+	ScopeContractToolName:       BarrierToolType,
+	TodoListToolName:            StoreAgentResultToolType,
+	TodoPatchToolName:           StoreAgentResultToolType,
+	IntegrationResultToolName:   StoreAgentResultToolType,
+	TestResultToolName:          StoreAgentResultToolType,
+	ReviewResultToolName:        StoreAgentResultToolType,
+	AuthRequestToolName:         BarrierToolType,
+	SharedStatePatchToolName:    StoreAgentResultToolType,
+	ArtifactToolName:            StoreAgentResultToolType,
+	RouteToBuilderToolName:      AgentToolType,
+	RouteToGeneratorToolName:    AgentToolType,
+	RouteToIntegratorToolName:   AgentToolType,
+	RouteToTesterToolName:       AgentToolType,
+	RouteToPentesterToolName:    AgentToolType,
+	RouteToReviewerToolName:     AgentToolType,
+	RouteToReporterToolName:     AgentToolType,
+	RouteToResearcherToolName:   AgentToolType,
 }
 
 var reflector = &jsonschema.Reflector{
@@ -372,7 +411,93 @@ var registryDefinitions = map[string]llms.FunctionDefinition{
 		Description: "If you need to finish the task with success or failure, use this tool",
 		Parameters:  reflector.Reflect(&Done{}),
 	},
-}
+		// Multi-agent migration: new tool definitions
+		ScopeContractToolName: {
+			Name:        ScopeContractToolName,
+			Description: "Generate a scope contract defining the boundaries, objectives, and constraints of the penetration test engagement",
+			Parameters:  reflector.Reflect(&ScopeContractAction{}),
+		},
+		TodoListToolName: {
+			Name:        TodoListToolName,
+			Description: "Generate the todo plan with ordered items, dependencies, and agent assignments for the penetration test workflow",
+			Parameters:  reflector.Reflect(&TodoListAction{}),
+		},
+		TodoPatchToolName: {
+			Name:        TodoPatchToolName,
+			Description: "Submit delta operations to modify the current todo list instead of regenerating all items. Supports add, remove, modify, and reorder operations.",
+			Parameters: reflector.Reflect(&TodoPatchAction{}),
+		},
+		IntegrationResultToolName: {
+			Name:        IntegrationResultToolName,
+			Description: "Send the integration result with success/failure status and detailed report",
+			Parameters:  reflector.Reflect(&IntegrationResultAction{}),
+		},
+		TestResultToolName: {
+			Name:        TestResultToolName,
+			Description: "Send the test execution result with pass/fail status and detailed findings",
+			Parameters:  reflector.Reflect(&TestResultAction{}),
+		},
+		ReviewResultToolName: {
+			Name:        ReviewResultToolName,
+			Description: "Send the review result with approval status and identified issues",
+			Parameters:  reflector.Reflect(&ReviewResultAction{}),
+		},
+		AuthRequestToolName: {
+			Name:        AuthRequestToolName,
+			Description: "Request human authorization for a high-risk operation before proceeding",
+			Parameters:  reflector.Reflect(&AuthRequestAction{}),
+		},
+		SharedStatePatchToolName: {
+			Name:        SharedStatePatchToolName,
+			Description: "Submit a partial state update to merge into the shared agent state",
+			Parameters:  reflector.Reflect(&SharedStatePatchAction{}),
+		},
+		ArtifactToolName: {
+			Name:        ArtifactToolName,
+			Description: "Store a task artifact (code, config, report, evidence, etc.) for tracking and audit",
+			Parameters:  reflector.Reflect(&ArtifactAction{}),
+		},
+		RouteToBuilderToolName: {
+			Name:        RouteToBuilderToolName,
+			Description: "Delegate work to the Builder agent for environment setup and dependency resolution",
+			Parameters:  reflector.Reflect(&CoderAction{}),
+		},
+		RouteToGeneratorToolName: {
+			Name:        RouteToGeneratorToolName,
+			Description: "Delegate work to the Generator agent for code and exploit generation",
+			Parameters:  reflector.Reflect(&CoderAction{}),
+		},
+		RouteToIntegratorToolName: {
+			Name:        RouteToIntegratorToolName,
+			Description: "Delegate work to the Integrator agent for combining generated components into working solution",
+			Parameters:  reflector.Reflect(&CoderAction{}),
+		},
+		RouteToTesterToolName: {
+			Name:        RouteToTesterToolName,
+			Description: "Delegate work to the Tester agent for validating generated code and configurations",
+			Parameters:  reflector.Reflect(&CoderAction{}),
+		},
+		RouteToPentesterToolName: {
+			Name:        RouteToPentesterToolName,
+			Description: "Delegate work to the Pentester agent for vulnerability exploitation and security testing",
+			Parameters:  reflector.Reflect(&PentesterAction{}),
+		},
+		RouteToReviewerToolName: {
+			Name:        RouteToReviewerToolName,
+			Description: "Delegate work to the Reviewer agent for code and security review",
+			Parameters:  reflector.Reflect(&AskAdvice{}),
+		},
+		RouteToReporterToolName: {
+			Name:        RouteToReporterToolName,
+			Description: "Delegate work to the Reporter agent for generating final reports and summaries",
+			Parameters:  reflector.Reflect(&TaskResult{}),
+		},
+		RouteToResearcherToolName: {
+			Name:        RouteToResearcherToolName,
+			Description: "Delegate work to the Researcher agent for information gathering and reconnaissance",
+			Parameters:  reflector.Reflect(&ComplexSearch{}),
+		},
+	}
 
 func getMessageType(name string) database.MsglogType {
 	switch name {

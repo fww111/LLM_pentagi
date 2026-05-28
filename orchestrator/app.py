@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import sqlite3
-from typing import Any, Callable, Dict, Optional, TypedDict
+from typing import Any, Callable, Dict, List, Optional, TypedDict
 
 import requests
 from fastapi import FastAPI, HTTPException
@@ -31,6 +31,8 @@ CHECKPOINT_PATH = os.getenv(
     "LANGGRAPH_CHECKPOINT_PATH",
     os.path.join(os.path.dirname(__file__), "langgraph-checkpoints.sqlite"),
 )
+# Feature flag: set to "multi_agent" to use the new graph, "legacy" for old
+GRAPH_MODE = os.getenv("PENTAGI_GRAPH_MODE", "legacy")
 
 SESSION = requests.Session()
 SESSION.verify = VERIFY_INTERNAL_SSL
@@ -42,6 +44,10 @@ class RunTaskRequest(BaseModel):
     flow_id: int
     task_id: int
 
+
+# ========================================
+# Legacy TaskState and graph (kept for backward compatibility)
+# ========================================
 
 class TaskState(TypedDict, total=False):
     flow_id: int
@@ -88,6 +94,10 @@ def _go_post(path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         )
     return response.json()
 
+
+# ========================================
+# Legacy graph nodes (unchanged)
+# ========================================
 
 def generate_subtasks(state: TaskState) -> Dict[str, Any]:
     _go_post(f"tasks/{state['task_id']}/generate-subtasks", {"flow_id": state["flow_id"]})
@@ -236,64 +246,335 @@ def failed(state: TaskState) -> Dict[str, Any]:
     }
 
 
-builder = StateGraph(TaskState)
-builder.add_node("generate_subtasks", generate_subtasks)
-builder.add_node("select_next_subtask", select_next_subtask)
-builder.add_node("prepare_primary_agent_context", prepare_primary_agent_context)
-builder.add_node("primary_agent", primary_agent)
-builder.add_node("coder", _execute_agent_node("coder"))
-builder.add_node("pentester", _execute_agent_node("pentester"))
-builder.add_node("searcher", _execute_agent_node("searcher"))
-builder.add_node("installer", _execute_agent_node("installer"))
-builder.add_node("memorist", _execute_agent_node("memorist"))
-builder.add_node("adviser", _execute_agent_node("adviser"))
-builder.add_node("input_required", input_required)
-builder.add_node("refine_subtasks", refine_subtasks)
-builder.add_node("report_task_result", report_task_result)
-builder.add_node("completed", lambda state: state)
-builder.add_node("failed", failed)
+def _build_legacy_graph() -> StateGraph:
+    builder = StateGraph(TaskState)
+    builder.add_node("generate_subtasks", generate_subtasks)
+    builder.add_node("select_next_subtask", select_next_subtask)
+    builder.add_node("prepare_primary_agent_context", prepare_primary_agent_context)
+    builder.add_node("primary_agent", primary_agent)
+    builder.add_node("coder", _execute_agent_node("coder"))
+    builder.add_node("pentester", _execute_agent_node("pentester"))
+    builder.add_node("searcher", _execute_agent_node("searcher"))
+    builder.add_node("installer", _execute_agent_node("installer"))
+    builder.add_node("memorist", _execute_agent_node("memorist"))
+    builder.add_node("adviser", _execute_agent_node("adviser"))
+    builder.add_node("input_required", input_required)
+    builder.add_node("refine_subtasks", refine_subtasks)
+    builder.add_node("report_task_result", report_task_result)
+    builder.add_node("completed", lambda state: state)
+    builder.add_node("failed", failed)
 
-builder.add_edge(START, "generate_subtasks")
-builder.add_edge("generate_subtasks", "select_next_subtask")
-builder.add_conditional_edges(
-    "select_next_subtask",
-    route_after_select_next_subtask,
-    {
-        "prepare_primary_agent_context": "prepare_primary_agent_context",
-        "report_task_result": "report_task_result",
-    },
-)
-builder.add_edge("prepare_primary_agent_context", "primary_agent")
-builder.add_conditional_edges(
-    "primary_agent",
-    route_after_primary_agent,
-    {
-        "coder": "coder",
-        "pentester": "pentester",
-        "searcher": "searcher",
-        "installer": "installer",
-        "memorist": "memorist",
-        "adviser": "adviser",
-        "input_required": "input_required",
-        "refine_subtasks": "refine_subtasks",
-        "failed": "failed",
-    },
-)
-builder.add_edge("coder", "primary_agent")
-builder.add_edge("pentester", "primary_agent")
-builder.add_edge("searcher", "primary_agent")
-builder.add_edge("installer", "primary_agent")
-builder.add_edge("memorist", "primary_agent")
-builder.add_edge("adviser", "primary_agent")
-builder.add_edge("input_required", "primary_agent")
-builder.add_edge("refine_subtasks", "select_next_subtask")
-builder.add_edge("report_task_result", "completed")
-builder.add_edge("completed", END)
-builder.add_edge("failed", END)
+    builder.add_edge(START, "generate_subtasks")
+    builder.add_edge("generate_subtasks", "select_next_subtask")
+    builder.add_conditional_edges(
+        "select_next_subtask",
+        route_after_select_next_subtask,
+        {
+            "prepare_primary_agent_context": "prepare_primary_agent_context",
+            "report_task_result": "report_task_result",
+        },
+    )
+    builder.add_edge("prepare_primary_agent_context", "primary_agent")
+    builder.add_conditional_edges(
+        "primary_agent",
+        route_after_primary_agent,
+        {
+            "coder": "coder",
+            "pentester": "pentester",
+            "searcher": "searcher",
+            "installer": "installer",
+            "memorist": "memorist",
+            "adviser": "adviser",
+            "input_required": "input_required",
+            "refine_subtasks": "refine_subtasks",
+            "failed": "failed",
+        },
+    )
+    builder.add_edge("coder", "primary_agent")
+    builder.add_edge("pentester", "primary_agent")
+    builder.add_edge("searcher", "primary_agent")
+    builder.add_edge("installer", "primary_agent")
+    builder.add_edge("memorist", "primary_agent")
+    builder.add_edge("adviser", "primary_agent")
+    builder.add_edge("input_required", "primary_agent")
+    builder.add_edge("refine_subtasks", "select_next_subtask")
+    builder.add_edge("report_task_result", "completed")
+    builder.add_edge("completed", END)
+    builder.add_edge("failed", END)
+    return builder
 
-GRAPH = builder.compile(checkpointer=CHECKPOINTER)
 
-app = FastAPI(title="PentAGI LangGraph Orchestrator", version="0.1.0")
+# ========================================
+# Multi-agent TaskState and graph
+# ========================================
+
+AGENT_ROLES = [
+    "builder", "generator", "integrator", "tester",
+    "pentester", "reviewer", "reporter", "researcher",
+]
+
+
+class MultiAgentState(TypedDict, total=False):
+    flow_id: int
+    task_id: int
+    context_id: Optional[str]
+    scope_contract: Optional[Dict[str, Any]]
+    todo_plan: Optional[List[Dict[str, Any]]]
+    active_todo_id: Optional[str]
+    active_todo: Optional[Dict[str, Any]]
+    supervisor_decision: Optional[Dict[str, Any]]
+    last_agent_result: Optional[str]
+    shared_state: Optional[Dict[str, Any]]
+    task_status: Optional[str]
+    task_result: Optional[str]
+    failure_reason: Optional[str]
+    auth_request: Optional[Dict[str, Any]]
+
+
+# --- Multi-agent nodes ---
+
+def designer(state: MultiAgentState) -> Dict[str, Any]:
+    response = _go_post(
+        f"tasks/{state['task_id']}/designer-step",
+        {"flow_id": state["flow_id"]},
+    )
+    decision = response.get("decision", {})
+    scope_contract = decision.get("result", {})
+    return {"scope_contract": scope_contract, "supervisor_decision": decision}
+
+
+def planner(state: MultiAgentState) -> Dict[str, Any]:
+    response = _go_post(
+        f"tasks/{state['task_id']}/planner-step",
+        {"flow_id": state["flow_id"]},
+    )
+    decision = response.get("decision", {})
+    return {"supervisor_decision": decision}
+
+
+def supervisor(state: MultiAgentState) -> Dict[str, Any]:
+    response = _go_post(
+        f"tasks/{state['task_id']}/supervisor-step",
+        {"flow_id": state["flow_id"]},
+    )
+    decision = response.get("decision", {})
+    return {"supervisor_decision": decision}
+
+
+def route_after_supervisor(state: MultiAgentState) -> str:
+    decision = state.get("supervisor_decision") or {}
+    action = decision.get("action", "")
+
+    if action == "delegate":
+        agent_role = decision.get("agent_role", "")
+        if agent_role in AGENT_ROLES:
+            return agent_role
+        LOGGER.warning(f"Unknown agent role from supervisor: {agent_role}, defaulting to reporter")
+        return "reporter"
+    if action == "auth_required":
+        return "auth_required"
+    if action == "input_required":
+        return "input_required"
+    if action == "completed":
+        return "completed"
+    if action == "failed":
+        return "failed"
+    if action == "rejected":
+        return "rejected"
+
+    LOGGER.warning(f"Unknown supervisor action: {action}, defaulting to failed")
+    return "failed"
+
+
+def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[str, Any]]:
+    def _node(state: MultiAgentState) -> Dict[str, Any]:
+        decision = state.get("supervisor_decision") or {}
+        todo_id = state.get("active_todo_id", "")
+
+        response = _go_post(
+            f"tasks/{state['task_id']}/agent-execute",
+            {
+                "flow_id": state["flow_id"],
+                "agent_role": agent_role,
+                "todo_id": todo_id,
+                "payload": decision.get("payload") or {},
+            },
+        )
+        result = response.get("result", {})
+
+        # Update shared state
+        if result.get("success"):
+            _go_post(
+                f"tasks/{state['task_id']}/update-shared-state",
+                {
+                    "flow_id": state["flow_id"],
+                    "active_node": agent_role,
+                    "active_todo_id": todo_id,
+                    "updates": {"last_result": result.get("result", "")},
+                },
+            )
+
+        return {
+            "last_agent_result": result.get("result", ""),
+            "supervisor_decision": None,
+        }
+
+    return _node
+
+
+def auth_required(state: MultiAgentState) -> Dict[str, Any]:
+    decision = state.get("supervisor_decision") or {}
+    todo_id = state.get("active_todo_id", "")
+
+    _go_post(
+        f"tasks/{state['task_id']}/store-auth-request",
+        {
+            "flow_id": state["flow_id"],
+            "todo_id": todo_id,
+            "action": decision.get("result", ""),
+            "risk_level": "high",
+            "justification": decision.get("message", "High-risk operation requires authorization"),
+        },
+    )
+
+    # Interrupt and wait for human approval
+    resume_value = interrupt(
+        {
+            "message": decision.get("message", "Authorization required"),
+            "flow_id": state["flow_id"],
+            "task_id": state["task_id"],
+            "todo_id": todo_id,
+            "action": decision.get("result", ""),
+        }
+    )
+
+    approval = str(resume_value)
+    if approval.lower() in ("approved", "yes", "true"):
+        return {"supervisor_decision": None, "last_agent_result": "Authorization approved"}
+    else:
+        return {"supervisor_decision": None, "last_agent_result": "Authorization rejected"}
+
+
+def ma_input_required(state: MultiAgentState) -> Dict[str, Any]:
+    decision = state.get("supervisor_decision") or {}
+    resume_value = interrupt(
+        {
+            "message": decision.get("message", ""),
+            "flow_id": state["flow_id"],
+            "task_id": state["task_id"],
+        }
+    )
+    return {"supervisor_decision": None, "last_agent_result": str(resume_value)}
+
+
+def ma_completed(state: MultiAgentState) -> Dict[str, Any]:
+    response = _go_post(
+        f"tasks/{state['task_id']}/complete-task",
+        {"flow_id": state["flow_id"]},
+    )
+    return {
+        "task_status": "completed",
+        "task_result": response.get("task", {}).get("result", ""),
+        "supervisor_decision": None,
+    }
+
+
+def ma_rejected(state: MultiAgentState) -> Dict[str, Any]:
+    decision = state.get("supervisor_decision") or {}
+    reason = decision.get("error") or decision.get("message") or "Task rejected"
+    _go_post(
+        f"tasks/{state['task_id']}/reject-task",
+        {"flow_id": state["flow_id"], "result": reason},
+    )
+    return {
+        "task_status": "rejected",
+        "task_result": reason,
+        "failure_reason": reason,
+        "supervisor_decision": None,
+    }
+
+
+def ma_failed(state: MultiAgentState) -> Dict[str, Any]:
+    decision = state.get("supervisor_decision") or {}
+    failure_reason = decision.get("error") or "Task failed"
+    _go_post(
+        f"tasks/{state['task_id']}/fail-task",
+        {"flow_id": state["flow_id"], "result": failure_reason},
+    )
+    return {
+        "task_status": "failed",
+        "task_result": failure_reason,
+        "failure_reason": failure_reason,
+        "supervisor_decision": None,
+    }
+
+
+def _build_multi_agent_graph() -> StateGraph:
+    builder = StateGraph(MultiAgentState)
+
+    # Main pipeline nodes
+    builder.add_node("designer", designer)
+    builder.add_node("planner", planner)
+    builder.add_node("supervisor", supervisor)
+
+    # Agent execution nodes
+    for role in AGENT_ROLES:
+        builder.add_node(role, _multi_agent_execute(role))
+
+    # Terminal / interrupt nodes
+    builder.add_node("auth_required", auth_required)
+    builder.add_node("input_required", ma_input_required)
+    builder.add_node("completed", ma_completed)
+    builder.add_node("rejected", ma_rejected)
+    builder.add_node("failed", ma_failed)
+
+    # Graph topology
+    builder.add_edge(START, "designer")
+    builder.add_edge("designer", "planner")
+    builder.add_edge("planner", "supervisor")
+
+    builder.add_conditional_edges(
+        "supervisor",
+        route_after_supervisor,
+        {role: role for role in AGENT_ROLES} | {
+            "auth_required": "auth_required",
+            "input_required": "input_required",
+            "completed": "completed",
+            "rejected": "rejected",
+            "failed": "failed",
+        },
+    )
+
+    # All agent nodes loop back to supervisor
+    for role in AGENT_ROLES:
+        builder.add_edge(role, "supervisor")
+
+    builder.add_edge("auth_required", "supervisor")
+    builder.add_edge("input_required", "supervisor")
+    builder.add_edge("completed", END)
+    builder.add_edge("rejected", END)
+    builder.add_edge("failed", END)
+
+    return builder
+
+
+# ========================================
+# Build the selected graph
+# ========================================
+
+if GRAPH_MODE == "multi_agent":
+    LOGGER.info("Using multi-agent graph topology")
+    GRAPH = _build_multi_agent_graph().compile(checkpointer=CHECKPOINTER)
+else:
+    LOGGER.info("Using legacy graph topology")
+    GRAPH = _build_legacy_graph().compile(checkpointer=CHECKPOINTER)
+
+
+# ========================================
+# FastAPI app
+# ========================================
+
+app = FastAPI(title="PentAGI LangGraph Orchestrator", version="0.2.0")
 
 
 def _serialize_snapshot(task_id: int) -> Dict[str, Any]:
@@ -339,7 +620,7 @@ def _run_stream(input_value: Any, task_id: int) -> Dict[str, Any]:
 
 @app.get("/health")
 def health() -> Dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "ok", "graph_mode": GRAPH_MODE}
 
 
 @app.post("/runs/start")

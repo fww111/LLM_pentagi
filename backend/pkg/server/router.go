@@ -334,6 +334,21 @@ func setInternalOrchestratorGroup(parent *gin.RouterGroup, svc *services.Orchest
 		tasksGroup.POST("/subtasks/:subtaskID/primary-agent-step", svc.PrimaryAgentStep)
 		tasksGroup.POST("/subtasks/:subtaskID/execute-agent", svc.ExecuteAgent)
 		tasksGroup.POST("/subtasks/:subtaskID/write-primary-agent-result", svc.WritePrimaryAgentResult)
+
+		// Multi-agent migration: new endpoints
+		tasksGroup.POST("/designer-step", svc.DesignerStep)
+		tasksGroup.POST("/planner-step", svc.PlannerStep)
+		tasksGroup.POST("/supervisor-step", svc.SupervisorStep)
+		tasksGroup.POST("/generate-todo-plan", svc.GenerateTodoPlan)
+		tasksGroup.POST("/refine-todo-plan", svc.RefineTodoPlan)
+		tasksGroup.POST("/agent-execute", svc.AgentExecute)
+		tasksGroup.POST("/store-artifact", svc.StoreArtifact)
+		tasksGroup.POST("/store-auth-request", svc.StoreAuthRequest)
+		tasksGroup.POST("/resolve-auth-request", svc.ResolveAuthRequest)
+		tasksGroup.POST("/store-finding", svc.StoreFinding)
+		tasksGroup.POST("/reject-task", svc.RejectTask)
+		tasksGroup.POST("/complete-task", svc.CompleteTask)
+		tasksGroup.POST("/update-shared-state", svc.UpdateSharedState)
 	}
 }
 

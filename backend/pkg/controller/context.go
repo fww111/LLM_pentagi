@@ -32,6 +32,9 @@ type FlowContext struct {
 	TermLog    FlowTermLogWorker
 	MsgLog     FlowMsgLogWorker
 	Screenshot FlowScreenshotWorker
+
+	// Multi-agent migration: raw DB access for multi-agent extension queries
+	RawDB database.DBTX
 }
 
 type TaskContext struct {

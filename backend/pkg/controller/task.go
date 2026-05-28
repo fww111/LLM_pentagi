@@ -2,12 +2,15 @@ package controller
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
 
 	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
+	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers"
 	"pentagi/pkg/tools"
 )
@@ -36,6 +39,20 @@ type TaskWorker interface {
 	Fail(ctx context.Context, result string) error
 	Run(ctx context.Context) error
 	Finish(ctx context.Context) error
+	// Multi-agent migration: new methods
+	DesignerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
+	PlannerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
+	SupervisorStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
+	GenerateTodoPlan(ctx context.Context) error
+	RefineTodoPlan(ctx context.Context) error
+	AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
+	StoreArtifact(ctx context.Context, artifactID, name, artifactType, content string) error
+	StoreAuthRequest(ctx context.Context, todoID, action, riskLevel, justification string) error
+	ResolveAuthRequest(ctx context.Context, authID, status, response string) error
+	StoreFinding(ctx context.Context, todoID, findingType, severity, title, description, rawOutput string) error
+	RejectTask(ctx context.Context, result string) error
+	CompleteTask(ctx context.Context) error
+	UpdateSharedState(ctx context.Context, activeNode, activeTodoID string, statusCode *int, updates map[string]interface{}) error
 }
 
 type taskWorker struct {
@@ -460,4 +477,122 @@ func (tw *taskWorker) runWithOrchestrator(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+// ========================================
+// Multi-agent migration: new method implementations
+// ========================================
+
+func (tw *taskWorker) DesignerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "designer")
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute designer step: %w", err)
+	}
+	return decision, nil
+}
+
+func (tw *taskWorker) PlannerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner")
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute planner step: %w", err)
+	}
+	return decision, nil
+}
+
+func (tw *taskWorker) SupervisorStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "supervisor")
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute supervisor step: %w", err)
+	}
+	return decision, nil
+}
+
+func (tw *taskWorker) GenerateTodoPlan(ctx context.Context) error {
+	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner")
+	return err
+}
+
+func (tw *taskWorker) RefineTodoPlan(ctx context.Context) error {
+	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner")
+	return err
+}
+
+func (tw *taskWorker) AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error) {
+	result, err := tw.taskCtx.Provider.ExecuteDelegatedAgent(ctx, tw.taskCtx.TaskID, 0, agentRole, payload)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute agent %s: %w", agentRole, err)
+	}
+	return result, nil
+}
+
+func (tw *taskWorker) StoreArtifact(ctx context.Context, artifactID, name, artifactType, content string) error {
+	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
+	return ma.UpsertArtifact(ctx, &database.Artifact{
+		TaskID:       tw.taskCtx.TaskID,
+		ArtifactID:   artifactID,
+		Name:         name,
+		ArtifactType: artifactType,
+		Text:         sqlPtrString(content),
+	})
+}
+
+func (tw *taskWorker) StoreAuthRequest(ctx context.Context, todoID, action, riskLevel, justification string) error {
+	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
+	return ma.InsertAuthRequest(ctx, &database.AuthRequest{
+		TaskID:       tw.taskCtx.TaskID,
+		TodoID:       sqlPtrString(todoID),
+		Action:       action,
+		RiskLevel:    riskLevel,
+		Justification: justification,
+		Status:       "pending",
+	})
+}
+
+func (tw *taskWorker) ResolveAuthRequest(ctx context.Context, authID, status, response string) error {
+	return fmt.Errorf("not implemented: resolve auth request")
+}
+
+func (tw *taskWorker) StoreFinding(ctx context.Context, todoID, findingType, severity, title, description, rawOutput string) error {
+	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
+	return ma.InsertFinding(ctx, &database.Finding{
+		TaskID:      tw.taskCtx.TaskID,
+		TodoID:      sqlPtrString(todoID),
+		FindingType: sqlPtrString(findingType),
+		Severity:    sqlPtrString(severity),
+		Title:       title,
+		Description: sqlPtrString(description),
+		RawOutput:   sqlPtrString(rawOutput),
+	})
+}
+
+func (tw *taskWorker) RejectTask(ctx context.Context, result string) error {
+	return tw.finalizeTask(ctx, database.TaskStatusFailed, "REJECTED: "+result)
+}
+
+func (tw *taskWorker) CompleteTask(ctx context.Context) error {
+	return tw.ReportTaskResult(ctx)
+}
+
+func (tw *taskWorker) UpdateSharedState(ctx context.Context, activeNode, activeTodoID string, statusCode *int, updates map[string]interface{}) error {
+	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
+	ext := &database.TaskExt{
+		ActiveNode:   sqlPtrString(activeNode),
+		ActiveTodoID: sqlPtrString(activeTodoID),
+	}
+	if statusCode != nil {
+		ext.TaskStatusCode = *statusCode
+	}
+	if updates != nil {
+		sharedState, _ := json.Marshal(updates)
+		ext.SharedState = sharedState
+	}
+	return ma.UpdateTaskExtension(ctx, tw.taskCtx.TaskID, ext)
+}
+
+// sqlPtrString converts a string to sql.NullString
+func sqlPtrString(s string) sql.NullString {
+	if s == "" {
+		return sql.NullString{Valid: false}
+	}
+	return sql.NullString{String: s, Valid: true}
 }

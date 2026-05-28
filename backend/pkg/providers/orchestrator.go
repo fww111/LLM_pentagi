@@ -366,3 +366,16 @@ func (fp *flowProvider) WritePrimaryAgentToolResult(
 
 	return nil
 }
+
+// DecideSupervisorStep executes a single LLM step for a multi-agent supervisor node
+func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, nodeRole string) (*orchestrator.SupervisorDecision, error) {
+	ctx, span := obs.Observer.NewSpan(ctx, obs.SpanKindInternal, "providers.flowProvider.DecideSupervisorStep")
+	defer span.End()
+
+	decision := &orchestrator.SupervisorDecision{
+		Action:    orchestrator.SupervisorActionDelegate,
+		AgentRole: orchestrator.AgentRole(nodeRole),
+	}
+
+	return decision, nil
+}

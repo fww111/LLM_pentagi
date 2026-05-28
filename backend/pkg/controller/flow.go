@@ -219,6 +219,7 @@ func NewFlowWorker(
 
 	flowCtx := &FlowContext{
 		DB:           fwc.db,
+		RawDB:        fwc.db.(*database.Queries).DB(),
 		UserID:       fwc.userID,
 		FlowID:       flow.ID,
 		TraceID:      observation.TraceID(),
@@ -370,6 +371,7 @@ func LoadFlowWorker(ctx context.Context, flow database.Flow, fwc flowWorkerCtx) 
 
 	flowCtx := &FlowContext{
 		DB:           fwc.db,
+		RawDB:        fwc.db.(*database.Queries).DB(),
 		UserID:       flow.UserID,
 		FlowID:       flow.ID,
 		TraceID:      observation.TraceID(),
