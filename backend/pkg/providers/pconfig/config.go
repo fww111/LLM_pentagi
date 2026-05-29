@@ -150,6 +150,8 @@ const (
 	OptionsTypeInstaller    ProviderOptionsType = "installer"
 	OptionsTypePentester    ProviderOptionsType = "pentester"
 	OptionsTypeReflector    ProviderOptionsType = "reflector"
+	OptionsTypeDesigner     ProviderOptionsType = "designer"
+	OptionsTypeSupervisor   ProviderOptionsType = "supervisor"
 )
 
 var AllAgentTypes = []ProviderOptionsType{
@@ -166,6 +168,8 @@ var AllAgentTypes = []ProviderOptionsType{
 	OptionsTypeCoder,
 	OptionsTypeInstaller,
 	OptionsTypePentester,
+	OptionsTypeDesigner,
+	OptionsTypeSupervisor,
 }
 
 type ModelConfig struct {
@@ -227,6 +231,8 @@ type ProviderConfig struct {
 	Coder          *AgentConfig      `json:"coder,omitempty" yaml:"coder,omitempty"`
 	Installer      *AgentConfig      `json:"installer,omitempty" yaml:"installer,omitempty"`
 	Pentester      *AgentConfig      `json:"pentester,omitempty" yaml:"pentester,omitempty"`
+	Designer       *AgentConfig      `json:"designer,omitempty" yaml:"designer,omitempty"`
+	Supervisor     *AgentConfig      `json:"supervisor,omitempty" yaml:"supervisor,omitempty"`
 	defaultOptions []llms.CallOption `json:"-" yaml:"-"`
 	rawConfig      []byte            `json:"-" yaml:"-"`
 }
@@ -244,7 +250,9 @@ const EmptyProviderConfigRaw = `{
   "enricher": {},
   "coder": {},
   "installer": {},
-  "pentester": {}
+  "pentester": {},
+  "designer": {},
+  "supervisor": {}
 }`
 
 func LoadConfig(configPath string, defaultOptions []llms.CallOption) (*ProviderConfig, error) {
@@ -755,6 +763,10 @@ func (pc *ProviderConfig) GetOptionsForType(optType ProviderOptionsType) []llms.
 		agentConfig = pc.Installer
 	case OptionsTypePentester:
 		agentConfig = pc.Pentester
+	case OptionsTypeDesigner:
+		agentConfig = pc.Designer
+	case OptionsTypeSupervisor:
+		agentConfig = pc.Supervisor
 	default:
 		return nil
 	}
@@ -809,6 +821,10 @@ func (pc *ProviderConfig) GetPriceInfoForType(optType ProviderOptionsType) *Pric
 		agentConfig = pc.Installer
 	case OptionsTypePentester:
 		agentConfig = pc.Pentester
+	case OptionsTypeDesigner:
+		agentConfig = pc.Designer
+	case OptionsTypeSupervisor:
+		agentConfig = pc.Supervisor
 	default:
 		return nil
 	}
@@ -839,6 +855,8 @@ func (pc *ProviderConfig) BuildOptionsMap() map[ProviderOptionsType][]llms.CallO
 		OptionsTypeCoder:        pc.GetOptionsForType(OptionsTypeCoder),
 		OptionsTypeInstaller:    pc.GetOptionsForType(OptionsTypeInstaller),
 		OptionsTypePentester:    pc.GetOptionsForType(OptionsTypePentester),
+		OptionsTypeDesigner:     pc.GetOptionsForType(OptionsTypeDesigner),
+		OptionsTypeSupervisor:   pc.GetOptionsForType(OptionsTypeSupervisor),
 	}
 
 	return options

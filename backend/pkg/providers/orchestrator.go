@@ -4,12 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers/pconfig"
+	"pentagi/pkg/templates"
 	"pentagi/pkg/tools"
 
 	"github.com/sirupsen/logrus"
@@ -367,15 +369,318 @@ func (fp *flowProvider) WritePrimaryAgentToolResult(
 	return nil
 }
 
-// DecideSupervisorStep executes a single LLM step for a multi-agent supervisor node
+// DecideSupervisorStep executes a single LLM step for a multi-agent supervisor node.
+// nodeRole is "designer", "planner", or "supervisor" — selects the prompt and tool set.
 func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, nodeRole string) (*orchestrator.SupervisorDecision, error) {
 	ctx, span := obs.Observer.NewSpan(ctx, obs.SpanKindInternal, "providers.flowProvider.DecideSupervisorStep")
 	defer span.End()
 
-	decision := &orchestrator.SupervisorDecision{
-		Action:    orchestrator.SupervisorActionDelegate,
-		AgentRole: orchestrator.AgentRole(nodeRole),
+	optAgentType := pconfig.ProviderOptionsType(nodeRole)
+	logger := logrus.WithContext(ctx).WithFields(logrus.Fields{
+		"flow_id": fp.flowID,
+		"task_id": taskID,
+		"agent":   optAgentType,
+	})
+
+	decision := &orchestrator.SupervisorDecision{}
+
+	// Build tool definitions and handlers based on role
+	defs, handlers, barriers, err := fp.buildSupervisorTools(ctx, taskID, nodeRole, decision)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build %s tools: %w", nodeRole, err)
+	}
+
+	executor, err := fp.executor.GetCustomExecutor(tools.CustomExecutorConfig{
+		TaskID:      &taskID,
+		Definitions: defs,
+		Handlers:    handlers,
+		Barriers:    barriers,
+		Summarizer:  fp.GetSummarizeResultHandler(&taskID, nil),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create %s executor: %w", nodeRole, err)
+	}
+
+	executionContext, err := fp.getExecutionContextByTask(ctx, taskID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get execution context: %w", err)
+	}
+
+	// Render system prompt
+	promptType := templates.PromptTypeSupervisor
+	questionType := templates.PromptTypeQuestionSupervisor
+	if nodeRole == "designer" {
+		promptType = templates.PromptTypeDesigner
+		questionType = templates.PromptTypeQuestionDesigner
+	}
+
+	barrierToolNames := executor.GetBarrierToolNames()
+	systemPrompt, err := fp.prompter.RenderTemplate(promptType, map[string]string{
+		"BarrierTools":     strings.Join(barrierToolNames, ", "),
+		"CurrentTime":      time.Now().Format(time.RFC3339),
+		"Lang":             fp.Language(),
+		"ExecutionContext": executionContext,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to render %s system prompt: %w", nodeRole, err)
+	}
+
+	chain := []llms.MessageContent{
+		llms.TextParts(llms.ChatMessageTypeSystem, systemPrompt),
+	}
+
+	// Add human message with task input
+	task, err := fp.db.GetTask(ctx, taskID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get task %d: %w", taskID, err)
+	}
+	questionPrompt, _ := fp.prompter.RenderTemplate(questionType, map[string]string{
+		"Question": task.Input,
+	})
+	if questionPrompt != "" {
+		chain = append(chain, llms.TextParts(llms.ChatMessageTypeHuman, questionPrompt))
+	}
+
+	chainBlob, err := json.Marshal(chain)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal chain: %w", err)
+	}
+
+	msgChain, err := fp.db.CreateMsgChain(ctx, database.CreateMsgChainParams{
+		Type:          database.MsgchainTypePrimaryAgent,
+		Model:         fp.Model(optAgentType),
+		ModelProvider: string(fp.Type()),
+		Chain:         chainBlob,
+		FlowID:        fp.flowID,
+		TaskID:        database.Int64ToNullInt64(&taskID),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create msg chain: %w", err)
+	}
+
+	lastUpdateTime := time.Now()
+	rollLastUpdateTime := func() float64 {
+		delta := time.Since(lastUpdateTime).Seconds()
+		lastUpdateTime = time.Now()
+		return delta
+	}
+
+	ctx = tools.PutAgentContext(ctx, database.MsgchainTypePrimaryAgent)
+	result, err := fp.callWithRetries(
+		ctx,
+		optAgentType,
+		msgChain.ID,
+		&taskID,
+		nil,
+		chain,
+		executor,
+		executionContext,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to call %s LLM: %w", nodeRole, err)
+	}
+
+	if err := fp.updateMsgChainUsage(ctx, msgChain.ID, optAgentType, result.info, rollLastUpdateTime()); err != nil {
+		logger.WithError(err).Warn("failed to update msg chain usage")
+	}
+
+	if len(result.funcCalls) == 0 {
+		return nil, fmt.Errorf("%s returned no structured tool call", nodeRole)
+	}
+
+	if len(result.funcCalls) > 1 {
+		logger.WithField("tool_call_count", len(result.funcCalls)).Warn("multiple tool calls, only first used")
+	}
+
+	selectedToolCall := result.funcCalls[0]
+
+	// Append AI message with tool call
+	msg := llms.MessageContent{Role: llms.ChatMessageTypeAI}
+	if result.content != "" || !result.thinking.IsEmpty() {
+		msg.Parts = append(msg.Parts, llms.TextPartWithReasoning(result.content, result.thinking))
+	}
+	msg.Parts = append(msg.Parts, selectedToolCall)
+	chain = append(chain, msg)
+
+	if err := fp.updateMsgChain(ctx, optAgentType, msgChain.ID, chain, rollLastUpdateTime()); err != nil {
+		logger.WithError(err).Warn("failed to append tool call to chain")
+	}
+
+	// Execute the tool call (triggers handler that populates decision)
+	selectedResult := &callResult{
+		streamID:  result.streamID,
+		funcCalls: []llms.ToolCall{selectedToolCall},
+		thinking:  result.thinking,
+		content:   result.content,
+		info:      result.info,
+	}
+
+	response, err := fp.execToolCall(
+		ctx,
+		optAgentType,
+		msgChain.ID,
+		0,
+		selectedResult,
+		fp.buildMonitor(),
+		&repeatingDetector{},
+		executor,
+		&taskID,
+		nil,
+		chain,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute %s tool call: %w", nodeRole, err)
+	}
+
+	decision.ToolCallID = selectedToolCall.ID
+
+	// Append tool response
+	chain = append(chain, llms.MessageContent{
+		Role: llms.ChatMessageTypeTool,
+		Parts: []llms.ContentPart{
+			llms.ToolCallResponse{
+				ToolCallID: selectedToolCall.ID,
+				Name:       selectedToolCall.FunctionCall.Name,
+				Content:    response,
+			},
+		},
+	})
+
+	if err := fp.updateMsgChain(ctx, optAgentType, msgChain.ID, chain, rollLastUpdateTime()); err != nil {
+		logger.WithError(err).Warn("failed to append tool response to chain")
+	}
+
+	if decision.Action == "" {
+		return nil, fmt.Errorf("%s decision handler produced empty action", nodeRole)
 	}
 
 	return decision, nil
 }
+
+// buildSupervisorTools builds tool definitions/handlers for designer or supervisor nodes.
+func (fp *flowProvider) buildSupervisorTools(
+	ctx context.Context,
+	taskID int64,
+	nodeRole string,
+	decision *orchestrator.SupervisorDecision,
+) ([]llms.FunctionDefinition, map[string]tools.ExecutorHandler, []string, error) {
+	var defs []llms.FunctionDefinition
+	handlers := make(map[string]tools.ExecutorHandler)
+	var barriers []string
+
+	// Common barrier tools: done, ask_user
+	barriers = append(barriers, tools.FinalyToolName, tools.AskUserToolName)
+
+	doneDef := tools.GetRegistryDefinitions()[tools.FinalyToolName]
+	askDef := tools.GetRegistryDefinitions()[tools.AskUserToolName]
+	defs = append(defs, doneDef, askDef)
+
+	handlers[tools.FinalyToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+		var done tools.Done
+		if err := json.Unmarshal(args, &done); err != nil {
+			return "", fmt.Errorf("failed to unmarshal done: %w", err)
+		}
+		if done.Success {
+			decision.Action = orchestrator.SupervisorActionCompleted
+			decision.Result = done.Result
+		} else {
+			decision.Action = orchestrator.SupervisorActionFailed
+			decision.Error = done.Result
+			if decision.Error == "" {
+				decision.Error = nodeRole + " reported failure"
+			}
+		}
+		return done.Result, nil
+	}
+
+	handlers[tools.AskUserToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+		var ask tools.AskUser
+		if err := json.Unmarshal(args, &ask); err != nil {
+			return "", fmt.Errorf("failed to unmarshal ask_user: %w", err)
+		}
+		decision.Action = orchestrator.SupervisorActionInputRequired
+		decision.Message = ask.Message
+		return ask.Message, nil
+	}
+
+	if nodeRole == "designer" {
+		// Designer produces scope_contract
+		scDef := tools.GetRegistryDefinitions()[tools.ScopeContractToolName]
+		defs = append(defs, scDef)
+		barriers = append(barriers, tools.ScopeContractToolName)
+
+		handlers[tools.ScopeContractToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+			decision.Action = orchestrator.SupervisorActionCompleted
+			decision.Result = string(args)
+			return "scope contract accepted", nil
+		}
+	}
+
+	if nodeRole == "supervisor" {
+		// Supervisor delegates to agent roles via route_to_* tools
+		routeMappings := map[string]orchestrator.AgentRole{
+			tools.RouteToBuilderToolName:    orchestrator.AgentRoleBuilder,
+			tools.RouteToGeneratorToolName:  orchestrator.AgentRoleGenerator,
+			tools.RouteToIntegratorToolName: orchestrator.AgentRoleIntegrator,
+			tools.RouteToTesterToolName:     orchestrator.AgentRoleTester,
+			tools.RouteToPentesterToolName:  orchestrator.AgentRolePentester,
+			tools.RouteToReviewerToolName:   orchestrator.AgentRoleReviewer,
+			tools.RouteToReporterToolName:   orchestrator.AgentRoleReporter,
+			tools.RouteToResearcherToolName: orchestrator.AgentRoleResearcher,
+		}
+
+		for toolName, role := range routeMappings {
+			def, ok := tools.GetRegistryDefinitions()[toolName]
+			if !ok {
+				continue
+			}
+			defs = append(defs, def)
+			capturedRole := role
+			handlers[toolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+				decision.Action = orchestrator.SupervisorActionDelegate
+				decision.AgentRole = capturedRole
+				decision.Payload = append(json.RawMessage(nil), args...)
+				return fmt.Sprintf("delegated to %s; waiting for execution", capturedRole), nil
+			}
+		}
+
+		// Auth request tool
+		authDef := tools.GetRegistryDefinitions()[tools.AuthRequestToolName]
+		if authDef.Name != "" {
+			defs = append(defs, authDef)
+			barriers = append(barriers, tools.AuthRequestToolName)
+			handlers[tools.AuthRequestToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+				decision.Action = orchestrator.SupervisorActionAuthRequired
+				decision.Message = string(args)
+				return "authorization requested", nil
+			}
+		}
+	}
+
+	// Planner node uses same tools as designer (scope_contract barrier becomes todo_list)
+	if nodeRole == "planner" {
+		todoListDef := tools.GetRegistryDefinitions()[tools.TodoListToolName]
+		todoPatchDef := tools.GetRegistryDefinitions()[tools.TodoPatchToolName]
+		if todoListDef.Name != "" {
+			defs = append(defs, todoListDef)
+			barriers = append(barriers, tools.TodoListToolName)
+			handlers[tools.TodoListToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+				decision.Action = orchestrator.SupervisorActionCompleted
+				decision.Result = string(args)
+				return "todo plan accepted", nil
+			}
+		}
+		if todoPatchDef.Name != "" {
+			defs = append(defs, todoPatchDef)
+			barriers = append(barriers, tools.TodoPatchToolName)
+			handlers[tools.TodoPatchToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+				decision.Action = orchestrator.SupervisorActionCompleted
+				decision.Result = string(args)
+				return "todo patch accepted", nil
+			}
+		}
+	}
+
+	return defs, handlers, barriers, nil
+}
+

@@ -50,6 +50,7 @@ const (
 	AgentRolePentester   AgentRole = "pentester"
 	AgentRoleReviewer    AgentRole = "reviewer"
 	AgentRoleReporter    AgentRole = "reporter"
+	AgentRoleResearcher  AgentRole = "researcher"
 )
 
 // AllAgentRoles returns the list of all valid agent roles
@@ -65,6 +66,7 @@ func AllAgentRoles() []AgentRole {
 		AgentRolePentester,
 		AgentRoleReviewer,
 		AgentRoleReporter,
+		AgentRoleResearcher,
 	}
 }
 
@@ -128,6 +130,7 @@ type SupervisorDecision struct {
 	Action     SupervisorAction `json:"action"`
 	AgentRole  AgentRole        `json:"agent_role,omitempty"`
 	TodoID     string           `json:"todo_id,omitempty"`
+	Payload    json.RawMessage  `json:"payload,omitempty"`
 	ToolCallID string           `json:"tool_call_id,omitempty"`
 	Message    string           `json:"message,omitempty"`
 	Result     string           `json:"result,omitempty"`

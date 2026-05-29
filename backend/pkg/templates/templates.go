@@ -65,6 +65,10 @@ const (
 	PromptTypeQuestionExecutionMonitor PromptType = "question_execution_monitor" // question for adviser to monitor agent execution progress
 	PromptTypeQuestionTaskPlanner      PromptType = "question_task_planner"      // question for adviser to create execution plan for agent
 	PromptTypeTaskAssignmentWrapper    PromptType = "task_assignment_wrapper"    // wraps original request with execution plan for specialist agents
+	PromptTypeDesigner                 PromptType = "designer"                   // analyzes user input and produces a scope contract
+	PromptTypeQuestionDesigner         PromptType = "question_designer"          // human input for designer clarification
+	PromptTypeSupervisor               PromptType = "supervisor"                 // routes work to agents based on current state
+	PromptTypeQuestionSupervisor       PromptType = "question_supervisor"        // human input for supervisor clarification
 )
 
 var PromptVariables = map[PromptType][]string{
@@ -410,6 +414,26 @@ var PromptVariables = map[PromptType][]string{
 		"OriginalRequest",
 		"ExecutionPlan",
 	},
+	PromptTypeDesigner: {
+		"BarrierTools",
+		"CurrentTime",
+		"Lang",
+		"ExecutionContext",
+		"ToolPlaceholder",
+	},
+	PromptTypeQuestionDesigner: {
+		"Question",
+	},
+	PromptTypeSupervisor: {
+		"BarrierTools",
+		"CurrentTime",
+		"Lang",
+		"ExecutionContext",
+		"ToolPlaceholder",
+	},
+	PromptTypeQuestionSupervisor: {
+		"Question",
+	},
 }
 
 type Prompt struct {
@@ -441,6 +465,8 @@ type AgentsPrompts struct {
 	Reporter      AgentPrompts
 	Reflector     AgentPrompts
 	Enricher      AgentPrompts
+		Designer      AgentPrompts
+		Supervisor    AgentPrompts
 	ToolCallFixer AgentPrompts
 	Summarizer    AgentPrompt
 }
@@ -541,6 +567,14 @@ func GetDefaultPrompts() (*DefaultPrompts, error) {
 			Enricher: AgentPrompts{
 				System: getPrompt(PromptTypeEnricher),
 				Human:  getPrompt(PromptTypeQuestionEnricher),
+			},
+			Designer: AgentPrompts{
+				System: getPrompt(PromptTypeDesigner),
+				Human:  getPrompt(PromptTypeQuestionDesigner),
+			},
+			Supervisor: AgentPrompts{
+				System: getPrompt(PromptTypeSupervisor),
+				Human:  getPrompt(PromptTypeQuestionSupervisor),
 			},
 			ToolCallFixer: AgentPrompts{
 				System: getPrompt(PromptTypeToolCallFixer),
