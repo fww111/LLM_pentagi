@@ -177,16 +177,18 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
             go_agent_type = "installer"
         elif agent_role == "generator":
             go_agent_type = "coder"
+        elif agent_role == "researcher":
+            go_agent_type = "searcher"
 
         response = _go_post(
             f"tasks/{state['task_id']}/execute-agent",
             {
                 "flow_id": state["flow_id"],
-                "agent_type": go_agent_type,
+                "agent_role": go_agent_type,
                 "payload": decision.get("payload") or {},
             },
         )
-        execution = response.get("execution", {})
+        execution = response.get("result", response.get("execution", {}))
 
         # Update shared state on success
         if execution.get("success"):

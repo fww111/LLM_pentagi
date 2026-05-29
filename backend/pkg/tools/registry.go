@@ -57,6 +57,8 @@ const (
 	ArtifactToolName            = "artifact"
 
 	// Route-to-agent tools for supervisor delegation
+	RouteToDesignerToolName    = "route_to_designer"
+	RouteToPlannerToolName     = "route_to_planner"
 	RouteToBuilderToolName     = "route_to_builder"
 	RouteToGeneratorToolName   = "route_to_generator"
 	RouteToIntegratorToolName  = "route_to_integrator"
@@ -155,8 +157,10 @@ var toolsTypeMapping = map[string]ToolType{
 	AuthRequestToolName:         BarrierToolType,
 	SharedStatePatchToolName:    StoreAgentResultToolType,
 	ArtifactToolName:            StoreAgentResultToolType,
-	RouteToBuilderToolName:      AgentToolType,
-	RouteToGeneratorToolName:    AgentToolType,
+	RouteToDesignerToolName:      AgentToolType,
+	RouteToPlannerToolName:       AgentToolType,
+	RouteToBuilderToolName:       AgentToolType,
+	RouteToGeneratorToolName:     AgentToolType,
 	RouteToIntegratorToolName:   AgentToolType,
 	RouteToTesterToolName:       AgentToolType,
 	RouteToPentesterToolName:    AgentToolType,
@@ -456,6 +460,16 @@ var registryDefinitions = map[string]llms.FunctionDefinition{
 			Name:        ArtifactToolName,
 			Description: "Store a task artifact (code, config, report, evidence, etc.) for tracking and audit",
 			Parameters:  reflector.Reflect(&ArtifactAction{}),
+		},
+	RouteToDesignerToolName: {
+			Name:        RouteToDesignerToolName,
+			Description: "Route back to the Designer agent to refine the scope contract when requirements are unclear or incomplete",
+			Parameters:  reflector.Reflect(&AskAdvice{}),
+		},
+		RouteToPlannerToolName: {
+			Name:        RouteToPlannerToolName,
+			Description: "Route to the Planner agent to generate or adjust the todo plan based on new findings",
+			Parameters:  reflector.Reflect(&AskAdvice{}),
 		},
 		RouteToBuilderToolName: {
 			Name:        RouteToBuilderToolName,

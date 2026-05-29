@@ -342,6 +342,7 @@ func setInternalOrchestratorGroup(parent *gin.RouterGroup, svc *services.Orchest
 		tasksGroup.POST("/generate-todo-plan", svc.GenerateTodoPlan)
 		tasksGroup.POST("/refine-todo-plan", svc.RefineTodoPlan)
 		tasksGroup.POST("/agent-execute", svc.AgentExecute)
+			tasksGroup.POST("/execute-agent", svc.AgentExecute) // Python sends this path
 		tasksGroup.POST("/store-artifact", svc.StoreArtifact)
 		tasksGroup.POST("/store-auth-request", svc.StoreAuthRequest)
 		tasksGroup.POST("/resolve-auth-request", svc.ResolveAuthRequest)

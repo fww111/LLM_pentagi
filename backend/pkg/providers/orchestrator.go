@@ -369,17 +369,34 @@ func (fp *flowProvider) WritePrimaryAgentToolResult(
 	return nil
 }
 
+// nodeRoleToMsgChainType maps a node role to the correct MsgchainType.
+func nodeRoleToMsgChainType(nodeRole string) database.MsgchainType {
+	switch nodeRole {
+	case "designer":
+		return database.MsgchainTypeDesigner
+	case "supervisor":
+		return database.MsgchainTypeSupervisor
+	case "planner":
+		return database.MsgchainTypePlanner
+	default:
+		return database.MsgchainTypePrimaryAgent
+	}
+}
+
 // DecideSupervisorStep executes a single LLM step for a multi-agent supervisor node.
 // nodeRole is "designer", "planner", or "supervisor" — selects the prompt and tool set.
-func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, nodeRole string) (*orchestrator.SupervisorDecision, error) {
+// msgChainID is the existing chain to restore; if 0, a new chain is created.
+func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, nodeRole string, msgChainID int64) (*orchestrator.SupervisorDecision, error) {
 	ctx, span := obs.Observer.NewSpan(ctx, obs.SpanKindInternal, "providers.flowProvider.DecideSupervisorStep")
 	defer span.End()
 
 	optAgentType := pconfig.ProviderOptionsType(nodeRole)
+	mcType := nodeRoleToMsgChainType(nodeRole)
 	logger := logrus.WithContext(ctx).WithFields(logrus.Fields{
-		"flow_id": fp.flowID,
-		"task_id": taskID,
-		"agent":   optAgentType,
+		"flow_id":      fp.flowID,
+		"task_id":      taskID,
+		"agent":        optAgentType,
+		"msg_chain_id": msgChainID,
 	})
 
 	decision := &orchestrator.SupervisorDecision{}
@@ -412,6 +429,9 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 	if nodeRole == "designer" {
 		promptType = templates.PromptTypeDesigner
 		questionType = templates.PromptTypeQuestionDesigner
+	} else if nodeRole == "planner" {
+		promptType = templates.PromptTypeGenerator // reuse until dedicated planner.tmpl
+		questionType = templates.PromptTypeSubtasksGenerator
 	}
 
 	barrierToolNames := executor.GetBarrierToolNames()
@@ -425,37 +445,52 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 		return nil, fmt.Errorf("failed to render %s system prompt: %w", nodeRole, err)
 	}
 
-	chain := []llms.MessageContent{
-		llms.TextParts(llms.ChatMessageTypeSystem, systemPrompt),
-	}
+	// Restore existing chain or create a new one
+	var chain []llms.MessageContent
+	var msgChain database.Msgchain
 
-	// Add human message with task input
-	task, err := fp.db.GetTask(ctx, taskID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get task %d: %w", taskID, err)
-	}
-	questionPrompt, _ := fp.prompter.RenderTemplate(questionType, map[string]string{
-		"Question": task.Input,
-	})
-	if questionPrompt != "" {
-		chain = append(chain, llms.TextParts(llms.ChatMessageTypeHuman, questionPrompt))
-	}
+	if msgChainID > 0 {
+		// Restore existing chain — supervisor needs history from previous rounds
+		msgChain, err = fp.db.GetMsgChain(ctx, msgChainID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get %s msg chain %d: %w", nodeRole, msgChainID, err)
+		}
+		if err := json.Unmarshal(msgChain.Chain, &chain); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal %s msg chain %d: %w", nodeRole, msgChainID, err)
+		}
+	} else {
+		// First call — build initial chain with system prompt and user input
+		chain = []llms.MessageContent{
+			llms.TextParts(llms.ChatMessageTypeSystem, systemPrompt),
+		}
 
-	chainBlob, err := json.Marshal(chain)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal chain: %w", err)
-	}
+		task, err := fp.db.GetTask(ctx, taskID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get task %d: %w", taskID, err)
+		}
+		questionPrompt, _ := fp.prompter.RenderTemplate(questionType, map[string]string{
+			"Question": task.Input,
+		})
+		if questionPrompt != "" {
+			chain = append(chain, llms.TextParts(llms.ChatMessageTypeHuman, questionPrompt))
+		}
 
-	msgChain, err := fp.db.CreateMsgChain(ctx, database.CreateMsgChainParams{
-		Type:          database.MsgchainTypePrimaryAgent,
-		Model:         fp.Model(optAgentType),
-		ModelProvider: string(fp.Type()),
-		Chain:         chainBlob,
-		FlowID:        fp.flowID,
-		TaskID:        database.Int64ToNullInt64(&taskID),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to create msg chain: %w", err)
+		chainBlob, err := json.Marshal(chain)
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal chain: %w", err)
+		}
+
+		msgChain, err = fp.db.CreateMsgChain(ctx, database.CreateMsgChainParams{
+			Type:          mcType,
+			Model:         fp.Model(optAgentType),
+			ModelProvider: string(fp.Type()),
+			Chain:         chainBlob,
+			FlowID:        fp.flowID,
+			TaskID:        database.Int64ToNullInt64(&taskID),
+		})
+		if err != nil {
+			return nil, fmt.Errorf("failed to create msg chain: %w", err)
+		}
 	}
 
 	lastUpdateTime := time.Now()
@@ -465,7 +500,7 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 		return delta
 	}
 
-	ctx = tools.PutAgentContext(ctx, database.MsgchainTypePrimaryAgent)
+	ctx = tools.PutAgentContext(ctx, mcType)
 	result, err := fp.callWithRetries(
 		ctx,
 		optAgentType,
@@ -533,6 +568,7 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 	}
 
 	decision.ToolCallID = selectedToolCall.ID
+	decision.MsgChainID = msgChain.ID
 
 	// Append tool response
 	chain = append(chain, llms.MessageContent{
@@ -604,7 +640,7 @@ func (fp *flowProvider) buildSupervisorTools(
 	}
 
 	if nodeRole == "designer" {
-		// Designer produces scope_contract
+		// Designer produces scope_contract (barrier)
 		scDef := tools.GetRegistryDefinitions()[tools.ScopeContractToolName]
 		defs = append(defs, scDef)
 		barriers = append(barriers, tools.ScopeContractToolName)
@@ -614,11 +650,33 @@ func (fp *flowProvider) buildSupervisorTools(
 			decision.Result = string(args)
 			return "scope contract accepted", nil
 		}
+
+		// Designer can search for information about targets
+		searcherHandler, err := fp.GetSubtaskSearcherHandler(ctx, &taskID, nil)
+		if err == nil {
+			searchDef := tools.GetRegistryDefinitions()[tools.SearchToolName]
+			if searchDef.Name != "" {
+				defs = append(defs, searchDef)
+				handlers[tools.SearchToolName] = searcherHandler
+			}
+		}
+
+		// Designer can retrieve memories from past tasks
+		memoristHandler, err := fp.GetMemoristHandler(ctx, &taskID, nil)
+		if err == nil {
+			memDef := tools.GetRegistryDefinitions()[tools.MemoristToolName]
+			if memDef.Name != "" {
+				defs = append(defs, memDef)
+				handlers[tools.MemoristToolName] = memoristHandler
+			}
+		}
 	}
 
 	if nodeRole == "supervisor" {
-		// Supervisor delegates to agent roles via route_to_* tools
+		// Supervisor delegates to all agent roles via route_to_* tools
 		routeMappings := map[string]orchestrator.AgentRole{
+			tools.RouteToDesignerToolName:   orchestrator.AgentRoleDesigner,
+			tools.RouteToPlannerToolName:    orchestrator.AgentRolePlanner,
 			tools.RouteToBuilderToolName:    orchestrator.AgentRoleBuilder,
 			tools.RouteToGeneratorToolName:  orchestrator.AgentRoleGenerator,
 			tools.RouteToIntegratorToolName: orchestrator.AgentRoleIntegrator,
@@ -635,6 +693,7 @@ func (fp *flowProvider) buildSupervisorTools(
 				continue
 			}
 			defs = append(defs, def)
+			barriers = append(barriers, toolName)
 			capturedRole := role
 			handlers[toolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
 				decision.Action = orchestrator.SupervisorActionDelegate
@@ -655,9 +714,10 @@ func (fp *flowProvider) buildSupervisorTools(
 				return "authorization requested", nil
 			}
 		}
-	}
+		}
 
-	// Planner node uses same tools as designer (scope_contract barrier becomes todo_list)
+
+	// Planner node uses todo_list and todo_patch as barrier tools
 	if nodeRole == "planner" {
 		todoListDef := tools.GetRegistryDefinitions()[tools.TodoListToolName]
 		todoPatchDef := tools.GetRegistryDefinitions()[tools.TodoPatchToolName]

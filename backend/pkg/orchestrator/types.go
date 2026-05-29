@@ -132,6 +132,7 @@ type SupervisorDecision struct {
 	TodoID     string           `json:"todo_id,omitempty"`
 	Payload    json.RawMessage  `json:"payload,omitempty"`
 	ToolCallID string           `json:"tool_call_id,omitempty"`
+	MsgChainID int64            `json:"msg_chain_id,omitempty"`
 	Message    string           `json:"message,omitempty"`
 	Result     string           `json:"result,omitempty"`
 	Error      string           `json:"error,omitempty"`

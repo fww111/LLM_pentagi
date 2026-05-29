@@ -152,6 +152,7 @@ const (
 	OptionsTypeReflector    ProviderOptionsType = "reflector"
 	OptionsTypeDesigner     ProviderOptionsType = "designer"
 	OptionsTypeSupervisor   ProviderOptionsType = "supervisor"
+	OptionsTypePlanner      ProviderOptionsType = "planner"
 )
 
 var AllAgentTypes = []ProviderOptionsType{
@@ -170,6 +171,7 @@ var AllAgentTypes = []ProviderOptionsType{
 	OptionsTypePentester,
 	OptionsTypeDesigner,
 	OptionsTypeSupervisor,
+		OptionsTypePlanner,
 }
 
 type ModelConfig struct {
@@ -233,6 +235,7 @@ type ProviderConfig struct {
 	Pentester      *AgentConfig      `json:"pentester,omitempty" yaml:"pentester,omitempty"`
 	Designer       *AgentConfig      `json:"designer,omitempty" yaml:"designer,omitempty"`
 	Supervisor     *AgentConfig      `json:"supervisor,omitempty" yaml:"supervisor,omitempty"`
+	Planner        *AgentConfig      `json:"planner,omitempty" yaml:"planner,omitempty"`
 	defaultOptions []llms.CallOption `json:"-" yaml:"-"`
 	rawConfig      []byte            `json:"-" yaml:"-"`
 }
@@ -252,7 +255,8 @@ const EmptyProviderConfigRaw = `{
   "installer": {},
   "pentester": {},
   "designer": {},
-  "supervisor": {}
+  "supervisor": {},
+  "planner": {}
 }`
 
 func LoadConfig(configPath string, defaultOptions []llms.CallOption) (*ProviderConfig, error) {
@@ -767,6 +771,8 @@ func (pc *ProviderConfig) GetOptionsForType(optType ProviderOptionsType) []llms.
 		agentConfig = pc.Designer
 	case OptionsTypeSupervisor:
 		agentConfig = pc.Supervisor
+	case OptionsTypePlanner:
+		agentConfig = pc.Planner
 	default:
 		return nil
 	}
@@ -825,6 +831,8 @@ func (pc *ProviderConfig) GetPriceInfoForType(optType ProviderOptionsType) *Pric
 		agentConfig = pc.Designer
 	case OptionsTypeSupervisor:
 		agentConfig = pc.Supervisor
+	case OptionsTypePlanner:
+		agentConfig = pc.Planner
 	default:
 		return nil
 	}
@@ -857,6 +865,7 @@ func (pc *ProviderConfig) BuildOptionsMap() map[ProviderOptionsType][]llms.CallO
 		OptionsTypePentester:    pc.GetOptionsForType(OptionsTypePentester),
 		OptionsTypeDesigner:     pc.GetOptionsForType(OptionsTypeDesigner),
 		OptionsTypeSupervisor:   pc.GetOptionsForType(OptionsTypeSupervisor),
+		OptionsTypePlanner:      pc.GetOptionsForType(OptionsTypePlanner),
 	}
 
 	return options

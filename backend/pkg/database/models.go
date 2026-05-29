@@ -206,6 +206,9 @@ const (
 	MsgchainTypeSummarizer    MsgchainType = "summarizer"
 	MsgchainTypeToolCallFixer MsgchainType = "tool_call_fixer"
 	MsgchainTypeAssistant     MsgchainType = "assistant"
+	MsgchainTypeDesigner      MsgchainType = "designer"
+	MsgchainTypeSupervisor    MsgchainType = "supervisor"
+	MsgchainTypePlanner       MsgchainType = "planner"
 )
 
 func (e *MsgchainType) Scan(src interface{}) error {

@@ -484,7 +484,7 @@ func (tw *taskWorker) runWithOrchestrator(ctx context.Context) error {
 // ========================================
 
 func (tw *taskWorker) DesignerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
-	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "designer")
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "designer", 0)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute designer step: %w", err)
 	}
@@ -492,7 +492,7 @@ func (tw *taskWorker) DesignerStep(ctx context.Context) (*orchestrator.Superviso
 }
 
 func (tw *taskWorker) PlannerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
-	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner")
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner", 0)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute planner step: %w", err)
 	}
@@ -500,7 +500,7 @@ func (tw *taskWorker) PlannerStep(ctx context.Context) (*orchestrator.Supervisor
 }
 
 func (tw *taskWorker) SupervisorStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
-	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "supervisor")
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "supervisor", 0)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute supervisor step: %w", err)
 	}
@@ -508,12 +508,12 @@ func (tw *taskWorker) SupervisorStep(ctx context.Context) (*orchestrator.Supervi
 }
 
 func (tw *taskWorker) GenerateTodoPlan(ctx context.Context) error {
-	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner")
+	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner", 0)
 	return err
 }
 
 func (tw *taskWorker) RefineTodoPlan(ctx context.Context) error {
-	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner")
+	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner", 0)
 	return err
 }
 

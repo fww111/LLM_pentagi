@@ -103,7 +103,7 @@ type FlowProvider interface {
 	WritePrimaryAgentToolResult(ctx context.Context, msgChainID int64, agentType, toolCallID, result string) error
 
 	// Multi-agent migration: supervisor step for multi-agent orchestration
-	DecideSupervisorStep(ctx context.Context, taskID int64, nodeRole string) (*orchestrator.SupervisorDecision, error)
+	DecideSupervisorStep(ctx context.Context, taskID int64, nodeRole string, msgChainID int64) (*orchestrator.SupervisorDecision, error)
 
 	FlowProviderHandlers
 }
