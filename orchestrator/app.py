@@ -31,8 +31,6 @@ CHECKPOINT_PATH = os.getenv(
     "LANGGRAPH_CHECKPOINT_PATH",
     os.path.join(os.path.dirname(__file__), "langgraph-checkpoints.sqlite"),
 )
-# Feature flag: set to "multi_agent" to use the new graph, "legacy" for old
-GRAPH_MODE = os.getenv("PENTAGI_GRAPH_MODE", "legacy")
 
 SESSION = requests.Session()
 SESSION.verify = VERIFY_INTERNAL_SSL
@@ -43,24 +41,6 @@ if INTERNAL_TOKEN:
 class RunTaskRequest(BaseModel):
     flow_id: int
     task_id: int
-
-
-# ========================================
-# Legacy TaskState and graph (kept for backward compatibility)
-# ========================================
-
-class TaskState(TypedDict, total=False):
-    flow_id: int
-    task_id: int
-    current_subtask_id: Optional[int]
-    current_subtask_title: Optional[str]
-    current_subtask_description: Optional[str]
-    primary_msgchain_id: Optional[int]
-    primary_decision: Optional[Dict[str, Any]]
-    last_agent_result: Optional[str]
-    task_status: Optional[str]
-    task_result: Optional[str]
-    failure_reason: Optional[str]
 
 
 def _checkpointer() -> Any:
@@ -96,216 +76,7 @@ def _go_post(path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
 
 
 # ========================================
-# Legacy graph nodes (unchanged)
-# ========================================
-
-def generate_subtasks(state: TaskState) -> Dict[str, Any]:
-    _go_post(f"tasks/{state['task_id']}/generate-subtasks", {"flow_id": state["flow_id"]})
-    return {}
-
-
-def select_next_subtask(state: TaskState) -> Dict[str, Any]:
-    response = _go_post(f"tasks/{state['task_id']}/select-next-subtask", {"flow_id": state["flow_id"]})
-    subtask = response.get("subtask")
-    if not subtask:
-        return {
-            "current_subtask_id": None,
-            "current_subtask_title": None,
-            "current_subtask_description": None,
-        }
-
-    return {
-        "current_subtask_id": subtask["id"],
-        "current_subtask_title": subtask.get("title"),
-        "current_subtask_description": subtask.get("description"),
-    }
-
-
-def route_after_select_next_subtask(state: TaskState) -> str:
-    if state.get("current_subtask_id") is None:
-        return "report_task_result"
-    return "prepare_primary_agent_context"
-
-
-def prepare_primary_agent_context(state: TaskState) -> Dict[str, Any]:
-    response = _go_post(
-        f"tasks/{state['task_id']}/subtasks/{state['current_subtask_id']}/prepare-primary-agent-context",
-        {"flow_id": state["flow_id"]},
-    )
-    return {"primary_msgchain_id": response["msg_chain_id"]}
-
-
-def primary_agent(state: TaskState) -> Dict[str, Any]:
-    response = _go_post(
-        f"tasks/{state['task_id']}/subtasks/{state['current_subtask_id']}/primary-agent-step",
-        {"flow_id": state["flow_id"]},
-    )
-    return {"primary_decision": response["decision"]}
-
-
-def route_after_primary_agent(state: TaskState) -> str:
-    decision = state.get("primary_decision") or {}
-    action = decision.get("action")
-
-    if action == "call_agent":
-        agent_type = decision.get("agent_type")
-        if agent_type not in {"coder", "pentester", "searcher", "installer", "memorist", "adviser"}:
-            raise RuntimeError(f"unsupported delegated agent type: {agent_type}")
-        return agent_type
-    if action == "input_required":
-        return "input_required"
-    if action == "completed":
-        return "refine_subtasks"
-    if action == "failed":
-        return "failed"
-
-    raise RuntimeError(f"unsupported primary_agent action: {action}")
-
-
-def _execute_agent_node(agent_type: str) -> Callable[[TaskState], Dict[str, Any]]:
-    def _node(state: TaskState) -> Dict[str, Any]:
-        decision = state.get("primary_decision") or {}
-        response = _go_post(
-            f"tasks/{state['task_id']}/subtasks/{state['current_subtask_id']}/execute-agent",
-            {
-                "flow_id": state["flow_id"],
-                "agent_type": agent_type,
-                "payload": decision.get("payload") or {},
-            },
-        )
-        execution = response["execution"]
-
-        if execution.get("success"):
-            writeback_result = execution.get("result", "")
-        else:
-            writeback_result = f"{agent_type} execution failed: {execution.get('error', 'unknown error')}"
-
-        _go_post(
-            f"tasks/{state['task_id']}/subtasks/{state['current_subtask_id']}/write-primary-agent-result",
-            {
-                "flow_id": state["flow_id"],
-                "agent_type": agent_type,
-                "tool_call_id": decision.get("tool_call_id", ""),
-                "result": writeback_result,
-            },
-        )
-
-        return {
-            "last_agent_result": writeback_result,
-            "primary_decision": None,
-        }
-
-    return _node
-
-
-def input_required(state: TaskState) -> Dict[str, Any]:
-    decision = state.get("primary_decision") or {}
-    resume_value = interrupt(
-        {
-            "message": decision.get("message", ""),
-            "flow_id": state["flow_id"],
-            "task_id": state["task_id"],
-            "subtask_id": state.get("current_subtask_id"),
-        }
-    )
-    return {"primary_decision": None, "last_agent_result": str(resume_value)}
-
-
-def refine_subtasks(state: TaskState) -> Dict[str, Any]:
-    _go_post(f"tasks/{state['task_id']}/refine-subtasks", {"flow_id": state["flow_id"]})
-    return {
-        "primary_decision": None,
-        "current_subtask_id": None,
-        "current_subtask_title": None,
-        "current_subtask_description": None,
-    }
-
-
-def report_task_result(state: TaskState) -> Dict[str, Any]:
-    response = _go_post(f"tasks/{state['task_id']}/report-task-result", {"flow_id": state["flow_id"]})
-    task = response["task"]
-    return {
-        "task_status": task.get("status"),
-        "task_result": task.get("result"),
-    }
-
-
-def failed(state: TaskState) -> Dict[str, Any]:
-    decision = state.get("primary_decision") or {}
-    failure_reason = decision.get("error") or "primary_agent reported failure"
-    response = _go_post(
-        f"tasks/{state['task_id']}/fail-task",
-        {"flow_id": state["flow_id"], "result": failure_reason},
-    )
-    task = response["task"]
-    return {
-        "task_status": task.get("status"),
-        "task_result": task.get("result"),
-        "failure_reason": failure_reason,
-        "primary_decision": None,
-    }
-
-
-def _build_legacy_graph() -> StateGraph:
-    builder = StateGraph(TaskState)
-    builder.add_node("generate_subtasks", generate_subtasks)
-    builder.add_node("select_next_subtask", select_next_subtask)
-    builder.add_node("prepare_primary_agent_context", prepare_primary_agent_context)
-    builder.add_node("primary_agent", primary_agent)
-    builder.add_node("coder", _execute_agent_node("coder"))
-    builder.add_node("pentester", _execute_agent_node("pentester"))
-    builder.add_node("searcher", _execute_agent_node("searcher"))
-    builder.add_node("installer", _execute_agent_node("installer"))
-    builder.add_node("memorist", _execute_agent_node("memorist"))
-    builder.add_node("adviser", _execute_agent_node("adviser"))
-    builder.add_node("input_required", input_required)
-    builder.add_node("refine_subtasks", refine_subtasks)
-    builder.add_node("report_task_result", report_task_result)
-    builder.add_node("completed", lambda state: state)
-    builder.add_node("failed", failed)
-
-    builder.add_edge(START, "generate_subtasks")
-    builder.add_edge("generate_subtasks", "select_next_subtask")
-    builder.add_conditional_edges(
-        "select_next_subtask",
-        route_after_select_next_subtask,
-        {
-            "prepare_primary_agent_context": "prepare_primary_agent_context",
-            "report_task_result": "report_task_result",
-        },
-    )
-    builder.add_edge("prepare_primary_agent_context", "primary_agent")
-    builder.add_conditional_edges(
-        "primary_agent",
-        route_after_primary_agent,
-        {
-            "coder": "coder",
-            "pentester": "pentester",
-            "searcher": "searcher",
-            "installer": "installer",
-            "memorist": "memorist",
-            "adviser": "adviser",
-            "input_required": "input_required",
-            "refine_subtasks": "refine_subtasks",
-            "failed": "failed",
-        },
-    )
-    builder.add_edge("coder", "primary_agent")
-    builder.add_edge("pentester", "primary_agent")
-    builder.add_edge("searcher", "primary_agent")
-    builder.add_edge("installer", "primary_agent")
-    builder.add_edge("memorist", "primary_agent")
-    builder.add_edge("adviser", "primary_agent")
-    builder.add_edge("input_required", "primary_agent")
-    builder.add_edge("refine_subtasks", "select_next_subtask")
-    builder.add_edge("report_task_result", "completed")
-    builder.add_edge("completed", END)
-    builder.add_edge("failed", END)
-    return builder
-
-
-# ========================================
-# Multi-agent TaskState and graph
+# Multi-agent state and graph
 # ========================================
 
 AGENT_ROLES = [
@@ -341,6 +112,15 @@ def designer(state: MultiAgentState) -> Dict[str, Any]:
     decision = response.get("decision", {})
     scope_contract = decision.get("result", {})
     return {"scope_contract": scope_contract, "supervisor_decision": decision}
+
+
+def route_after_designer(state: MultiAgentState) -> str:
+    decision = state.get("supervisor_decision") or {}
+    action = decision.get("action", "")
+    if action == "input_required":
+        return "input_required"
+    # scope_contract completed → planner
+    return "planner"
 
 
 def planner(state: MultiAgentState) -> Dict[str, Any]:
@@ -391,31 +171,37 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
         decision = state.get("supervisor_decision") or {}
         todo_id = state.get("active_todo_id", "")
 
+        # Map new agent roles to legacy Go handler names
+        go_agent_type = agent_role
+        if agent_role == "builder":
+            go_agent_type = "installer"
+        elif agent_role == "generator":
+            go_agent_type = "coder"
+
         response = _go_post(
-            f"tasks/{state['task_id']}/agent-execute",
+            f"tasks/{state['task_id']}/execute-agent",
             {
                 "flow_id": state["flow_id"],
-                "agent_role": agent_role,
-                "todo_id": todo_id,
+                "agent_type": go_agent_type,
                 "payload": decision.get("payload") or {},
             },
         )
-        result = response.get("result", {})
+        execution = response.get("execution", {})
 
-        # Update shared state
-        if result.get("success"):
+        # Update shared state on success
+        if execution.get("success"):
             _go_post(
                 f"tasks/{state['task_id']}/update-shared-state",
                 {
                     "flow_id": state["flow_id"],
                     "active_node": agent_role,
                     "active_todo_id": todo_id,
-                    "updates": {"last_result": result.get("result", "")},
+                    "updates": {"last_result": execution.get("result", "")},
                 },
             )
 
         return {
-            "last_agent_result": result.get("result", ""),
+            "last_agent_result": execution.get("result", ""),
             "supervisor_decision": None,
         }
 
@@ -509,7 +295,7 @@ def ma_failed(state: MultiAgentState) -> Dict[str, Any]:
     }
 
 
-def _build_multi_agent_graph() -> StateGraph:
+def _build_graph() -> StateGraph:
     builder = StateGraph(MultiAgentState)
 
     # Main pipeline nodes
@@ -528,11 +314,24 @@ def _build_multi_agent_graph() -> StateGraph:
     builder.add_node("rejected", ma_rejected)
     builder.add_node("failed", ma_failed)
 
-    # Graph topology
+    # Entry → designer
     builder.add_edge(START, "designer")
-    builder.add_edge("designer", "planner")
+
+    # Designer → route (planner or input_required)
+    builder.add_conditional_edges(
+        "designer",
+        route_after_designer,
+        {
+            "planner": "planner",
+            "input_required": "input_required",
+        },
+    )
+    builder.add_edge("input_required", "designer")
+
+    # Planner → supervisor
     builder.add_edge("planner", "supervisor")
 
+    # Supervisor → route to agent or terminal
     builder.add_conditional_edges(
         "supervisor",
         route_after_supervisor,
@@ -550,7 +349,6 @@ def _build_multi_agent_graph() -> StateGraph:
         builder.add_edge(role, "supervisor")
 
     builder.add_edge("auth_required", "supervisor")
-    builder.add_edge("input_required", "supervisor")
     builder.add_edge("completed", END)
     builder.add_edge("rejected", END)
     builder.add_edge("failed", END)
@@ -558,23 +356,15 @@ def _build_multi_agent_graph() -> StateGraph:
     return builder
 
 
-# ========================================
-# Build the selected graph
-# ========================================
-
-if GRAPH_MODE == "multi_agent":
-    LOGGER.info("Using multi-agent graph topology")
-    GRAPH = _build_multi_agent_graph().compile(checkpointer=CHECKPOINTER)
-else:
-    LOGGER.info("Using legacy graph topology")
-    GRAPH = _build_legacy_graph().compile(checkpointer=CHECKPOINTER)
+GRAPH = _build_graph().compile(checkpointer=CHECKPOINTER)
+LOGGER.info("PentAGI LangGraph orchestrator initialized (multi-agent topology)")
 
 
 # ========================================
 # FastAPI app
 # ========================================
 
-app = FastAPI(title="PentAGI LangGraph Orchestrator", version="0.2.0")
+app = FastAPI(title="PentAGI LangGraph Orchestrator", version="0.3.0")
 
 
 def _serialize_snapshot(task_id: int) -> Dict[str, Any]:
@@ -620,7 +410,7 @@ def _run_stream(input_value: Any, task_id: int) -> Dict[str, Any]:
 
 @app.get("/health")
 def health() -> Dict[str, str]:
-    return {"status": "ok", "graph_mode": GRAPH_MODE}
+    return {"status": "ok", "graph_mode": "multi_agent"}
 
 
 @app.post("/runs/start")
