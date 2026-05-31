@@ -23,9 +23,9 @@ func TestPromptTemplatesIntegrity(t *testing.T) {
 	agents := validatePromptsStructure(t, reflect.ValueOf(defaultPrompts.AgentsPrompts), "AgentsPrompts")
 	tools := validatePromptsStructure(t, reflect.ValueOf(defaultPrompts.ToolsPrompts), "ToolsPrompts")
 
-	// According to the code, structure AgentsPrompts should have 27 prompts
-	if agents > 27 {
-		t.Fatalf("agents prompts amount is %d, expected 27", agents)
+	// According to the code, structure AgentsPrompts should have 29 prompts
+	if agents > 29 {
+		t.Fatalf("agents prompts amount is %d, expected 29", agents)
 	}
 	// According to the code, structure ToolsPrompts should have 12 prompts
 	if tools > 12 {

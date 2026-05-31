@@ -195,6 +195,7 @@ const (
 	MsgchainTypeReporter      MsgchainType = "reporter"
 	MsgchainTypeGenerator     MsgchainType = "generator"
 	MsgchainTypeRefiner       MsgchainType = "refiner"
+	MsgchainTypePlanner       MsgchainType = "planner"
 	MsgchainTypeReflector     MsgchainType = "reflector"
 	MsgchainTypeEnricher      MsgchainType = "enricher"
 	MsgchainTypeAdviser       MsgchainType = "adviser"

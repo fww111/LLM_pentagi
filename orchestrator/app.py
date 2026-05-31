@@ -320,6 +320,7 @@ class MultiAgentState(TypedDict, total=False):
     context_id: Optional[str]
     scope_contract: Optional[Dict[str, Any]]
     todo_plan: Optional[List[Dict[str, Any]]]
+    plan_needs_update: Optional[bool]
     active_todo_id: Optional[str]
     active_todo: Optional[Dict[str, Any]]
     supervisor_decision: Optional[Dict[str, Any]]
@@ -344,12 +345,18 @@ def designer(state: MultiAgentState) -> Dict[str, Any]:
 
 
 def planner(state: MultiAgentState) -> Dict[str, Any]:
+    endpoint = "refine-todo-plan" if state.get("todo_plan") or state.get("plan_needs_update") else "generate-todo-plan"
     response = _go_post(
-        f"tasks/{state['task_id']}/planner-step",
+        f"tasks/{state['task_id']}/{endpoint}",
         {"flow_id": state["flow_id"]},
     )
-    decision = response.get("decision", {})
-    return {"supervisor_decision": decision}
+    return {
+        "todo_plan": response.get("todos", []),
+        "active_todo_id": None,
+        "active_todo": None,
+        "plan_needs_update": False,
+        "supervisor_decision": None,
+    }
 
 
 def supervisor(state: MultiAgentState) -> Dict[str, Any]:
@@ -367,6 +374,8 @@ def route_after_supervisor(state: MultiAgentState) -> str:
 
     if action == "delegate":
         agent_role = decision.get("agent_role", "")
+        if agent_role == "planner":
+            return "planner"
         if agent_role in AGENT_ROLES:
             return agent_role
         LOGGER.warning(f"Unknown agent role from supervisor: {agent_role}, defaulting to reporter")
@@ -537,6 +546,7 @@ def _build_multi_agent_graph() -> StateGraph:
         "supervisor",
         route_after_supervisor,
         {role: role for role in AGENT_ROLES} | {
+            "planner": "planner",
             "auth_required": "auth_required",
             "input_required": "input_required",
             "completed": "completed",
