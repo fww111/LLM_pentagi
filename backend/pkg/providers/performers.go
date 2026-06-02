@@ -537,6 +537,176 @@ func (fp *flowProvider) performInstaller(
 	return maintenanceResult.Result, nil
 }
 
+func (fp *flowProvider) performIntegrator(
+	ctx context.Context,
+	taskID, subtaskID *int64,
+	systemIntegratorTmpl, userIntegratorTmpl, question string,
+) (string, error) {
+	var (
+		integrationResult tools.IntegrationResultAction
+		optAgentType      = pconfig.OptionsTypeCoder
+		msgChainType      = database.MsgchainTypeIntegrator
+	)
+
+	adviser, err := fp.GetAskAdviceHandler(ctx, taskID, subtaskID)
+	if err != nil {
+		return "", fmt.Errorf("failed to get adviser handler: %w", err)
+	}
+
+	memorist, err := fp.GetMemoristHandler(ctx, taskID, subtaskID)
+	if err != nil {
+		return "", fmt.Errorf("failed to get memorist handler: %w", err)
+	}
+
+	searcher, err := fp.GetSubtaskSearcherHandler(ctx, taskID, subtaskID)
+	if err != nil {
+		return "", fmt.Errorf("failed to get searcher handler: %w", err)
+	}
+
+	ctx = tools.PutAgentContext(ctx, msgChainType)
+	cfg := tools.IntegratorExecutorConfig{
+		TaskID:    taskID,
+		SubtaskID: subtaskID,
+		Adviser:   adviser,
+		Memorist:  memorist,
+		Searcher:  searcher,
+		IntegrationResult: func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+			err := json.Unmarshal(args, &integrationResult)
+			if err != nil {
+				return "", fmt.Errorf("failed to unmarshal result: %w", err)
+			}
+			return "integration result successfully processed", nil
+		},
+		Summarizer: fp.GetSummarizeResultHandler(taskID, subtaskID),
+	}
+	executor, err := fp.executor.GetIntegratorExecutor(cfg)
+	if err != nil {
+		return "", fmt.Errorf("failed to get integrator executor: %w", err)
+	}
+
+	if fp.planning {
+		userIntegratorTmplWithPlan, err := fp.performPlanner(
+			ctx, taskID, subtaskID, optAgentType, executor, userIntegratorTmpl, question,
+		)
+		if err != nil {
+			logrus.WithContext(ctx).WithError(err).Warn("failed to get task plan from planner, proceeding without plan")
+		} else {
+			userIntegratorTmpl = userIntegratorTmplWithPlan
+		}
+	}
+
+	msgChainID, chain, err := fp.restoreChain(
+		ctx, taskID, subtaskID, optAgentType, msgChainType, systemIntegratorTmpl, userIntegratorTmpl,
+	)
+	if err != nil {
+		return "", fmt.Errorf("failed to restore chain: %w", err)
+	}
+
+	err = fp.performAgentChain(ctx, optAgentType, msgChainID, taskID, subtaskID, chain, executor, fp.summarizer)
+	if err != nil {
+		return "", fmt.Errorf("failed to get task integrator result: %w", err)
+	}
+
+	if agentCtx, ok := tools.GetAgentContext(ctx); ok {
+		fp.putAgentLog(
+			ctx,
+			agentCtx.ParentAgentType,
+			agentCtx.CurrentAgentType,
+			question,
+			integrationResult.Result,
+			taskID,
+			subtaskID,
+		)
+	}
+
+	return integrationResult.Result, nil
+}
+
+func (fp *flowProvider) performTester(
+	ctx context.Context,
+	taskID, subtaskID *int64,
+	systemTesterTmpl, userTesterTmpl, question string,
+) (string, error) {
+	var (
+		testResult   tools.TestResultAction
+		optAgentType = pconfig.OptionsTypeInstaller
+		msgChainType = database.MsgchainTypeTester
+	)
+
+	adviser, err := fp.GetAskAdviceHandler(ctx, taskID, subtaskID)
+	if err != nil {
+		return "", fmt.Errorf("failed to get adviser handler: %w", err)
+	}
+
+	memorist, err := fp.GetMemoristHandler(ctx, taskID, subtaskID)
+	if err != nil {
+		return "", fmt.Errorf("failed to get memorist handler: %w", err)
+	}
+
+	searcher, err := fp.GetSubtaskSearcherHandler(ctx, taskID, subtaskID)
+	if err != nil {
+		return "", fmt.Errorf("failed to get searcher handler: %w", err)
+	}
+
+	ctx = tools.PutAgentContext(ctx, msgChainType)
+	cfg := tools.TesterExecutorConfig{
+		TaskID:    taskID,
+		SubtaskID: subtaskID,
+		Adviser:   adviser,
+		Memorist:  memorist,
+		Searcher:  searcher,
+		TestResult: func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+			err := json.Unmarshal(args, &testResult)
+			if err != nil {
+				return "", fmt.Errorf("failed to unmarshal result: %w", err)
+			}
+			return "test result successfully processed", nil
+		},
+		Summarizer: fp.GetSummarizeResultHandler(taskID, subtaskID),
+	}
+	executor, err := fp.executor.GetTesterExecutor(cfg)
+	if err != nil {
+		return "", fmt.Errorf("failed to get tester executor: %w", err)
+	}
+
+	if fp.planning {
+		userTesterTmplWithPlan, err := fp.performPlanner(
+			ctx, taskID, subtaskID, optAgentType, executor, userTesterTmpl, question,
+		)
+		if err != nil {
+			logrus.WithContext(ctx).WithError(err).Warn("failed to get task plan from planner, proceeding without plan")
+		} else {
+			userTesterTmpl = userTesterTmplWithPlan
+		}
+	}
+
+	msgChainID, chain, err := fp.restoreChain(
+		ctx, taskID, subtaskID, optAgentType, msgChainType, systemTesterTmpl, userTesterTmpl,
+	)
+	if err != nil {
+		return "", fmt.Errorf("failed to restore chain: %w", err)
+	}
+
+	err = fp.performAgentChain(ctx, optAgentType, msgChainID, taskID, subtaskID, chain, executor, fp.summarizer)
+	if err != nil {
+		return "", fmt.Errorf("failed to get task tester result: %w", err)
+	}
+
+	if agentCtx, ok := tools.GetAgentContext(ctx); ok {
+		fp.putAgentLog(
+			ctx,
+			agentCtx.ParentAgentType,
+			agentCtx.CurrentAgentType,
+			question,
+			testResult.Result,
+			taskID,
+			subtaskID,
+		)
+	}
+
+	return testResult.Result, nil
+}
+
 func (fp *flowProvider) performMemorist(
 	ctx context.Context,
 	taskID, subtaskID *int64,

@@ -32,6 +32,10 @@ const (
 	PromptTypeQuestionPentester        PromptType = "question_pentester"         // human input requesting penetration testing
 	PromptTypeCoder                    PromptType = "coder"                      // develops exploits and custom security tools
 	PromptTypeQuestionCoder            PromptType = "question_coder"             // human input requesting code development
+	PromptTypeIntegrator               PromptType = "integrator"                 // integrates code, evidence, and environment outputs
+	PromptTypeQuestionIntegrator       PromptType = "question_integrator"        // human input requesting integration work
+	PromptTypeTester                   PromptType = "tester"                     // validates artifacts, tools, and workflow results
+	PromptTypeQuestionTester           PromptType = "question_tester"            // human input requesting validation work
 	PromptTypeInstaller                PromptType = "installer"                  // sets up testing environment and tools
 	PromptTypeQuestionInstaller        PromptType = "question_installer"         // human input requesting system installation
 	PromptTypeSearcher                 PromptType = "searcher"                   // gathers intelligence from web sources
@@ -73,6 +77,8 @@ var PromptVariables = map[PromptType][]string{
 		"SearchToolName",
 		"PentesterToolName",
 		"CoderToolName",
+		"IntegratorToolName",
+		"TesterToolName",
 		"AdviceToolName",
 		"MemoristToolName",
 		"MaintenanceToolName",
@@ -161,6 +167,50 @@ var PromptVariables = map[PromptType][]string{
 		"ToolPlaceholder",
 	},
 	PromptTypeQuestionCoder: {
+		"Question",
+	},
+	PromptTypeIntegrator: {
+		"IntegrationResultToolName",
+		"SearchCodeToolName",
+		"StoreCodeToolName",
+		"GraphitiEnabled",
+		"GraphitiSearchToolName",
+		"SearchToolName",
+		"AdviceToolName",
+		"MemoristToolName",
+		"SummarizationToolName",
+		"SummarizedContentPrefix",
+		"DockerImage",
+		"Cwd",
+		"ContainerPorts",
+		"ExecutionContext",
+		"Lang",
+		"CurrentTime",
+		"ToolPlaceholder",
+	},
+	PromptTypeQuestionIntegrator: {
+		"Question",
+	},
+	PromptTypeTester: {
+		"TestResultToolName",
+		"SearchGuideToolName",
+		"StoreGuideToolName",
+		"GraphitiEnabled",
+		"GraphitiSearchToolName",
+		"SearchToolName",
+		"AdviceToolName",
+		"MemoristToolName",
+		"SummarizationToolName",
+		"SummarizedContentPrefix",
+		"DockerImage",
+		"Cwd",
+		"ContainerPorts",
+		"ExecutionContext",
+		"Lang",
+		"CurrentTime",
+		"ToolPlaceholder",
+	},
+	PromptTypeQuestionTester: {
 		"Question",
 	},
 	PromptTypeInstaller: {
@@ -432,6 +482,8 @@ type AgentsPrompts struct {
 	Assistant     AgentPrompt
 	Pentester     AgentPrompts
 	Coder         AgentPrompts
+	Integrator    AgentPrompts
+	Tester        AgentPrompts
 	Installer     AgentPrompts
 	Searcher      AgentPrompts
 	Memorist      AgentPrompts
@@ -505,6 +557,14 @@ func GetDefaultPrompts() (*DefaultPrompts, error) {
 			Coder: AgentPrompts{
 				System: getPrompt(PromptTypeCoder),
 				Human:  getPrompt(PromptTypeQuestionCoder),
+			},
+			Integrator: AgentPrompts{
+				System: getPrompt(PromptTypeIntegrator),
+				Human:  getPrompt(PromptTypeQuestionIntegrator),
+			},
+			Tester: AgentPrompts{
+				System: getPrompt(PromptTypeTester),
+				Human:  getPrompt(PromptTypeQuestionTester),
 			},
 			Installer: AgentPrompts{
 				System: getPrompt(PromptTypeInstaller),
