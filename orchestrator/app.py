@@ -50,17 +50,24 @@ class RunTaskRequest(BaseModel):
 # ========================================
 
 class TaskState(TypedDict, total=False):
-    flow_id: int
-    task_id: int
-    current_subtask_id: Optional[int]
-    current_subtask_title: Optional[str]
-    current_subtask_description: Optional[str]
-    primary_msgchain_id: Optional[int]
-    primary_decision: Optional[Dict[str, Any]]
-    last_agent_result: Optional[str]
-    task_status: Optional[str]
-    task_result: Optional[str]
-    failure_reason: Optional[str]
+      """Shared state for task execution in LangGraph"""
+      flow_id: int
+      task_id: int
+      current_subtask_id: Optional[int]
+      current_subtask_title: Optional[str]
+      current_subtask_description: Optional[str]
+      primary_msgchain_id: Optional[int]
+      primary_decision: Optional[Dict[str, Any]]
+      last_agent_result: Optional[str]
+      task_status: Optional[str]
+      task_result: Optional[str]
+      failure_reason: Optional[str]
+      workspace: Optional[Dict[str, Any]]
+      step_count: Optional[int]
+      total_steps: Optional[int]
+      is_completed: Optional[bool]
+      has_error: Optional[bool]
+      review_result: Optional[Dict[str, Any]]
 
 
 def _checkpointer() -> Any:
@@ -245,9 +252,139 @@ def failed(state: TaskState) -> Dict[str, Any]:
         "primary_decision": None,
     }
 
+ def reviewer_node(state: TaskState) -> Dict[str, Any]:
+      """Execute reviewer agent to validate penetration test results"""
+      response = _go_post(
+          f"tasks/{state['task_id']}/execute-agent",
+          {
+              "flow_id": state["flow_id"],
+              "agent_type": "reviewer",
+              "payload": {
+                  "scope_contract": state.get("workspace", {}).get("scope_contract", ""),
+                  "plan": state.get("workspace", {}).get("plan", ""),
+                  "findings": state.get("workspace", {}).get("findings", ""),
+                  "evidence": state.get("workspace", {}).get("evidence", ""),
+                  "message": "Please review the penetration test results for quality and
+  compliance",
+              },
+          },
+      )
+      execution = response.get("execution", {})
+
+      if execution.get("success"):
+          result = execution.get("result", "")
+          # Parse the JSON result to extract verdict
+          try:
+              import json
+              review_data = json.loads(result)
+              verdict = review_data.get("verdict", "FAIL")
+              comments = review_data.get("comments", "")
+              suggestions = review_data.get("suggestions", "")
+
+              updated_state = {
+                  "last_agent_result": f"Reviewer completed with verdict: {verdict}",
+                  "review_result": {
+                      "verdict": verdict,
+                      "comments": comments,
+                      "suggestions": suggestions,
+                  },
+                  "workspace": state.get("workspace", {}),
+              }
+              updated_state["workspace"]["review_result"] = {
+                  "verdict": verdict,
+                  "comments": comments,
+                  "suggestions": suggestions,
+              }
+
+              return updated_state
+          except json.JSONDecodeError:
+              return {
+                  "last_agent_result": "Reviewer completed but failed to parse result",
+                  "review_result": {"verdict": "FAIL", "comments": "Result parsing failed",
+  "suggestions": ""},
+                  "workspace": state.get("workspace", {}),
+              }
+      else:
+          result = execution.get("error", "unknown error")
+          return {
+              "last_agent_result": f"Reviewer execution failed: {result}",
+              "review_result": {"verdict": "FAIL", "comments": result, "suggestions": ""},
+              "workspace": state.get("workspace", {}),
+          }
+
+
+  def reporter_node(state: TaskState) -> Dict[str, Any]:
+      """Execute reporter agent to generate final report after successful review"""
+      # Only execute if review passed
+      review_result = state.get("review_result", {})
+      if review_result.get("verdict") != "PASS":
+          return {
+              "last_agent_result": "Skipping reporter - review did not pass",
+              "task_status": "failed",
+              "failure_reason": "Review failed - cannot generate report",
+          }
+
+      response = _go_post(
+          f"tasks/{state['task_id']}/execute-agent",
+          {
+              "flow_id": state["flow_id"],
+              "agent_type": "reporter",
+              "payload": {
+                  "input": state.get("workspace", {}).get("task_context", ""),
+                  "message": "Generate final penetration test report",
+              },
+          },
+      )
+      execution = response.get("execution", {})
+
+      if execution.get("success"):
+          result = execution.get("result", "")
+          return {
+              "last_agent_result": "Reporter completed successfully",
+              "task_result": result,
+              "task_status": "completed",
+              "normalized_state": "COMPLETED",
+              "workspace": state.get("workspace", {}),
+          }
+      else:
+          result = execution.get("error", "unknown error")
+          return {
+              "last_agent_result": f"Reporter execution failed: {result}",
+              "task_status": "failed",
+              "failure_reason": result,
+          }
+
+
+  def supervisor_node(state: TaskState) -> Dict[str, Any]:
+      """Supervisor node to handle failed review and determine next steps"""
+      review_result = state.get("review_result", {})
+      failure_reason = review_result.get("comments", "Review failed")
+
+      return {
+          "last_agent_result": f"Review failed: {failure_reason}",
+          "task_status": "failed",
+          "failure_reason": f"Security review failed: {failure_reason}",
+          "workspace": state.get("workspace", {}),
+      }
+
+
+  def route_after_reviewer(state: TaskState) -> str:
+      """Route after reviewer node based on verdict"""
+      review_result = state.get("review_result", {})
+      verdict = review_result.get("verdict", "FAIL")
+
+      if verdict == "PASS":
+          return "reporter"
+      else:
+          return "supervisor"
+
+
+  def route_after_reporter(state: TaskState) -> str:
+      """Route after reporter node"""
+      return "END"
 
 def _build_legacy_graph() -> StateGraph:
-    builder = StateGraph(TaskState)
+     builder = StateGraph(TaskState)
     builder.add_node("generate_subtasks", generate_subtasks)
     builder.add_node("select_next_subtask", select_next_subtask)
     builder.add_node("prepare_primary_agent_context", prepare_primary_agent_context)
@@ -261,46 +398,63 @@ def _build_legacy_graph() -> StateGraph:
     builder.add_node("input_required", input_required)
     builder.add_node("refine_subtasks", refine_subtasks)
     builder.add_node("report_task_result", report_task_result)
+    builder.add_node("reviewer", reviewer_node)
+    builder.add_node("reporter", reporter_node)
+    builder.add_node("supervisor", supervisor_node)
     builder.add_node("completed", lambda state: state)
     builder.add_node("failed", failed)
 
-    builder.add_edge(START, "generate_subtasks")
-    builder.add_edge("generate_subtasks", "select_next_subtask")
-    builder.add_conditional_edges(
-        "select_next_subtask",
-        route_after_select_next_subtask,
-        {
-            "prepare_primary_agent_context": "prepare_primary_agent_context",
-            "report_task_result": "report_task_result",
-        },
-    )
-    builder.add_edge("prepare_primary_agent_context", "primary_agent")
-    builder.add_conditional_edges(
-        "primary_agent",
-        route_after_primary_agent,
-        {
-            "coder": "coder",
-            "pentester": "pentester",
-            "searcher": "searcher",
-            "installer": "installer",
-            "memorist": "memorist",
-            "adviser": "adviser",
-            "input_required": "input_required",
-            "refine_subtasks": "refine_subtasks",
-            "failed": "failed",
-        },
-    )
-    builder.add_edge("coder", "primary_agent")
-    builder.add_edge("pentester", "primary_agent")
-    builder.add_edge("searcher", "primary_agent")
-    builder.add_edge("installer", "primary_agent")
-    builder.add_edge("memorist", "primary_agent")
-    builder.add_edge("adviser", "primary_agent")
-    builder.add_edge("input_required", "primary_agent")
-    builder.add_edge("refine_subtasks", "select_next_subtask")
-    builder.add_edge("report_task_result", "completed")
-    builder.add_edge("completed", END)
-    builder.add_edge("failed", END)
+     builder.add_edge(START, "generate_subtasks")
+  builder.add_edge("generate_subtasks", "select_next_subtask")
+  builder.add_conditional_edges(
+      "select_next_subtask",
+      route_after_select_next_subtask,
+      {
+          "prepare_primary_agent_context": "prepare_primary_agent_context",
+          "report_task_result": "report_task_result",
+      },
+  )
+  builder.add_edge("prepare_primary_agent_context", "primary_agent")
+  builder.add_conditional_edges(
+      "primary_agent",
+      route_after_primary_agent,
+      {
+          "coder": "coder",
+          "pentester": "pentester",
+          "searcher": "searcher",
+          "installer": "installer",
+          "memorist": "memorist",
+          "adviser": "adviser",
+          "input_required": "input_required",
+          "refine_subtasks": "refine_subtasks",
+          "reviewer": "reviewer",  # Add reviewer route
+          "failed": "failed",
+      },
+  )
+  builder.add_edge("coder", "primary_agent")
+  builder.add_edge("pentester", "primary_agent")
+  builder.add_edge("searcher", "primary_agent")
+  builder.add_edge("installer", "primary_agent")
+  builder.add_edge("memorist", "primary_agent")
+  builder.add_edge("adviser", "primary_agent")
+  builder.add_edge("input_required", "primary_agent")
+  builder.add_edge("refine_subtasks", "select_next_subtask")
+
+  # Add reviewer conditional routing
+  builder.add_conditional_edges(
+      "reviewer",
+      route_after_reviewer,
+      {
+          "reporter": "reporter",
+          "supervisor": "supervisor",
+      },
+  )
+  # Add reporter to END, supervisor to failed
+  builder.add_edge("reporter", "END")
+  builder.add_edge("supervisor", "failed")
+  builder.add_edge("report_task_result", "completed")
+  builder.add_edge("completed", END)
+  builder.add_edge("failed", END)
     return builder
 
 
