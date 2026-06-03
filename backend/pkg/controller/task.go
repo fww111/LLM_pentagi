@@ -43,8 +43,8 @@ type TaskWorker interface {
 	DesignerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
 	PlannerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
 	SupervisorStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
-	GenerateTodoPlan(ctx context.Context) error
-	RefineTodoPlan(ctx context.Context) error
+	GenerateTodoPlan(ctx context.Context) ([]database.Todo, error)
+	RefineTodoPlan(ctx context.Context) ([]database.Todo, error)
 	AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
 	StoreArtifact(ctx context.Context, artifactID, name, artifactType, content string) error
 	StoreAuthRequest(ctx context.Context, todoID, action, riskLevel, justification string) error
@@ -507,14 +507,22 @@ func (tw *taskWorker) SupervisorStep(ctx context.Context) (*orchestrator.Supervi
 	return decision, nil
 }
 
-func (tw *taskWorker) GenerateTodoPlan(ctx context.Context) error {
-	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner", 0)
-	return err
+func (tw *taskWorker) GenerateTodoPlan(ctx context.Context) ([]database.Todo, error) {
+	plan, err := tw.taskCtx.Provider.GenerateTodoPlan(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate todo plan: %w", err)
+	}
+
+	return tw.replaceTodoPlan(ctx, plan)
 }
 
-func (tw *taskWorker) RefineTodoPlan(ctx context.Context) error {
-	_, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner", 0)
-	return err
+func (tw *taskWorker) RefineTodoPlan(ctx context.Context) ([]database.Todo, error) {
+	plan, err := tw.taskCtx.Provider.RefineTodoPlan(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to refine todo plan: %w", err)
+	}
+
+	return tw.replaceTodoPlan(ctx, plan)
 }
 
 func (tw *taskWorker) AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error) {
@@ -539,12 +547,12 @@ func (tw *taskWorker) StoreArtifact(ctx context.Context, artifactID, name, artif
 func (tw *taskWorker) StoreAuthRequest(ctx context.Context, todoID, action, riskLevel, justification string) error {
 	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
 	return ma.InsertAuthRequest(ctx, &database.AuthRequest{
-		TaskID:       tw.taskCtx.TaskID,
-		TodoID:       sqlPtrString(todoID),
-		Action:       action,
-		RiskLevel:    riskLevel,
+		TaskID:        tw.taskCtx.TaskID,
+		TodoID:        sqlPtrString(todoID),
+		Action:        action,
+		RiskLevel:     riskLevel,
 		Justification: justification,
-		Status:       "pending",
+		Status:        "pending",
 	})
 }
 
@@ -587,6 +595,88 @@ func (tw *taskWorker) UpdateSharedState(ctx context.Context, activeNode, activeT
 		ext.SharedState = sharedState
 	}
 	return ma.UpdateTaskExtension(ctx, tw.taskCtx.TaskID, ext)
+}
+
+func (tw *taskWorker) replaceTodoPlan(ctx context.Context, plan []tools.TodoItem) ([]database.Todo, error) {
+	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
+	existing, err := ma.GetTodosByTaskID(ctx, tw.taskCtx.TaskID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get existing todos for task %d: %w", tw.taskCtx.TaskID, err)
+	}
+
+	existingByID := make(map[string]database.Todo, len(existing))
+	for _, todo := range existing {
+		existingByID[todo.TodoID] = todo
+	}
+
+	todos, err := todoItemsToDB(tw.taskCtx.TaskID, plan, existingByID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := ma.ReplaceTodosByTaskID(ctx, tw.taskCtx.TaskID, todos); err != nil {
+		return nil, fmt.Errorf("failed to replace todos for task %d: %w", tw.taskCtx.TaskID, err)
+	}
+
+	return ma.GetTodosByTaskID(ctx, tw.taskCtx.TaskID)
+}
+
+func todoItemsToDB(taskID int64, plan []tools.TodoItem, existing map[string]database.Todo) ([]database.Todo, error) {
+	todos := make([]database.Todo, 0, len(plan))
+	for i, item := range plan {
+		if item.TodoID == "" {
+			item.TodoID = fmt.Sprintf("todo_%03d", i+1)
+		}
+		if item.OwnerAgent == "" {
+			item.OwnerAgent = "pentester"
+		}
+		if item.RiskLevel == "" {
+			item.RiskLevel = "low"
+		}
+		if item.Status == "" {
+			item.Status = "pending"
+		}
+
+		dependsOn, err := json.Marshal(item.DependsOn)
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal depends_on for todo %s: %w", item.TodoID, err)
+		}
+		evidenceRequirements, err := json.Marshal(item.EvidenceRequirements)
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal evidence requirements for todo %s: %w", item.TodoID, err)
+		}
+
+		todo := database.Todo{
+			TaskID:               taskID,
+			TodoID:               item.TodoID,
+			Title:                item.Title,
+			OwnerAgent:           item.OwnerAgent,
+			DependsOn:            dependsOn,
+			NeedEnv:              item.NeedEnv,
+			NeedCode:             item.NeedCode,
+			RiskLevel:            item.RiskLevel,
+			AuthRequired:         item.AuthRequired,
+			Inputs:               sqlPtrString(item.Inputs),
+			SuccessCriteria:      sqlPtrString(item.SuccessCriteria),
+			EvidenceRequirements: evidenceRequirements,
+			Data:                 json.RawMessage(`{}`),
+			Status:               item.Status,
+		}
+
+		if prev, ok := existing[item.TodoID]; ok {
+			todo.Result = prev.Result
+			todo.TodoStatusCode = prev.TodoStatusCode
+			if item.Status == "" {
+				todo.Status = prev.Status
+			}
+			if len(prev.Data) > 0 {
+				todo.Data = prev.Data
+			}
+		}
+
+		todos = append(todos, todo)
+	}
+	return todos, nil
 }
 
 // sqlPtrString converts a string to sql.NullString

@@ -254,16 +254,18 @@ type ScopeContractAction struct {
 
 // TodoItem represents a single todo in the todo plan
 type TodoItem struct {
-	TodoID           string   `json:"todo_id" jsonschema:"required" jsonschema_description:"Unique identifier for the todo item"`
-	Title            string   `json:"title" jsonschema:"required" jsonschema_description:"Brief title of the todo item"`
-	OwnerAgent       string   `json:"owner_agent" jsonschema:"required" jsonschema_description:"Agent role responsible: builder, generator, integrator, tester, pentester, reviewer"`
-	DependsOn        []string `json:"depends_on,omitempty" jsonschema_description:"List of todo IDs this item depends on"`
-	NeedEnv          bool     `json:"need_env" jsonschema_description:"Whether environment setup is needed"`
-	NeedCode         bool     `json:"need_code" jsonschema_description:"Whether code generation is needed"`
-	RiskLevel        string   `json:"risk_level,omitempty" jsonschema:"enum=low,enum=medium,enum=high" jsonschema_description:"Risk level: low, medium, or high"`
-	AuthRequired     bool     `json:"auth_required" jsonschema_description:"Whether human authorization is required before execution"`
-	Inputs           string   `json:"inputs,omitempty" jsonschema_description:"Expected inputs for this todo"`
-	SuccessCriteria  string   `json:"success_criteria,omitempty" jsonschema_description:"Criteria to determine successful completion"`
+	TodoID               string   `json:"todo_id" jsonschema:"required" jsonschema_description:"Unique identifier for the todo item"`
+	Title                string   `json:"title" jsonschema:"required" jsonschema_description:"Brief title of the todo item"`
+	OwnerAgent           string   `json:"owner_agent" jsonschema:"required" jsonschema_description:"Agent role responsible: builder, generator, integrator, tester, pentester, reviewer"`
+	DependsOn            []string `json:"depends_on,omitempty" jsonschema_description:"List of todo IDs this item depends on"`
+	NeedEnv              bool     `json:"need_env" jsonschema_description:"Whether environment setup is needed"`
+	NeedCode             bool     `json:"need_code" jsonschema_description:"Whether code generation is needed"`
+	RiskLevel            string   `json:"risk_level,omitempty" jsonschema:"enum=low,enum=medium,enum=high" jsonschema_description:"Risk level: low, medium, or high"`
+	AuthRequired         bool     `json:"auth_required" jsonschema_description:"Whether human authorization is required before execution"`
+	Inputs               string   `json:"inputs,omitempty" jsonschema_description:"Expected inputs for this todo"`
+	SuccessCriteria      string   `json:"success_criteria,omitempty" jsonschema_description:"Criteria to determine successful completion"`
+	EvidenceRequirements []string `json:"evidence_requirements,omitempty" jsonschema_description:"Evidence artifacts or observations required to prove completion"`
+	Status               string   `json:"status,omitempty" jsonschema_description:"Todo execution status; default is pending"`
 }
 
 // TodoListAction is the output of the planner node generating the todo plan
@@ -284,10 +286,10 @@ const (
 
 // TodoOperation defines a single operation on the todo list for delta-based refinement
 type TodoOperation struct {
-	Op            TodoOperationType `json:"op" jsonschema:"required,enum=add,enum=remove,enum=modify,enum=reorder" jsonschema_description:"Operation type: add, remove, modify, or reorder"`
-	TodoID        string            `json:"todo_id,omitempty" jsonschema_description:"ID of existing todo (required for remove/modify/reorder)"`
-	AfterTodoID   string            `json:"after_todo_id,omitempty" jsonschema_description:"For add/reorder: insert after this todo ID"`
-	TodoItem      *TodoItem         `json:"todo_item,omitempty" jsonschema_description:"New or updated todo item data (required for add/modify)"`
+	Op          TodoOperationType `json:"op" jsonschema:"required,enum=add,enum=remove,enum=modify,enum=reorder" jsonschema_description:"Operation type: add, remove, modify, or reorder"`
+	TodoID      string            `json:"todo_id,omitempty" jsonschema_description:"ID of existing todo (required for remove/modify/reorder)"`
+	AfterTodoID string            `json:"after_todo_id,omitempty" jsonschema_description:"For add/reorder: insert after this todo ID"`
+	TodoItem    *TodoItem         `json:"todo_item,omitempty" jsonschema_description:"New or updated todo item data (required for add/modify)"`
 }
 
 // TodoPatchAction is the delta-based refinement output for modifying todo lists
@@ -329,20 +331,20 @@ type IntegrationResultAction struct {
 
 // TestResultAction is the result from the tester agent
 type TestResultAction struct {
-	Success   bool     `json:"success" jsonschema:"required,type=boolean" jsonschema_description:"Whether tests passed"`
-	Result    string   `json:"result" jsonschema:"required" jsonschema_description:"Detailed test results or error in English"`
-	Summary   string   `json:"summary,omitempty" jsonschema_description:"Brief summary of test outcomes"`
+	Success     bool     `json:"success" jsonschema:"required,type=boolean" jsonschema_description:"Whether tests passed"`
+	Result      string   `json:"result" jsonschema:"required" jsonschema_description:"Detailed test results or error in English"`
+	Summary     string   `json:"summary,omitempty" jsonschema_description:"Brief summary of test outcomes"`
 	FailedTests []string `json:"failed_tests,omitempty" jsonschema_description:"List of failed test names or IDs"`
-	Message   string   `json:"message" jsonschema:"required,title=Test result message" jsonschema_description:"Summary of the test result to send to the user in user's language only"`
+	Message     string   `json:"message" jsonschema:"required,title=Test result message" jsonschema_description:"Summary of the test result to send to the user in user's language only"`
 }
 
 // ReviewResultAction is the result from the reviewer agent
 type ReviewResultAction struct {
-	Approved   bool     `json:"approved" jsonschema:"required,type=boolean" jsonschema_description:"Whether the review passed"`
-	Result     string   `json:"result" jsonschema:"required" jsonschema_description:"Detailed review findings in English"`
-	Issues     []string `json:"issues,omitempty" jsonschema_description:"List of identified issues"`
-	Severity   string   `json:"severity,omitempty" jsonschema:"enum=info,enum=low,enum=medium,enum=high,enum=critical" jsonschema_description:"Overall severity of issues found"`
-	Message    string   `json:"message" jsonschema:"required,title=Review result message" jsonschema_description:"Summary of the review to send to the user in user's language only"`
+	Approved bool     `json:"approved" jsonschema:"required,type=boolean" jsonschema_description:"Whether the review passed"`
+	Result   string   `json:"result" jsonschema:"required" jsonschema_description:"Detailed review findings in English"`
+	Issues   []string `json:"issues,omitempty" jsonschema_description:"List of identified issues"`
+	Severity string   `json:"severity,omitempty" jsonschema:"enum=info,enum=low,enum=medium,enum=high,enum=critical" jsonschema_description:"Overall severity of issues found"`
+	Message  string   `json:"message" jsonschema:"required,title=Review result message" jsonschema_description:"Summary of the review to send to the user in user's language only"`
 }
 
 type Bool bool

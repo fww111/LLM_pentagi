@@ -1,6 +1,16 @@
 -- Multi-agent migration: Phase 0 database schema changes
 -- Replaces subtask-based orchestration with todo-based multi-agent system
 
+-- +goose Up
+-- +goose StatementBegin
+
+-- ========================================
+-- enums: register multi-agent planner runtime types
+-- ========================================
+ALTER TYPE MSGCHAIN_TYPE ADD VALUE IF NOT EXISTS 'planner';
+ALTER TYPE PROMPT_TYPE ADD VALUE IF NOT EXISTS 'planner';
+ALTER TYPE PROMPT_TYPE ADD VALUE IF NOT EXISTS 'question_planner';
+
 -- ========================================
 -- tasks table: add new columns for multi-agent state management
 -- ========================================
@@ -123,3 +133,5 @@ CREATE INDEX IF NOT EXISTS idx_auth_requests_task_id ON auth_requests(task_id);
 CREATE INDEX IF NOT EXISTS idx_auth_requests_status ON auth_requests(task_id, status);
 CREATE INDEX IF NOT EXISTS idx_findings_task_id ON findings(task_id);
 CREATE INDEX IF NOT EXISTS idx_evidence_task_id ON evidence(task_id);
+
+-- +goose StatementEnd

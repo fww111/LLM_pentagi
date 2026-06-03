@@ -44,6 +44,8 @@ const (
 	PromptTypeSubtasksGenerator        PromptType = "subtasks_generator"         // human input for task decomposition
 	PromptTypeRefiner                  PromptType = "refiner"                    // optimizes and adjusts planned subtasks
 	PromptTypeSubtasksRefiner          PromptType = "subtasks_refiner"           // human input for task refinement
+	PromptTypePlanner                  PromptType = "planner"                    // creates or refines multi-agent todo plans
+	PromptTypeQuestionPlanner          PromptType = "question_planner"           // human input for multi-agent todo planning
 	PromptTypeReporter                 PromptType = "reporter"                   // generates comprehensive security reports
 	PromptTypeTaskReporter             PromptType = "task_reporter"              // human input for result documentation
 	PromptTypeReflector                PromptType = "reflector"                  // analyzes outcomes and suggests improvements
@@ -291,6 +293,33 @@ var PromptVariables = map[PromptType][]string{
 		"ExecutionLogs",
 		"ExecutionState",
 	},
+	PromptTypePlanner: {
+		"Mode",
+		"TodoListToolName",
+		"TodoPatchToolName",
+		"SearchToolName",
+		"TerminalToolName",
+		"FileToolName",
+		"BrowserToolName",
+		"SummarizationToolName",
+		"SummarizedContentPrefix",
+		"DockerImage",
+		"Lang",
+		"CurrentTime",
+		"N",
+		"ToolPlaceholder",
+	},
+	PromptTypeQuestionPlanner: {
+		"Mode",
+		"Task",
+		"Tasks",
+		"ScopeContract",
+		"SharedState",
+		"PlannedTodos",
+		"CompletedTodos",
+		"BlockedTodos",
+		"FailedTodos",
+	},
 	PromptTypeReporter: {
 		"ReportResultToolName",
 		"SummarizationToolName",
@@ -462,6 +491,7 @@ type AgentsPrompts struct {
 	Adviser       AgentPrompts
 	Generator     AgentPrompts
 	Refiner       AgentPrompts
+	Planner       AgentPrompts
 	Reporter      AgentPrompts
 	Reflector     AgentPrompts
 	Enricher      AgentPrompts
@@ -555,6 +585,10 @@ func GetDefaultPrompts() (*DefaultPrompts, error) {
 			Refiner: AgentPrompts{
 				System: getPrompt(PromptTypeRefiner),
 				Human:  getPrompt(PromptTypeSubtasksRefiner),
+			},
+			Planner: AgentPrompts{
+				System: getPrompt(PromptTypePlanner),
+				Human:  getPrompt(PromptTypeQuestionPlanner),
 			},
 			Reporter: AgentPrompts{
 				System: getPrompt(PromptTypeReporter),

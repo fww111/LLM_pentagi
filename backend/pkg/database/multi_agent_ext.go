@@ -15,25 +15,25 @@ import (
 
 // Todo represents a todo item in the multi-agent system
 type Todo struct {
-	ID                  int64            `json:"id"`
-	TaskID              int64            `json:"task_id"`
-	TodoID              string           `json:"todo_id"`
-	Title               string           `json:"title"`
-	OwnerAgent          string           `json:"owner_agent"`
-	DependsOn           json.RawMessage  `json:"depends_on"`
-	NeedEnv             bool             `json:"need_env"`
-	NeedCode            bool             `json:"need_code"`
-	RiskLevel           string           `json:"risk_level"`
-	AuthRequired        bool             `json:"auth_required"`
-	Inputs              sql.NullString   `json:"inputs"`
-	SuccessCriteria     sql.NullString   `json:"success_criteria"`
-	EvidenceRequirements json.RawMessage  `json:"evidence_requirements"`
-	Data                json.RawMessage  `json:"data"`
-	TodoStatusCode      int              `json:"todo_status_code"`
-	Status              string           `json:"status"`
-	Result              sql.NullString   `json:"result"`
-	CreatedAt           sql.NullTime     `json:"created_at"`
-	UpdatedAt           sql.NullTime     `json:"updated_at"`
+	ID                   int64           `json:"id"`
+	TaskID               int64           `json:"task_id"`
+	TodoID               string          `json:"todo_id"`
+	Title                string          `json:"title"`
+	OwnerAgent           string          `json:"owner_agent"`
+	DependsOn            json.RawMessage `json:"depends_on"`
+	NeedEnv              bool            `json:"need_env"`
+	NeedCode             bool            `json:"need_code"`
+	RiskLevel            string          `json:"risk_level"`
+	AuthRequired         bool            `json:"auth_required"`
+	Inputs               sql.NullString  `json:"inputs"`
+	SuccessCriteria      sql.NullString  `json:"success_criteria"`
+	EvidenceRequirements json.RawMessage `json:"evidence_requirements"`
+	Data                 json.RawMessage `json:"data"`
+	TodoStatusCode       int             `json:"todo_status_code"`
+	Status               string          `json:"status"`
+	Result               sql.NullString  `json:"result"`
+	CreatedAt            sql.NullTime    `json:"created_at"`
+	UpdatedAt            sql.NullTime    `json:"updated_at"`
 }
 
 // Artifact represents a task output artifact
@@ -55,17 +55,17 @@ type Artifact struct {
 
 // AuthRequest represents an authorization request for high-risk operations
 type AuthRequest struct {
-	ID           int64          `json:"id"`
-	TaskID       int64          `json:"task_id"`
-	ContextID    string         `json:"context_id"`
-	TodoID       sql.NullString `json:"todo_id"`
-	Action       string         `json:"action"`
-	RiskLevel    string         `json:"risk_level"`
-	Justification string        `json:"justification"`
-	Status       string         `json:"status"`
-	Response     sql.NullString `json:"response"`
-	CreatedAt    sql.NullTime   `json:"created_at"`
-	ResolvedAt   sql.NullTime   `json:"resolved_at"`
+	ID            int64          `json:"id"`
+	TaskID        int64          `json:"task_id"`
+	ContextID     string         `json:"context_id"`
+	TodoID        sql.NullString `json:"todo_id"`
+	Action        string         `json:"action"`
+	RiskLevel     string         `json:"risk_level"`
+	Justification string         `json:"justification"`
+	Status        string         `json:"status"`
+	Response      sql.NullString `json:"response"`
+	CreatedAt     sql.NullTime   `json:"created_at"`
+	ResolvedAt    sql.NullTime   `json:"resolved_at"`
 }
 
 // Finding represents a pentester discovery
@@ -230,8 +230,10 @@ func (q *MultiAgentQueries) UpdateTaskExtension(ctx context.Context, taskID int6
 func (q *MultiAgentQueries) GetTaskExtension(ctx context.Context, taskID int64) (*TaskExt, error) {
 	var ext TaskExt
 	err := q.db.QueryRowContext(ctx,
-		`SELECT context_id, state_id, COALESCE(protocol_version, ''), shared_state, task_status_code,
-			scope_contract, COALESCE(normalized_state, 'SUBMITTED'), active_node, active_todo_id
+		`SELECT context_id, state_id, COALESCE(protocol_version, ''),
+			COALESCE(shared_state, '{}'::jsonb), COALESCE(task_status_code, 0),
+			COALESCE(scope_contract, '{}'::jsonb), COALESCE(normalized_state, 'SUBMITTED'),
+			active_node, active_todo_id
 		 FROM tasks WHERE id = $1`, taskID).
 		Scan(&ext.ContextID, &ext.StateID, &ext.ProtocolVersion, &ext.SharedState,
 			&ext.TaskStatusCode, &ext.ScopeContract, &ext.NormalizedState,
@@ -250,13 +252,11 @@ func (q *MultiAgentQueries) DeleteTodosByTaskID(ctx context.Context, taskID int6
 
 // BatchInsertTodos creates multiple todo items in a single transaction
 func (q *MultiAgentQueries) BatchInsertTodos(ctx context.Context, todos []Todo) error {
-	tx, ok := q.db.(*sql.Tx)
-	if !ok {
-		var err error
-		tx, err = q.db.(*sql.DB).BeginTx(ctx, nil)
-		if err != nil {
-			return fmt.Errorf("failed to begin transaction: %w", err)
-		}
+	tx, commit, err := q.beginTx(ctx)
+	if err != nil {
+		return err
+	}
+	if commit {
 		defer tx.Rollback()
 	}
 
@@ -273,5 +273,58 @@ func (q *MultiAgentQueries) BatchInsertTodos(ctx context.Context, todos []Todo) 
 		}
 	}
 
-	return tx.Commit()
+	if commit {
+		return tx.Commit()
+	}
+	return nil
+}
+
+// ReplaceTodosByTaskID replaces a task's todo plan while preserving supplied status/result fields.
+func (q *MultiAgentQueries) ReplaceTodosByTaskID(ctx context.Context, taskID int64, todos []Todo) error {
+	tx, commit, err := q.beginTx(ctx)
+	if err != nil {
+		return err
+	}
+	if commit {
+		defer tx.Rollback()
+	}
+
+	if _, err := tx.ExecContext(ctx, `DELETE FROM todos WHERE task_id = $1`, taskID); err != nil {
+		return fmt.Errorf("failed to delete todos for task %d: %w", taskID, err)
+	}
+
+	for _, todo := range todos {
+		_, err := tx.ExecContext(ctx,
+			`INSERT INTO todos (task_id, todo_id, title, owner_agent, depends_on, need_env, need_code,
+				risk_level, auth_required, inputs, success_criteria, evidence_requirements, data,
+				todo_status_code, status, result)
+			 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+			todo.TaskID, todo.TodoID, todo.Title, todo.OwnerAgent, todo.DependsOn,
+			todo.NeedEnv, todo.NeedCode, todo.RiskLevel, todo.AuthRequired,
+			todo.Inputs, todo.SuccessCriteria, todo.EvidenceRequirements, todo.Data,
+			todo.TodoStatusCode, todo.Status, todo.Result)
+		if err != nil {
+			return fmt.Errorf("failed to insert todo %s: %w", todo.TodoID, err)
+		}
+	}
+
+	if commit {
+		return tx.Commit()
+	}
+	return nil
+}
+
+func (q *MultiAgentQueries) beginTx(ctx context.Context) (*sql.Tx, bool, error) {
+	switch db := q.db.(type) {
+	case *sql.Tx:
+		return db, false, nil
+	case *sql.DB:
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return nil, false, fmt.Errorf("failed to begin transaction: %w", err)
+		}
+		return tx, true, nil
+	default:
+		return nil, false, fmt.Errorf("multi-agent query DB does not support transactions")
+	}
 }

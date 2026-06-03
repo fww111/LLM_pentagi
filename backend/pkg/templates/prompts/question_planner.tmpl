@@ -1,0 +1,102 @@
+<planner_context>
+  <mode>{{.Mode}}</mode>
+
+  <user_task>
+    <id>{{.Task.ID}}</id>
+    <input>{{.Task.Input}}</input>
+    <title>{{.Task.Title}}</title>
+    <status>{{.Task.Status}}</status>
+    <result>{{.Task.Result}}</result>
+  </user_task>
+
+  {{if .ScopeContract}}
+  <scope_contract>
+{{.ScopeContract}}
+  </scope_contract>
+  {{end}}
+
+  {{if .SharedState}}
+  <shared_state>
+{{.SharedState}}
+  </shared_state>
+  {{end}}
+
+  {{if .Tasks}}
+  <previous_tasks>
+    {{range .Tasks}}
+    <task>
+      <id>{{.ID}}</id>
+      <input>{{.Input}}</input>
+      <status>{{.Status}}</status>
+      <result>{{.Result}}</result>
+    </task>
+    {{end}}
+  </previous_tasks>
+  {{end}}
+
+  {{if .CompletedTodos}}
+  <completed_todos>
+    {{range .CompletedTodos}}
+    <todo>
+      <todo_id>{{.TodoID}}</todo_id>
+      <title>{{.Title}}</title>
+      <owner_agent>{{.OwnerAgent}}</owner_agent>
+      <status>{{.Status}}</status>
+      <result>{{.Result}}</result>
+      <success_criteria>{{.SuccessCriteria}}</success_criteria>
+    </todo>
+    {{end}}
+  </completed_todos>
+  {{end}}
+
+  {{if .FailedTodos}}
+  <failed_todos>
+    {{range .FailedTodos}}
+    <todo>
+      <todo_id>{{.TodoID}}</todo_id>
+      <title>{{.Title}}</title>
+      <owner_agent>{{.OwnerAgent}}</owner_agent>
+      <status>{{.Status}}</status>
+      <result>{{.Result}}</result>
+      <success_criteria>{{.SuccessCriteria}}</success_criteria>
+    </todo>
+    {{end}}
+  </failed_todos>
+  {{end}}
+
+  {{if .BlockedTodos}}
+  <blocked_todos>
+    {{range .BlockedTodos}}
+    <todo>
+      <todo_id>{{.TodoID}}</todo_id>
+      <title>{{.Title}}</title>
+      <owner_agent>{{.OwnerAgent}}</owner_agent>
+      <status>{{.Status}}</status>
+      <inputs>{{.Inputs}}</inputs>
+      <success_criteria>{{.SuccessCriteria}}</success_criteria>
+    </todo>
+    {{end}}
+  </blocked_todos>
+  {{end}}
+
+  {{if .PlannedTodos}}
+  <planned_todos>
+    {{range .PlannedTodos}}
+    <todo>
+      <todo_id>{{.TodoID}}</todo_id>
+      <title>{{.Title}}</title>
+      <owner_agent>{{.OwnerAgent}}</owner_agent>
+      <depends_on>{{.DependsOn}}</depends_on>
+      <need_env>{{.NeedEnv}}</need_env>
+      <need_code>{{.NeedCode}}</need_code>
+      <risk_level>{{.RiskLevel}}</risk_level>
+      <auth_required>{{.AuthRequired}}</auth_required>
+      <inputs>{{.Inputs}}</inputs>
+      <success_criteria>{{.SuccessCriteria}}</success_criteria>
+      <evidence_requirements>{{.EvidenceRequirements}}</evidence_requirements>
+      <status>{{.Status}}</status>
+    </todo>
+    {{end}}
+  </planned_todos>
+  {{end}}
+</planner_context>

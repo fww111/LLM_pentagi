@@ -373,8 +373,8 @@ type orchestratorAuthRequest struct {
 }
 
 type orchestratorResolveAuthRequest struct {
-	FlowID  int64  `json:"flow_id" binding:"required,min=1"`
-	Status  string `json:"status" binding:"required"`
+	FlowID   int64  `json:"flow_id" binding:"required,min=1"`
+	Status   string `json:"status" binding:"required"`
 	Response string `json:"response"`
 }
 
@@ -468,12 +468,13 @@ func (s *OrchestratorService) GenerateTodoPlan(c *gin.Context) {
 	if !ok {
 		return
 	}
-	if err := task.GenerateTodoPlan(c); err != nil {
+	todos, err := task.GenerateTodoPlan(c)
+	if err != nil {
 		logger.FromContext(c).WithError(err).Error("error generating todo plan")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
+	c.JSON(http.StatusOK, gin.H{"ok": true, "todos": todos})
 }
 
 func (s *OrchestratorService) RefineTodoPlan(c *gin.Context) {
@@ -486,12 +487,13 @@ func (s *OrchestratorService) RefineTodoPlan(c *gin.Context) {
 	if !ok {
 		return
 	}
-	if err := task.RefineTodoPlan(c); err != nil {
+	todos, err := task.RefineTodoPlan(c)
+	if err != nil {
 		logger.FromContext(c).WithError(err).Error("error refining todo plan")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
+	c.JSON(http.StatusOK, gin.H{"ok": true, "todos": todos})
 }
 
 func (s *OrchestratorService) AgentExecute(c *gin.Context) {

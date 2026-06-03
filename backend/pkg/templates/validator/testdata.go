@@ -60,6 +60,8 @@ func CreateDummyTemplateData() map[string]any {
 		"ReportResultToolName":      tools.ReportResultToolName,
 		"SubtaskListToolName":       tools.SubtaskListToolName,
 		"SubtaskPatchToolName":      tools.SubtaskPatchToolName,
+		"TodoListToolName":          tools.TodoListToolName,
+		"TodoPatchToolName":         tools.TodoPatchToolName,
 		"AskUserToolName":           tools.AskUserToolName,
 		"AskUserEnabled":            true,
 
@@ -97,6 +99,7 @@ func CreateDummyTemplateData() map[string]any {
 
 		// Input/Output data
 		"Input":    "Test input for the task",
+		"Mode":     "generate",
 		"Question": "Test question for processing",
 		"Message":  "Test message content",
 		"Code":     "print('Hello, World!')",
@@ -230,6 +233,37 @@ func CreateDummyTemplateData() map[string]any {
 				UpdatedAt:   currentTime,
 			},
 		},
+
+		"ScopeContract": `{"targets":["192.0.2.10"],"objectives":["authorized validation"]}`,
+		"SharedState":   `{"normalized_state":"WORKING"}`,
+		"PlannedTodos": []map[string]any{
+			{
+				"TodoID":               "todo_001",
+				"Title":                "Initial reconnaissance",
+				"OwnerAgent":           "pentester",
+				"DependsOn":            []string{},
+				"NeedEnv":              false,
+				"NeedCode":             false,
+				"RiskLevel":            "low",
+				"AuthRequired":         false,
+				"Inputs":               "Scan the authorized target",
+				"SuccessCriteria":      "Open services identified",
+				"EvidenceRequirements": []string{"scan output"},
+				"Status":               "pending",
+			},
+		},
+		"CompletedTodos": []map[string]any{
+			{
+				"TodoID":          "todo_000",
+				"Title":           "Scope review",
+				"OwnerAgent":      "reviewer",
+				"Status":          "completed",
+				"Result":          "Scope is valid",
+				"SuccessCriteria": "Scope is confirmed",
+			},
+		},
+		"BlockedTodos": []map[string]any{},
+		"FailedTodos":  []map[string]any{},
 
 		"MsgLogs": []database.Msglog{
 			{
