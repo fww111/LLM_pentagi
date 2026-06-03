@@ -1217,75 +1217,74 @@ func (fp *flowProvider) performSimpleChain(
 	return strings.Join(parts, "\n\n"), nil
 }
  func (fp *flowProvider) performReviewer(
-        ctx context.Context,
-        taskID, subtaskID *int64,
-        systemReviewerTmpl, userReviewerTmpl, scopeContract, plan, findings, evidence string,
-  ) (string, error) {
-        var (
-                reviewResult ReviewResult
-                optAgentType = pconfig.OptionsTypeSimple
-                msgChainType = database.MsgchainTypeReviewer
-        )
+	ctx context.Context,
+	taskID, subtaskID *int64,
+	systemReviewerTmpl, userReviewerTmpl, scopeContract, plan, findings, evidence string,
+) (string, error) {
+	var (
+		reviewResult tools.ReviewResult
+		optAgentType = pconfig.OptionsTypeSimple
+		msgChainType = database.MsgchainTypeReviewer
+	)
 
-        chain := []llms.MessageContent{
-                llms.TextParts(llms.ChatMessageTypeSystem, systemReviewerTmpl),
-                llms.TextParts(llms.ChatMessageTypeHuman, userReviewerTmpl),
-        }
+	chain := []llms.MessageContent{
+		llms.TextParts(llms.ChatMessageTypeSystem, systemReviewerTmpl),
+		llms.TextParts(llms.ChatMessageTypeHuman, userReviewerTmpl),
+	}
 
-        ctx = tools.PutAgentContext(ctx, msgChainType)
-        cfg := tools.ReporterExecutorConfig{
-                TaskID:    taskID,
-                SubtaskID: subtaskID,
-                ReportResult: func(ctx context.Context, name string, args json.RawMessage) (string,
-                        err := json.Unmarshal(args, &reviewResult)
-                        if err != nil {
-                                return "", fmt.Errorf("failed to unmarshal review result: %w", err)
-                        }
-                        return "review result successfully processed", nil
-                },
-        }
-        executor, err := fp.executor.GetReporterExecutor(cfg)
-        if err != nil {
-                return "", fmt.Errorf("failed to get reporter executor: %w", err)
-        }
+	ctx = tools.PutAgentContext(ctx, msgChainType)
+	cfg := tools.ReporterExecutorConfig{
+		TaskID:    taskID,
+		SubtaskID: subtaskID,
+		ReportResult: func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+			err := json.Unmarshal(args, &reviewResult)
+			if err != nil {
+				return "", fmt.Errorf("failed to unmarshal review result: %w", err)
+			}
+			return "review result successfully processed", nil
+		},
+	}
+	executor, err := fp.executor.GetReporterExecutor(cfg)
+	if err != nil {
+		return "", fmt.Errorf("failed to get reporter executor: %w", err)
+	}
 
-        chainBlob, err := json.Marshal(chain)
-        if err != nil {
-                return "", fmt.Errorf("failed to marshal msg chain: %w", err)
-        }
+	chainBlob, err := json.Marshal(chain)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal msg chain: %w", err)
+	}
 
-        msgChain, err := fp.db.CreateMsgChain(ctx, database.CreateMsgChainParams{
-                Type:          msgChainType,
-                Model:         fp.Model(optAgentType),
-                ModelProvider: string(fp.Type()),
-                Chain:         chainBlob,
-                FlowID:        fp.flowID,
-                TaskID:        database.Int64ToNullInt64(taskID),
-                SubtaskID:     database.Int64ToNullInt64(subtaskID),
-        })
-        if err != nil {
-                return "", fmt.Errorf("failed to create msg chain: %w", err)
-        }
+	msgChain, err := fp.db.CreateMsgChain(ctx, database.CreateMsgChainParams{
+		Type:          msgChainType,
+		Model:         fp.Model(optAgentType),
+		ModelProvider: string(fp.Type()),
+		Chain:         chainBlob,
+		FlowID:        fp.flowID,
+		TaskID:        database.Int64ToNullInt64(taskID),
+		SubtaskID:     database.Int64ToNullInt64(subtaskID),
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to create msg chain: %w", err)
+	}
 
-        err = fp.performAgentChain(ctx, optAgentType, msgChain.ID, taskID, subtaskID, chain, executo
-  fp.summarizer)
-        if err != nil {
-                return "", fmt.Errorf("failed to get reviewer result: %w", err)
-        }
+	err = fp.performAgentChain(ctx, optAgentType, msgChain.ID, taskID, subtaskID, chain, executor, fp.summarizer)
+	if err != nil {
+		return "", fmt.Errorf("failed to get reviewer result: %w", err)
+	}
 
-        if agentCtx, ok := tools.GetAgentContext(ctx); ok {
-                fp.putAgentLog(
-                        ctx,
-                        agentCtx.ParentAgentType,
-                        agentCtx.CurrentAgentType,
-                        fmt.Sprintf("Reviewing penetration test results for scope: %s", scopeContrac
-                        fmt.Sprintf("Verdict: %s\nComments: %s\nSuggestions: %s", reviewResult.Verdi
-  reviewResult.Comments, reviewResult.Suggestions),
-                        taskID,
-                        subtaskID,
-                )
-        }
 
-        return fmt.Sprintf(`{"verdict":"%s","comments":"%s","suggestions":"%s"}`,
-                reviewResult.Verdict, reviewResult.Comments, reviewResult.Suggestions), nil
-  }
+	if agentCtx, ok := tools.GetAgentContext(ctx); ok {
+		fp.putAgentLog(
+			ctx,
+			agentCtx.ParentAgentType,
+			agentCtx.CurrentAgentType,
+			fmt.Sprintf("Reviewing penetration test results for scope: %s", scopeContract),
+			fmt.Sprintf("Verdict: %s Comments: %s Suggestions: %s", reviewResult.Verdict, reviewResult.Comments, reviewResult.Suggestions),
+			taskID,
+			subtaskID,
+		)
+	}
+
+	return fmt.Sprintf(`{"verdict":"%s","comments":"%s","suggestions":"%s"}`,
+		reviewResult.Verdict, reviewResult.Comments, reviewResult.Suggestions), nil
+}

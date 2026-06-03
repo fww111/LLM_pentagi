@@ -196,6 +196,7 @@ const (
 	MsgchainTypeGenerator     MsgchainType = "generator"
 	MsgchainTypeRefiner       MsgchainType = "refiner"
 	MsgchainTypePlanner       MsgchainType = "planner"
+	MsgchainTypeReviewer     MsgchainType = "reviewer"
 	MsgchainTypeReflector     MsgchainType = "reflector"
 	MsgchainTypeEnricher      MsgchainType = "enricher"
 	MsgchainTypeAdviser       MsgchainType = "adviser"
@@ -211,7 +212,6 @@ const (
 	MsgchainTypeAssistant     MsgchainType = "assistant"
 	MsgchainTypeDesigner      MsgchainType = "designer"
 	MsgchainTypeSupervisor    MsgchainType = "supervisor"
-	MsgchainTypePlanner       MsgchainType = "planner"
 )
 
 func (e *MsgchainType) Scan(src interface{}) error {

@@ -121,6 +121,8 @@ type FlowProviderHandlers interface {
 	GetTesterHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 	GetTaskSearcherHandler(ctx context.Context, taskID int64) (tools.ExecutorHandler, error)
 	GetSummarizeResultHandler(taskID, subtaskID *int64) tools.SummarizeHandler
+	GetReviewerHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
+	GetReporterHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 }
 
 type tasksInfo struct {

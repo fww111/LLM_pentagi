@@ -320,6 +320,10 @@ func (fp *flowProvider) ExecuteDelegatedAgent(
 		handler, err = fp.GetMemoristHandler(ctx, &taskID, &subtaskID)
 	case "adviser":
 		handler, err = fp.GetAskAdviceHandler(ctx, &taskID, &subtaskID)
+	case "reviewer":
+		handler, err = fp.GetReviewerHandler(ctx, &taskID, &subtaskID)
+	case "reporter":
+		handler, err = fp.GetReporterHandler(ctx, &taskID, &subtaskID)
 	default:
 		err = fmt.Errorf("unsupported delegated agent type %q", agentType)
 	}
