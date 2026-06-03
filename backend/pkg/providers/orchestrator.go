@@ -22,8 +22,12 @@ func toolNameToAgentType(toolName string) (string, error) {
 	switch toolName {
 	case tools.CoderToolName:
 		return "coder", nil
+	case tools.IntegratorToolName:
+		return "integrator", nil
 	case tools.PentesterToolName:
 		return "pentester", nil
+	case tools.TesterToolName:
+		return "tester", nil
 	case tools.SearchToolName:
 		return "searcher", nil
 	case tools.MaintenanceToolName:
@@ -39,10 +43,20 @@ func toolNameToAgentType(toolName string) (string, error) {
 
 func agentTypeToToolName(agentType string) (string, error) {
 	switch agentType {
+	case "builder":
+		return tools.MaintenanceToolName, nil
+	case "generator":
+		return tools.CoderToolName, nil
 	case "coder":
 		return tools.CoderToolName, nil
+	case "integrator":
+		return tools.IntegratorToolName, nil
 	case "pentester":
 		return tools.PentesterToolName, nil
+	case "tester":
+		return tools.TesterToolName, nil
+	case "researcher":
+		return tools.SearchToolName, nil
 	case "searcher":
 		return tools.SearchToolName, nil
 	case "installer":
@@ -135,9 +149,11 @@ func (fp *flowProvider) DecidePrimaryAgentStep(
 		Adviser:    buildAgentHandler("adviser"),
 		Coder:      buildAgentHandler("coder"),
 		Installer:  buildAgentHandler("installer"),
+		Integrator: buildAgentHandler("integrator"),
 		Memorist:   buildAgentHandler("memorist"),
 		Pentester:  buildAgentHandler("pentester"),
 		Searcher:   buildAgentHandler("searcher"),
+		Tester:     buildAgentHandler("tester"),
 		Summarizer: fp.GetSummarizeResultHandler(&taskID, &subtaskID),
 	})
 	if err != nil {
@@ -282,10 +298,20 @@ func (fp *flowProvider) ExecuteDelegatedAgent(
 
 	var handler tools.ExecutorHandler
 	switch agentType {
+	case "builder":
+		handler, err = fp.GetInstallerHandler(ctx, &taskID, &subtaskID)
+	case "generator":
+		handler, err = fp.GetCoderHandler(ctx, &taskID, &subtaskID)
 	case "coder":
 		handler, err = fp.GetCoderHandler(ctx, &taskID, &subtaskID)
+	case "integrator":
+		handler, err = fp.GetIntegratorHandler(ctx, &taskID, &subtaskID)
 	case "pentester":
 		handler, err = fp.GetPentesterHandler(ctx, &taskID, &subtaskID)
+	case "tester":
+		handler, err = fp.GetTesterHandler(ctx, &taskID, &subtaskID)
+	case "researcher":
+		handler, err = fp.GetSubtaskSearcherHandler(ctx, &taskID, &subtaskID)
 	case "searcher":
 		handler, err = fp.GetSubtaskSearcherHandler(ctx, &taskID, &subtaskID)
 	case "installer":

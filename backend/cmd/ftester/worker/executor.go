@@ -302,6 +302,21 @@ func (te *toolExecutor) GetTool(ctx context.Context, funcName string) (tools.Too
 		}
 		return &agentTool{handler: handler}, nil
 
+	case tools.IntegratorToolName:
+		var handler tools.ExecutorHandler
+		if te.handlers != nil {
+			if te.taskID != nil && te.subtaskID != nil {
+				var err error
+				handler, err = te.handlers.GetIntegratorHandler(ctx, te.taskID, te.subtaskID)
+				if err != nil {
+					terminal.PrintWarning("Failed to get integrator handler: %v", err)
+				}
+			} else {
+				terminal.PrintWarning("No task or subtask ID provided for integrator tool")
+			}
+		}
+		return &agentTool{handler: handler}, nil
+
 	case tools.MaintenanceToolName:
 		var handler tools.ExecutorHandler
 		if te.handlers != nil {
@@ -343,6 +358,21 @@ func (te *toolExecutor) GetTool(ctx context.Context, funcName string) (tools.Too
 				}
 			} else {
 				terminal.PrintWarning("No task or subtask ID provided for pentester tool")
+			}
+		}
+		return &agentTool{handler: handler}, nil
+
+	case tools.TesterToolName:
+		var handler tools.ExecutorHandler
+		if te.handlers != nil {
+			if te.taskID != nil && te.subtaskID != nil {
+				var err error
+				handler, err = te.handlers.GetTesterHandler(ctx, te.taskID, te.subtaskID)
+				if err != nil {
+					terminal.PrintWarning("Failed to get tester handler: %v", err)
+				}
+			} else {
+				terminal.PrintWarning("No task or subtask ID provided for tester tool")
 			}
 		}
 		return &agentTool{handler: handler}, nil

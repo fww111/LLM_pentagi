@@ -114,9 +114,11 @@ type FlowProviderHandlers interface {
 	GetAskAdviceHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 	GetCoderHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 	GetInstallerHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
+	GetIntegratorHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 	GetMemoristHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 	GetPentesterHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 	GetSubtaskSearcherHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
+	GetTesterHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error)
 	GetTaskSearcherHandler(ctx context.Context, taskID int64) (tools.ExecutorHandler, error)
 	GetSummarizeResultHandler(taskID, subtaskID *int64) tools.SummarizeHandler
 }
@@ -627,6 +629,8 @@ func (fp *flowProvider) PrepareAgentChain(ctx context.Context, taskID, subtaskID
 		"SearchToolName":          tools.SearchToolName,
 		"PentesterToolName":       tools.PentesterToolName,
 		"CoderToolName":           tools.CoderToolName,
+		"IntegratorToolName":      tools.IntegratorToolName,
+		"TesterToolName":          tools.TesterToolName,
 		"AdviceToolName":          tools.AdviceToolName,
 		"MemoristToolName":        tools.MemoristToolName,
 		"MaintenanceToolName":     tools.MaintenanceToolName,
@@ -702,6 +706,12 @@ func (fp *flowProvider) PerformAgentChain(ctx context.Context, taskID, subtaskID
 		return PerformResultError, fmt.Errorf("failed to get installer handler: %w", err)
 	}
 
+	integrator, err := fp.GetIntegratorHandler(ctx, &taskID, &subtaskID)
+	if err != nil {
+		logger.WithError(err).Error("failed to get integrator handler")
+		return PerformResultError, fmt.Errorf("failed to get integrator handler: %w", err)
+	}
+
 	memorist, err := fp.GetMemoristHandler(ctx, &taskID, &subtaskID)
 	if err != nil {
 		logger.WithError(err).Error("failed to get memorist handler")
@@ -718,6 +728,12 @@ func (fp *flowProvider) PerformAgentChain(ctx context.Context, taskID, subtaskID
 	if err != nil {
 		logger.WithError(err).Error("failed to get searcher handler")
 		return PerformResultError, fmt.Errorf("failed to get searcher handler: %w", err)
+	}
+
+	tester, err := fp.GetTesterHandler(ctx, &taskID, &subtaskID)
+	if err != nil {
+		logger.WithError(err).Error("failed to get tester handler")
+		return PerformResultError, fmt.Errorf("failed to get tester handler: %w", err)
 	}
 
 	subtask, err := fp.db.GetSubtask(ctx, subtaskID)
@@ -745,14 +761,16 @@ func (fp *flowProvider) PerformAgentChain(ctx context.Context, taskID, subtaskID
 
 	performResult := PerformResultError
 	cfg := tools.PrimaryExecutorConfig{
-		TaskID:    taskID,
-		SubtaskID: subtaskID,
-		Adviser:   adviser,
-		Coder:     coder,
-		Installer: installer,
-		Memorist:  memorist,
-		Pentester: pentester,
-		Searcher:  searcher,
+		TaskID:     taskID,
+		SubtaskID:  subtaskID,
+		Adviser:    adviser,
+		Coder:      coder,
+		Installer:  installer,
+		Integrator: integrator,
+		Memorist:   memorist,
+		Pentester:  pentester,
+		Searcher:   searcher,
+		Tester:     tester,
 		Barrier: func(ctx context.Context, name string, args json.RawMessage) (string, error) {
 			loggerFunc := logger.WithContext(ctx).WithFields(logrus.Fields{
 				"name": name,

@@ -240,6 +240,16 @@ type HackResult struct {
 	Message string `json:"message" jsonschema:"required,title=Hack result message" jsonschema_description:"Not so long message with the result and path to reach goal to send to the user in user's language only"`
 }
 
+type IntegratorAction struct {
+	Question string `json:"question" jsonschema:"required" jsonschema_description:"Question to integration team member as a task to merge generated code, environment output, artifacts, and execution notes into one coherent runnable deliverable in English"`
+	Message  string `json:"message" jsonschema:"required,title=Integrator action message" jsonschema_description:"Not so long message with the question and summary of the integration task to send to the user in user's language only"`
+}
+
+type TesterAction struct {
+	Question string `json:"question" jsonschema:"required" jsonschema_description:"Question to testing team member as a task to validate integrated artifacts, run tests, inspect logs, and report pass/fail evidence in English"`
+	Message  string `json:"message" jsonschema:"required,title=Tester action message" jsonschema_description:"Not so long message with the question and summary of the testing task to send to the user in user's language only"`
+}
+
 // ========================================
 // Multi-agent migration: new tool argument types
 // ========================================

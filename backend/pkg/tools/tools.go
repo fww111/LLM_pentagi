@@ -180,9 +180,11 @@ type AssistantExecutorConfig struct {
 	Adviser    ExecutorHandler
 	Coder      ExecutorHandler
 	Installer  ExecutorHandler
+	Integrator ExecutorHandler
 	Memorist   ExecutorHandler
 	Pentester  ExecutorHandler
 	Searcher   ExecutorHandler
+	Tester     ExecutorHandler
 	Summarizer SummarizeHandler
 }
 
@@ -193,9 +195,11 @@ type PrimaryExecutorConfig struct {
 	Adviser    ExecutorHandler
 	Coder      ExecutorHandler
 	Installer  ExecutorHandler
+	Integrator ExecutorHandler
 	Memorist   ExecutorHandler
 	Pentester  ExecutorHandler
 	Searcher   ExecutorHandler
+	Tester     ExecutorHandler
 	Summarizer SummarizeHandler
 }
 
@@ -217,6 +221,26 @@ type CoderExecutorConfig struct {
 	Memorist   ExecutorHandler
 	Searcher   ExecutorHandler
 	CodeResult ExecutorHandler
+	Summarizer SummarizeHandler
+}
+
+type IntegratorExecutorConfig struct {
+	TaskID            *int64
+	SubtaskID         *int64
+	Adviser           ExecutorHandler
+	Memorist          ExecutorHandler
+	Searcher          ExecutorHandler
+	IntegrationResult ExecutorHandler
+	Summarizer        SummarizeHandler
+}
+
+type TesterExecutorConfig struct {
+	TaskID     *int64
+	SubtaskID  *int64
+	Adviser    ExecutorHandler
+	Memorist   ExecutorHandler
+	Searcher   ExecutorHandler
+	TestResult ExecutorHandler
 	Summarizer SummarizeHandler
 }
 
@@ -303,6 +327,8 @@ type FlowToolsExecutor interface {
 	GetPrimaryExecutor(cfg PrimaryExecutorConfig) (ContextToolsExecutor, error)
 	GetInstallerExecutor(cfg InstallerExecutorConfig) (ContextToolsExecutor, error)
 	GetCoderExecutor(cfg CoderExecutorConfig) (ContextToolsExecutor, error)
+	GetIntegratorExecutor(cfg IntegratorExecutorConfig) (ContextToolsExecutor, error)
+	GetTesterExecutor(cfg TesterExecutorConfig) (ContextToolsExecutor, error)
 	GetPentesterExecutor(cfg PentesterExecutorConfig) (ContextToolsExecutor, error)
 	GetSearcherExecutor(cfg SearcherExecutorConfig) (ContextToolsExecutor, error)
 	GetGeneratorExecutor(cfg GeneratorExecutorConfig) (ContextToolsExecutor, error)
@@ -726,6 +752,10 @@ func (fte *flowToolsExecutor) GetPrimaryExecutor(cfg PrimaryExecutorConfig) (Con
 		return nil, fmt.Errorf("installer handler is required")
 	}
 
+	if cfg.Integrator == nil {
+		return nil, fmt.Errorf("integrator handler is required")
+	}
+
 	if cfg.Memorist == nil {
 		return nil, fmt.Errorf("memorist handler is required")
 	}
@@ -736,6 +766,10 @@ func (fte *flowToolsExecutor) GetPrimaryExecutor(cfg PrimaryExecutorConfig) (Con
 
 	if cfg.Searcher == nil {
 		return nil, fmt.Errorf("searcher handler is required")
+	}
+
+	if cfg.Tester == nil {
+		return nil, fmt.Errorf("tester handler is required")
 	}
 
 	ce := &customExecutor{
@@ -750,19 +784,23 @@ func (fte *flowToolsExecutor) GetPrimaryExecutor(cfg PrimaryExecutorConfig) (Con
 			registryDefinitions[FinalyToolName],
 			registryDefinitions[AdviceToolName],
 			registryDefinitions[CoderToolName],
+			registryDefinitions[IntegratorToolName],
 			registryDefinitions[MaintenanceToolName],
 			registryDefinitions[MemoristToolName],
 			registryDefinitions[PentesterToolName],
 			registryDefinitions[SearchToolName],
+			registryDefinitions[TesterToolName],
 		},
 		handlers: map[string]ExecutorHandler{
 			FinalyToolName:      cfg.Barrier,
 			AdviceToolName:      cfg.Adviser,
 			CoderToolName:       cfg.Coder,
+			IntegratorToolName:  cfg.Integrator,
 			MaintenanceToolName: cfg.Installer,
 			MemoristToolName:    cfg.Memorist,
 			PentesterToolName:   cfg.Pentester,
 			SearchToolName:      cfg.Searcher,
+			TesterToolName:      cfg.Tester,
 		},
 		barriers: map[string]struct{}{
 			FinalyToolName: {},
@@ -796,6 +834,10 @@ func (fte *flowToolsExecutor) GetPrimaryDecisionExecutor(cfg PrimaryExecutorConf
 		return nil, fmt.Errorf("installer handler is required")
 	}
 
+	if cfg.Integrator == nil {
+		return nil, fmt.Errorf("integrator handler is required")
+	}
+
 	if cfg.Memorist == nil {
 		return nil, fmt.Errorf("memorist handler is required")
 	}
@@ -806,6 +848,10 @@ func (fte *flowToolsExecutor) GetPrimaryDecisionExecutor(cfg PrimaryExecutorConf
 
 	if cfg.Searcher == nil {
 		return nil, fmt.Errorf("searcher handler is required")
+	}
+
+	if cfg.Tester == nil {
+		return nil, fmt.Errorf("tester handler is required")
 	}
 
 	ce := &customExecutor{
@@ -820,28 +866,34 @@ func (fte *flowToolsExecutor) GetPrimaryDecisionExecutor(cfg PrimaryExecutorConf
 			registryDefinitions[FinalyToolName],
 			registryDefinitions[AdviceToolName],
 			registryDefinitions[CoderToolName],
+			registryDefinitions[IntegratorToolName],
 			registryDefinitions[MaintenanceToolName],
 			registryDefinitions[MemoristToolName],
 			registryDefinitions[PentesterToolName],
 			registryDefinitions[SearchToolName],
+			registryDefinitions[TesterToolName],
 		},
 		handlers: map[string]ExecutorHandler{
 			FinalyToolName:      cfg.Barrier,
 			AdviceToolName:      cfg.Adviser,
 			CoderToolName:       cfg.Coder,
+			IntegratorToolName:  cfg.Integrator,
 			MaintenanceToolName: cfg.Installer,
 			MemoristToolName:    cfg.Memorist,
 			PentesterToolName:   cfg.Pentester,
 			SearchToolName:      cfg.Searcher,
+			TesterToolName:      cfg.Tester,
 		},
 		barriers: map[string]struct{}{
 			FinalyToolName:      {},
 			AdviceToolName:      {},
 			CoderToolName:       {},
+			IntegratorToolName:  {},
 			MaintenanceToolName: {},
 			MemoristToolName:    {},
 			PentesterToolName:   {},
 			SearchToolName:      {},
+			TesterToolName:      {},
 		},
 		summarizer: cfg.Summarizer,
 	}
@@ -1025,6 +1077,216 @@ func (fte *flowToolsExecutor) GetCoderExecutor(cfg CoderExecutorConfig) (Context
 		ce.definitions = append(ce.definitions, registryDefinitions[StoreCodeToolName])
 		ce.handlers[SearchCodeToolName] = code.Handle
 		ce.handlers[StoreCodeToolName] = code.Handle
+	}
+
+	graphitiSearch := NewGraphitiSearchTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		fte.graphitiClient,
+	)
+	if graphitiSearch.IsAvailable() {
+		ce.definitions = append(ce.definitions, registryDefinitions[GraphitiSearchToolName])
+		ce.handlers[GraphitiSearchToolName] = graphitiSearch.Handle
+	}
+
+	return ce, nil
+}
+
+func (fte *flowToolsExecutor) GetIntegratorExecutor(cfg IntegratorExecutorConfig) (ContextToolsExecutor, error) {
+	if cfg.IntegrationResult == nil {
+		return nil, fmt.Errorf("integration result handler is required")
+	}
+
+	if cfg.Adviser == nil {
+		return nil, fmt.Errorf("adviser handler is required")
+	}
+
+	if cfg.Memorist == nil {
+		return nil, fmt.Errorf("memorist handler is required")
+	}
+
+	if cfg.Searcher == nil {
+		return nil, fmt.Errorf("searcher handler is required")
+	}
+
+	container, err := fte.db.GetFlowPrimaryContainer(context.Background(), fte.flowID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get container %d: %w", fte.flowID, err)
+	}
+
+	term := NewTerminalTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		container.ID,
+		container.LocalID.String,
+		fte.docker,
+		fte.tlp,
+	)
+
+	ce := &customExecutor{
+		flowID:    fte.flowID,
+		taskID:    cfg.TaskID,
+		subtaskID: cfg.SubtaskID,
+		mlp:       fte.mlp,
+		vslp:      fte.vslp,
+		db:        fte.db,
+		store:     fte.store,
+		definitions: []llms.FunctionDefinition{
+			registryDefinitions[IntegrationResultToolName],
+			registryDefinitions[AdviceToolName],
+			registryDefinitions[MemoristToolName],
+			registryDefinitions[SearchToolName],
+			registryDefinitions[TerminalToolName],
+			registryDefinitions[FileToolName],
+		},
+		handlers: map[string]ExecutorHandler{
+			IntegrationResultToolName: cfg.IntegrationResult,
+			AdviceToolName:            cfg.Adviser,
+			MemoristToolName:          cfg.Memorist,
+			SearchToolName:            cfg.Searcher,
+			TerminalToolName:          term.Handle,
+			FileToolName:              term.Handle,
+		},
+		barriers: map[string]struct{}{
+			IntegrationResultToolName: {},
+		},
+		summarizer: cfg.Summarizer,
+	}
+
+	browser := NewBrowserTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		fte.cfg.DataDir,
+		fte.cfg.ScraperPrivateURL,
+		fte.cfg.ScraperPublicURL,
+		fte.scp,
+	)
+	if browser.IsAvailable() {
+		ce.definitions = append(ce.definitions, registryDefinitions[BrowserToolName])
+		ce.handlers[BrowserToolName] = browser.Handle
+	}
+
+	code := NewCodeTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		fte.replacer,
+		fte.store,
+		fte.vslp,
+	)
+	if code.IsAvailable() {
+		ce.definitions = append(ce.definitions, registryDefinitions[SearchCodeToolName])
+		ce.definitions = append(ce.definitions, registryDefinitions[StoreCodeToolName])
+		ce.handlers[SearchCodeToolName] = code.Handle
+		ce.handlers[StoreCodeToolName] = code.Handle
+	}
+
+	graphitiSearch := NewGraphitiSearchTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		fte.graphitiClient,
+	)
+	if graphitiSearch.IsAvailable() {
+		ce.definitions = append(ce.definitions, registryDefinitions[GraphitiSearchToolName])
+		ce.handlers[GraphitiSearchToolName] = graphitiSearch.Handle
+	}
+
+	return ce, nil
+}
+
+func (fte *flowToolsExecutor) GetTesterExecutor(cfg TesterExecutorConfig) (ContextToolsExecutor, error) {
+	if cfg.TestResult == nil {
+		return nil, fmt.Errorf("test result handler is required")
+	}
+
+	if cfg.Adviser == nil {
+		return nil, fmt.Errorf("adviser handler is required")
+	}
+
+	if cfg.Memorist == nil {
+		return nil, fmt.Errorf("memorist handler is required")
+	}
+
+	if cfg.Searcher == nil {
+		return nil, fmt.Errorf("searcher handler is required")
+	}
+
+	container, err := fte.db.GetFlowPrimaryContainer(context.Background(), fte.flowID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get container %d: %w", fte.flowID, err)
+	}
+
+	term := NewTerminalTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		container.ID,
+		container.LocalID.String,
+		fte.docker,
+		fte.tlp,
+	)
+
+	ce := &customExecutor{
+		flowID:    fte.flowID,
+		taskID:    cfg.TaskID,
+		subtaskID: cfg.SubtaskID,
+		mlp:       fte.mlp,
+		vslp:      fte.vslp,
+		db:        fte.db,
+		store:     fte.store,
+		definitions: []llms.FunctionDefinition{
+			registryDefinitions[TestResultToolName],
+			registryDefinitions[AdviceToolName],
+			registryDefinitions[MemoristToolName],
+			registryDefinitions[SearchToolName],
+			registryDefinitions[TerminalToolName],
+			registryDefinitions[FileToolName],
+		},
+		handlers: map[string]ExecutorHandler{
+			TestResultToolName: cfg.TestResult,
+			AdviceToolName:     cfg.Adviser,
+			MemoristToolName:   cfg.Memorist,
+			SearchToolName:     cfg.Searcher,
+			TerminalToolName:   term.Handle,
+			FileToolName:       term.Handle,
+		},
+		barriers: map[string]struct{}{
+			TestResultToolName: {},
+		},
+		summarizer: cfg.Summarizer,
+	}
+
+	browser := NewBrowserTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		fte.cfg.DataDir,
+		fte.cfg.ScraperPrivateURL,
+		fte.cfg.ScraperPublicURL,
+		fte.scp,
+	)
+	if browser.IsAvailable() {
+		ce.definitions = append(ce.definitions, registryDefinitions[BrowserToolName])
+		ce.handlers[BrowserToolName] = browser.Handle
+	}
+
+	guide := NewGuideTool(
+		fte.flowID,
+		cfg.TaskID,
+		cfg.SubtaskID,
+		fte.replacer,
+		fte.store,
+		fte.vslp,
+	)
+	if guide.IsAvailable() {
+		ce.definitions = append(ce.definitions, registryDefinitions[StoreGuideToolName])
+		ce.definitions = append(ce.definitions, registryDefinitions[SearchGuideToolName])
+		ce.handlers[StoreGuideToolName] = guide.Handle
+		ce.handlers[SearchGuideToolName] = guide.Handle
 	}
 
 	graphitiSearch := NewGraphitiSearchTool(

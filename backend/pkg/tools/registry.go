@@ -15,8 +15,10 @@ const (
 	MaintenanceResultToolName = "maintenance_result"
 	CoderToolName             = "coder"
 	CodeResultToolName        = "code_result"
+	IntegratorToolName        = "integrator"
 	PentesterToolName         = "pentester"
 	HackResultToolName        = "hack_result"
+	TesterToolName            = "tester"
 	AdviceToolName            = "advice"
 	MemoristToolName          = "memorist"
 	MemoristResultToolName    = "memorist_result"
@@ -46,15 +48,15 @@ const (
 	FileToolName              = "file"
 
 	// Multi-agent migration: new tool constants
-	ScopeContractToolName       = "scope_contract"
-	TodoListToolName            = "todo_list"
-	TodoPatchToolName           = "todo_patch"
-	IntegrationResultToolName   = "integration_result"
-	TestResultToolName          = "test_result"
-	ReviewResultToolName        = "review_result"
-	AuthRequestToolName         = "auth_request"
-	SharedStatePatchToolName    = "shared_state_patch"
-	ArtifactToolName            = "artifact"
+	ScopeContractToolName     = "scope_contract"
+	TodoListToolName          = "todo_list"
+	TodoPatchToolName         = "todo_patch"
+	IntegrationResultToolName = "integration_result"
+	TestResultToolName        = "test_result"
+	ReviewResultToolName      = "review_result"
+	AuthRequestToolName       = "auth_request"
+	SharedStatePatchToolName  = "shared_state_patch"
+	ArtifactToolName          = "artifact"
 
 	// Route-to-agent tools for supervisor delegation
 	RouteToDesignerToolName    = "route_to_designer"
@@ -118,8 +120,10 @@ var toolsTypeMapping = map[string]ToolType{
 	MaintenanceResultToolName: StoreAgentResultToolType,
 	CoderToolName:             AgentToolType,
 	CodeResultToolName:        StoreAgentResultToolType,
+	IntegratorToolName:        AgentToolType,
 	PentesterToolName:         AgentToolType,
 	HackResultToolName:        StoreAgentResultToolType,
+	TesterToolName:            AgentToolType,
 	AdviceToolName:            AgentToolType,
 	MemoristToolName:          AgentToolType,
 	MemoristResultToolName:    StoreAgentResultToolType,
@@ -192,7 +196,9 @@ var allowedStoringInMemoryTools = []string{
 	SploitusToolName,
 	MaintenanceToolName,
 	CoderToolName,
+	IntegratorToolName,
 	PentesterToolName,
+	TesterToolName,
 	AdviceToolName,
 }
 
@@ -390,6 +396,11 @@ var registryDefinitions = map[string]llms.FunctionDefinition{
 		Description: "Send the code result to the user with execution status and fully detailed report about using the result",
 		Parameters:  reflector.Reflect(&CodeResult{}),
 	},
+	IntegratorToolName: {
+		Name:        IntegratorToolName,
+		Description: "Call to integration team member to merge builder and generator outputs into one runnable deliverable",
+		Parameters:  reflector.Reflect(&IntegratorAction{}),
+	},
 	PentesterToolName: {
 		Name:        PentesterToolName,
 		Description: "Call to pentester team member to perform a penetration test or looking for vulnerabilities and weaknesses",
@@ -399,6 +410,11 @@ var registryDefinitions = map[string]llms.FunctionDefinition{
 		Name:        HackResultToolName,
 		Description: "Send the penetration test result to the user with detailed report",
 		Parameters:  reflector.Reflect(&HackResult{}),
+	},
+	TesterToolName: {
+		Name:        TesterToolName,
+		Description: "Call to testing team member to validate integrated artifacts and produce pass/fail evidence",
+		Parameters:  reflector.Reflect(&TesterAction{}),
 	},
 	AdviceToolName: {
 		Name:        AdviceToolName,

@@ -84,6 +84,8 @@ AGENT_ROLES = [
     "pentester", "reviewer", "reporter", "researcher",
 ]
 
+TEAM_C_AGENT_ROLES = {"builder", "generator", "integrator", "tester", "pentester"}
+
 
 class MultiAgentState(TypedDict, total=False):
     flow_id: int
@@ -145,7 +147,19 @@ def supervisor(state: MultiAgentState) -> Dict[str, Any]:
         {"flow_id": state["flow_id"]},
     )
     decision = response.get("decision", {})
-    return {"supervisor_decision": decision}
+    active_todo = decision.get("todo") or state.get("active_todo")
+    active_todo_id = (
+        decision.get("todo_id")
+        or decision.get("active_todo_id")
+        or (active_todo or {}).get("todo_id")
+        or (active_todo or {}).get("id")
+        or state.get("active_todo_id")
+    )
+    return {
+        "supervisor_decision": decision,
+        "active_todo": active_todo,
+        "active_todo_id": str(active_todo_id) if active_todo_id is not None else None,
+    }
 
 
 def route_after_supervisor(state: MultiAgentState) -> str:
@@ -175,10 +189,42 @@ def route_after_supervisor(state: MultiAgentState) -> str:
     return "failed"
 
 
+def _agent_question(agent_role: str, state: MultiAgentState) -> str:
+    active_todo = state.get("active_todo") or {}
+    shared_state = state.get("shared_state") or {}
+    scope_contract = state.get("scope_contract") or {}
+    last_result = state.get("last_agent_result") or ""
+
+    title = active_todo.get("title") or f"{agent_role} execution"
+    success_criteria = active_todo.get("success_criteria") or "Complete the delegated work and return concrete evidence."
+    inputs = active_todo.get("inputs") or ""
+
+    return "\n".join([
+        f"Agent role: {agent_role}",
+        f"Active todo id: {state.get('active_todo_id') or 'unknown'}",
+        f"Todo title: {title}",
+        f"Inputs: {inputs}",
+        f"Success criteria: {success_criteria}",
+        f"Scope contract: {scope_contract}",
+        f"Shared state: {shared_state}",
+        f"Previous agent result: {last_result}",
+        "Execute this todo within scope, update evidence, and return a structured result.",
+    ])
+
+
+def _agent_payload(agent_role: str, state: MultiAgentState) -> Dict[str, Any]:
+    decision = state.get("supervisor_decision") or {}
+    payload = dict(decision.get("payload") or {})
+    if not payload.get("question"):
+        payload["question"] = _agent_question(agent_role, state)
+    if not payload.get("message"):
+        payload["message"] = f"Run {agent_role} for todo {state.get('active_todo_id') or 'current task'}"
+    return payload
+
+
 def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[str, Any]]:
     def _node(state: MultiAgentState) -> Dict[str, Any]:
-        decision = state.get("supervisor_decision") or {}
-        todo_id = state.get("active_todo_id", "")
+        todo_id = state.get("active_todo_id") or ""
 
         # Map new agent roles to legacy Go handler names
         go_agent_type = agent_role
@@ -193,8 +239,9 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
             f"tasks/{state['task_id']}/execute-agent",
             {
                 "flow_id": state["flow_id"],
-                "agent_role": go_agent_type,
-                "payload": decision.get("payload") or {},
+                "agent_role": agent_role,
+                "todo_id": todo_id,
+                "payload": _agent_payload(agent_role, state),
             },
         )
         execution = response.get("result", response.get("execution", {}))
@@ -217,6 +264,26 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
         }
 
     return _node
+
+
+def builder_node(state: MultiAgentState) -> Dict[str, Any]:
+    return _multi_agent_execute("builder")(state)
+
+
+def generator_node(state: MultiAgentState) -> Dict[str, Any]:
+    return _multi_agent_execute("generator")(state)
+
+
+def integrator_node(state: MultiAgentState) -> Dict[str, Any]:
+    return _multi_agent_execute("integrator")(state)
+
+
+def tester_node(state: MultiAgentState) -> Dict[str, Any]:
+    return _multi_agent_execute("tester")(state)
+
+
+def pentester_node(state: MultiAgentState) -> Dict[str, Any]:
+    return _multi_agent_execute("pentester")(state)
 
 
 def auth_required(state: MultiAgentState) -> Dict[str, Any]:
@@ -314,9 +381,16 @@ def _build_graph() -> StateGraph:
     builder.add_node("planner", planner)
     builder.add_node("supervisor", supervisor)
 
-    # Agent execution nodes
+    # Agent execution nodes owned by Team C are explicit for easier extension.
+    builder.add_node("builder", builder_node)
+    builder.add_node("generator", generator_node)
+    builder.add_node("integrator", integrator_node)
+    builder.add_node("tester", tester_node)
+    builder.add_node("pentester", pentester_node)
+
     for role in AGENT_ROLES:
-        builder.add_node(role, _multi_agent_execute(role))
+        if role not in TEAM_C_AGENT_ROLES:
+            builder.add_node(role, _multi_agent_execute(role))
 
     # Terminal / interrupt nodes
     builder.add_node("auth_required", auth_required)
