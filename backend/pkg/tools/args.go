@@ -356,6 +356,15 @@ type ReviewResultAction struct {
 	Severity string   `json:"severity,omitempty" jsonschema:"enum=info,enum=low,enum=medium,enum=high,enum=critical" jsonschema_description:"Overall severity of issues found"`
 	Message  string   `json:"message" jsonschema:"required,title=Review result message" jsonschema_description:"Summary of the review to send to the user in user's language only"`
 }
+type ReviewerAction struct {
+        ScopeContract string `json:"scope_contract" jsonschema:"required" jsonschema_description:"The contract defining the boundaries and objectives of the penetration test"`
+        Plan         string `json:"plan" jsonschema:"required" jsonschema_description:"The penetrationtesting plan outlining the methodology and approach to be followed"`
+        Findings     string `json:"findings" jsonschema:"required" jsonschema_description:"Summary ofdiscovered vulnerabilities and findings from the penetration test"`
+        Evidence     string `json:"evidence" jsonschema:"required" jsonschema_description:"Detailed evand proof of concept for each finding discovered during the test"`
+        Message      string `json:"message" jsonschema:"required,title=Reviewer action message"
+		jsonschema_description:"Not so long message which explains what needs to be reviewed and validated
+  to send to the user in user's language only"`
+  }
 
 type Bool bool
 
@@ -440,3 +449,14 @@ func (i *Int64) String() string {
 	}
 	return strconv.FormatInt(int64(*i), 10)
 }
+type ReviewResult struct {
+        Verdict    string `json:"verdict" jsonschema:"required,title=Review verdict"
+  jsonschema_description:"The review verdict - either 'PASS' or 'FAIL' indicating whether the
+  penetration test results meet the required standards"`
+        Comments   string `json:"comments" jsonschema:"required,title=Review comments"
+  jsonschema_description:"Detailed comments explaining the review process, quality assessment, and
+  compliance check results"`
+        Suggestions string `json:"suggestions" jsonschema:"required,title=Review suggestions"
+  jsonschema_description="Suggestions for improvement, additional tests, or remediation measures based
+   on the review findings"`
+  }
