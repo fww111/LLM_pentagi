@@ -103,6 +103,9 @@ class MultiAgentState(TypedDict, total=False):
     task_result: Optional[str]
     failure_reason: Optional[str]
     auth_request: Optional[Dict[str, Any]]
+    designer_msg_chain_id: Optional[int]
+    planner_msg_chain_id: Optional[int]
+    supervisor_msg_chain_id: Optional[int]
 
 
 # --- Multi-agent nodes ---
@@ -110,11 +113,15 @@ class MultiAgentState(TypedDict, total=False):
 def designer(state: MultiAgentState) -> Dict[str, Any]:
     response = _go_post(
         f"tasks/{state['task_id']}/designer-step",
-        {"flow_id": state["flow_id"]},
+        {"flow_id": state["flow_id"], "msg_chain_id": state.get("designer_msg_chain_id") or 0},
     )
     decision = response.get("decision", {})
     scope_contract = decision.get("result", {})
-    return {"scope_contract": scope_contract, "supervisor_decision": decision}
+    return {
+        "scope_contract": scope_contract,
+        "supervisor_decision": decision,
+        "designer_msg_chain_id": decision.get("msg_chain_id", 0),
+    }
 
 
 def route_after_designer(state: MultiAgentState) -> str:
@@ -127,24 +134,40 @@ def route_after_designer(state: MultiAgentState) -> str:
 
 
 def planner(state: MultiAgentState) -> Dict[str, Any]:
-    endpoint = "refine-todo-plan" if state.get("todo_plan") or state.get("plan_needs_update") else "generate-todo-plan"
+    """Planner node: calls planner-step to let the LLM decide todo plan via TodoList/TodoPatch tools."""
     response = _go_post(
-        f"tasks/{state['task_id']}/{endpoint}",
-        {"flow_id": state["flow_id"]},
+        f"tasks/{state['task_id']}/planner-step",
+        {
+            "flow_id": state["flow_id"],
+            "msg_chain_id": state.get("planner_msg_chain_id") or 0,
+            "has_existing_plan": bool(state.get("todo_plan")),
+        },
     )
+    decision = response.get("decision", {})
+    todos = decision.get("result", {})
+    if isinstance(todos, str):
+        import json as _json
+        try:
+            todos = _json.loads(todos)
+        except Exception:
+            todos = None
+    if isinstance(todos, dict) and "todos" in todos:
+        todos = todos["todos"]
+
     return {
-        "todo_plan": response.get("todos", []),
+        "todo_plan": todos or state.get("todo_plan", []),
         "active_todo_id": None,
         "active_todo": None,
         "plan_needs_update": False,
-        "supervisor_decision": None,
+        "supervisor_decision": decision,
+        "planner_msg_chain_id": decision.get("msg_chain_id", 0),
     }
 
 
 def supervisor(state: MultiAgentState) -> Dict[str, Any]:
     response = _go_post(
         f"tasks/{state['task_id']}/supervisor-step",
-        {"flow_id": state["flow_id"]},
+        {"flow_id": state["flow_id"], "msg_chain_id": state.get("supervisor_msg_chain_id") or 0},
     )
     decision = response.get("decision", {})
     active_todo = decision.get("todo") or state.get("active_todo")
@@ -159,6 +182,9 @@ def supervisor(state: MultiAgentState) -> Dict[str, Any]:
         "supervisor_decision": decision,
         "active_todo": active_todo,
         "active_todo_id": str(active_todo_id) if active_todo_id is not None else None,
+        # If supervisor delegates back to planner, mark plan as needing update
+        "plan_needs_update": decision.get("action") == "delegate" and decision.get("agent_role") == "planner",
+        "supervisor_msg_chain_id": decision.get("msg_chain_id", 0),
     }
 
 

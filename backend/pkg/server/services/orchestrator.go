@@ -16,7 +16,8 @@ type OrchestratorService struct {
 }
 
 type orchestratorFlowTaskRequest struct {
-	FlowID int64 `json:"flow_id" binding:"required,min=1"`
+	FlowID     int64 `json:"flow_id" binding:"required,min=1"`
+	MsgChainID int64 `json:"msg_chain_id,omitempty"`
 }
 
 type orchestratorExecuteAgentRequest struct {
@@ -411,7 +412,7 @@ func (s *OrchestratorService) DesignerStep(c *gin.Context) {
 	if !ok {
 		return
 	}
-	decision, err := task.DesignerStep(c)
+	decision, err := task.DesignerStep(c, req.MsgChainID)
 	if err != nil {
 		logger.FromContext(c).WithError(err).Error("error in designer step")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -430,7 +431,7 @@ func (s *OrchestratorService) PlannerStep(c *gin.Context) {
 	if !ok {
 		return
 	}
-	decision, err := task.PlannerStep(c)
+	decision, err := task.PlannerStep(c, req.MsgChainID)
 	if err != nil {
 		logger.FromContext(c).WithError(err).Error("error in planner step")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -449,7 +450,7 @@ func (s *OrchestratorService) SupervisorStep(c *gin.Context) {
 	if !ok {
 		return
 	}
-	decision, err := task.SupervisorStep(c)
+	decision, err := task.SupervisorStep(c, req.MsgChainID)
 	if err != nil {
 		logger.FromContext(c).WithError(err).Error("error in supervisor step")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

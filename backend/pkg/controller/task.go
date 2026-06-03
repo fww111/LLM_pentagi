@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"sync"
 
 	"pentagi/pkg/database"
@@ -40,9 +41,9 @@ type TaskWorker interface {
 	Run(ctx context.Context) error
 	Finish(ctx context.Context) error
 	// Multi-agent migration: new methods
-	DesignerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
-	PlannerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
-	SupervisorStep(ctx context.Context) (*orchestrator.SupervisorDecision, error)
+	DesignerStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error)
+	PlannerStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error)
+	SupervisorStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error)
 	GenerateTodoPlan(ctx context.Context) ([]database.Todo, error)
 	RefineTodoPlan(ctx context.Context) ([]database.Todo, error)
 	AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
@@ -483,24 +484,24 @@ func (tw *taskWorker) runWithOrchestrator(ctx context.Context) error {
 // Multi-agent migration: new method implementations
 // ========================================
 
-func (tw *taskWorker) DesignerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
-	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "designer", 0)
+func (tw *taskWorker) DesignerStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error) {
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "designer", msgChainID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute designer step: %w", err)
 	}
 	return decision, nil
 }
 
-func (tw *taskWorker) PlannerStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
-	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner", 0)
+func (tw *taskWorker) PlannerStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error) {
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "planner", msgChainID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute planner step: %w", err)
 	}
 	return decision, nil
 }
 
-func (tw *taskWorker) SupervisorStep(ctx context.Context) (*orchestrator.SupervisorDecision, error) {
-	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "supervisor", 0)
+func (tw *taskWorker) SupervisorStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error) {
+	decision, err := tw.taskCtx.Provider.DecideSupervisorStep(ctx, tw.taskCtx.TaskID, "supervisor", msgChainID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute supervisor step: %w", err)
 	}
@@ -557,7 +558,12 @@ func (tw *taskWorker) StoreAuthRequest(ctx context.Context, todoID, action, risk
 }
 
 func (tw *taskWorker) ResolveAuthRequest(ctx context.Context, authID, status, response string) error {
-	return fmt.Errorf("not implemented: resolve auth request")
+	authIDInt, err := strconv.ParseInt(authID, 10, 64)
+	if err != nil {
+		return fmt.Errorf("invalid auth ID %q: %w", authID, err)
+	}
+	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
+	return ma.ResolveAuthRequest(ctx, authIDInt, status, response)
 }
 
 func (tw *taskWorker) StoreFinding(ctx context.Context, todoID, findingType, severity, title, description, rawOutput string) error {
