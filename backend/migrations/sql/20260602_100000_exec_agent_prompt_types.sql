@@ -1,5 +1,7 @@
 -- Phase 3/4 execution agents: Integrator and Tester
 
+-- +goose Up
+
 ALTER TYPE MSGCHAIN_TYPE ADD VALUE IF NOT EXISTS 'integrator';
 ALTER TYPE MSGCHAIN_TYPE ADD VALUE IF NOT EXISTS 'tester';
 

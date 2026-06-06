@@ -42,11 +42,37 @@ class RunTaskRequest(BaseModel):
     flow_id: int
     task_id: int
 
+class ResumeTaskRequest(BaseModel):
+    flow_id: int
+    task_id: int
+    user_input: str = ""
 
 def _checkpointer() -> Any:
     if SqliteSaver is None:
         LOGGER.warning("SqliteSaver unavailable, falling back to in-memory checkpointing")
         return InMemorySaver()
+
+    # Patch JsonPlusSerializer: langgraph-checkpoint-sqlite 2.0.x calls .dumps()
+    # but langgraph-checkpoint 4.x only provides dumps_typed/loads_typed.
+    # Add a compatibility shim so the checkpointer doesn't crash.
+    try:
+        from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer as _JPS
+        if not hasattr(_JPS, "dumps"):
+            import json
+
+            def _dumps_shim(self, obj: Any) -> bytes:
+                """Compatibility shim: serialize to JSON bytes."""
+                return json.dumps(obj, default=str).encode("utf-8")
+
+            def _loads_shim(self, data: bytes) -> Any:
+                """Compatibility shim: deserialize from JSON bytes."""
+                return json.loads(data)
+
+            _JPS.dumps = _dumps_shim
+            _JPS.loads = _loads_shim
+            LOGGER.info("Patched JsonPlusSerializer.dumps/loads for compatibility")
+    except Exception as exc:
+        LOGGER.warning("Failed to patch JsonPlusSerializer: %s", exc)
 
     os.makedirs(os.path.dirname(CHECKPOINT_PATH), exist_ok=True)
     conn = sqlite3.connect(CHECKPOINT_PATH, check_same_thread=False)
@@ -145,6 +171,10 @@ def planner(state: MultiAgentState) -> Dict[str, Any]:
     )
     decision = response.get("decision", {})
     todos = decision.get("result", {})
+    action = decision.get("action", "")
+    # Accept both plan_ready (correct semantics) and completed (backward compat)
+    if action not in ("plan_ready", "completed"):
+        LOGGER.warning("planner returned unexpected action %s, treating as plan_ready", action)
     if isinstance(todos, str):
         import json as _json
         try:
@@ -531,13 +561,14 @@ def start_run(req: RunTaskRequest) -> Dict[str, Any]:
 
 
 @app.post("/runs/resume")
-def resume_run(req: RunTaskRequest) -> Dict[str, Any]:
+def resume_run(req: ResumeTaskRequest) -> Dict[str, Any]:
     snapshot = GRAPH.get_state(_thread_config(req.task_id))
     interrupts = list(getattr(snapshot, "interrupts", ()) or ())
     next_nodes = list(getattr(snapshot, "next", ()) or ())
 
     if interrupts:
-        return _run_stream(Command(resume={"resumed": True}), req.task_id)
+        resume_val = req.user_input if req.user_input else {"resumed": True}
+        return _run_stream(Command(resume=resume_val), req.task_id)
 
     if next_nodes:
         return _run_stream(None, req.task_id)

@@ -507,7 +507,10 @@ func (fte *flowToolsExecutor) GetCustomExecutor(cfg CustomExecutorConfig) (Conte
 
 	barriers := make(map[string]struct{})
 	for _, barrier := range cfg.Barriers {
-		if _, ok := fte.handlers[barrier]; !ok {
+		// Check both custom handlers (from buildSupervisorTools) and global handlers
+		_, inCustom := cfg.Handlers[barrier]
+		_, inGlobal := fte.handlers[barrier]
+		if !inCustom && !inGlobal {
 			return nil, fmt.Errorf("barrier function %s not found", barrier)
 		}
 		barriers[barrier] = struct{}{}

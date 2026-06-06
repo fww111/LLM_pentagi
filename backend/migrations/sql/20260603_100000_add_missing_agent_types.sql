@@ -1,5 +1,7 @@
 -- Multi-agent Phase 2+: Add missing enum types for designer, supervisor, reviewer
 
+-- +goose Up
+
 -- MSGCHAIN_TYPE additions
 ALTER TYPE MSGCHAIN_TYPE ADD VALUE IF NOT EXISTS 'designer';
 ALTER TYPE MSGCHAIN_TYPE ADD VALUE IF NOT EXISTS 'supervisor';

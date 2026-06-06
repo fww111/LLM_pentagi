@@ -124,6 +124,7 @@ const (
 	SupervisorActionCompleted   SupervisorAction = "completed"
 	SupervisorActionFailed      SupervisorAction = "failed"
 	SupervisorActionRejected    SupervisorAction = "rejected"
+	SupervisorActionPlanReady   SupervisorAction = "plan_ready" // planner produced/refined a plan; flow continues
 )
 
 type SupervisorDecision struct {

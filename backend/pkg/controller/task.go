@@ -11,6 +11,7 @@ import (
 
 	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
+	"github.com/sirupsen/logrus"
 	"pentagi/pkg/orchestrator"
 	"pentagi/pkg/providers"
 	"pentagi/pkg/tools"
@@ -57,12 +58,13 @@ type TaskWorker interface {
 }
 
 type taskWorker struct {
-	mx        *sync.RWMutex
-	stc       SubtaskController
-	taskCtx   *TaskContext
-	updater   FlowUpdater
-	completed bool
-	waiting   bool
+	mx           *sync.RWMutex
+	stc          SubtaskController
+	taskCtx      *TaskContext
+	updater      FlowUpdater
+	completed    bool
+	waiting      bool
+	pendingInput string
 }
 
 func NewTaskWorker(
@@ -291,6 +293,13 @@ func (tw *taskWorker) PutInput(ctx context.Context, input string) error {
 		return fmt.Errorf("task is not waiting")
 	}
 
+	if tw.taskCtx.Orchestrator != nil {
+		tw.mx.Lock()
+		tw.pendingInput = input
+		tw.mx.Unlock()
+		return nil
+	}
+
 	for _, st := range tw.stc.ListSubtasks(ctx) {
 		if !st.IsCompleted() && st.IsWaiting() {
 			if err := st.PutInput(ctx, input); err != nil {
@@ -467,14 +476,54 @@ func (tw *taskWorker) runWithOrchestrator(ctx context.Context) error {
 		return fmt.Errorf("failed to get task %d status before orchestration: %w", tw.taskCtx.TaskID, err)
 	}
 
+	var snapshot *orchestrator.TaskSnapshot
 	switch status {
 	case database.TaskStatusCreated:
-		err = tw.taskCtx.Orchestrator.StartTask(ctx, tw.taskCtx.FlowID, tw.taskCtx.TaskID)
+		snapshot, err = tw.taskCtx.Orchestrator.StartTask(ctx, tw.taskCtx.FlowID, tw.taskCtx.TaskID)
 	default:
-		err = tw.taskCtx.Orchestrator.ResumeTask(ctx, tw.taskCtx.FlowID, tw.taskCtx.TaskID)
+		// task in WAITING state → pass user input to resume
+		tw.mx.Lock()
+		userInput := tw.pendingInput
+		tw.mx.Unlock()
+		snapshot, err = tw.taskCtx.Orchestrator.ResumeTask(ctx, tw.taskCtx.FlowID, tw.taskCtx.TaskID, userInput)
+		if err == nil {
+			// Only clear pendingInput after successful resume to prevent data loss on transient errors
+			tw.mx.Lock()
+			tw.pendingInput = ""
+			tw.mx.Unlock()
+		}
 	}
 	if err != nil {
 		return fmt.Errorf("failed to orchestrate task %d via langgraph: %w", tw.taskCtx.TaskID, err)
+	}
+
+	if snapshot == nil {
+		return nil
+	}
+
+	if snapshot.HasInterrupt {
+		if snapshot.InterruptMsg != "" {
+			logrus.WithContext(ctx).WithField("task_id", tw.taskCtx.TaskID).Infof("task interrupted: %s", snapshot.InterruptMsg)
+		}
+		if serr := tw.SetStatus(ctx, database.TaskStatusWaiting); serr != nil {
+			return fmt.Errorf("failed to set task %d waiting after interrupt: %w", tw.taskCtx.TaskID, serr)
+		}
+		return nil
+	}
+
+	if snapshot.IsCompleted {
+		// LangGraph graph has finished. The ma_completed node in Python may have
+		// already called Go's CompleteTask endpoint. Check DB status to avoid a
+		// redundant (and expensive) second LLM GetTaskResult call.
+		currentStatus, _ := tw.GetStatus(ctx)
+		if currentStatus != database.TaskStatusFinished {
+			if serr := tw.SetStatus(ctx, database.TaskStatusFinished); serr != nil {
+				return fmt.Errorf("failed to set task %d finished after completion: %w", tw.taskCtx.TaskID, serr)
+			}
+			if cerr := tw.CompleteTask(ctx); cerr != nil {
+				return fmt.Errorf("failed to complete task %d after langgraph completion: %w", tw.taskCtx.TaskID, cerr)
+			}
+		}
 	}
 
 	return nil

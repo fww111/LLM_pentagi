@@ -16,8 +16,9 @@ type OrchestratorService struct {
 }
 
 type orchestratorFlowTaskRequest struct {
-	FlowID     int64 `json:"flow_id" binding:"required,min=1"`
-	MsgChainID int64 `json:"msg_chain_id,omitempty"`
+	FlowID           int64 `json:"flow_id" binding:"required,min=1"`
+	MsgChainID       int64 `json:"msg_chain_id,omitempty"`
+	HasExistingPlan  bool  `json:"has_existing_plan,omitempty"`
 }
 
 type orchestratorExecuteAgentRequest struct {
@@ -475,7 +476,7 @@ func (s *OrchestratorService) GenerateTodoPlan(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true, "todos": todos})
+	c.JSON(http.StatusOK, gin.H{"decision": gin.H{"result": gin.H{"todos": todos}}})
 }
 
 func (s *OrchestratorService) RefineTodoPlan(c *gin.Context) {
@@ -494,7 +495,7 @@ func (s *OrchestratorService) RefineTodoPlan(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true, "todos": todos})
+	c.JSON(http.StatusOK, gin.H{"decision": gin.H{"result": gin.H{"todos": todos}}})
 }
 
 func (s *OrchestratorService) AgentExecute(c *gin.Context) {
@@ -608,7 +609,27 @@ func (s *OrchestratorService) RejectTask(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
+
+	status, err := task.GetStatus(c)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error reading task status after reject")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	result, err := task.GetResult(c)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error reading task result after reject")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"task": gin.H{
+			"status": status,
+			"result": result,
+		},
+	})
 }
 
 func (s *OrchestratorService) CompleteTask(c *gin.Context) {
@@ -626,7 +647,27 @@ func (s *OrchestratorService) CompleteTask(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
+
+	status, err := task.GetStatus(c)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error reading task status after complete")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	result, err := task.GetResult(c)
+	if err != nil {
+		logger.FromContext(c).WithError(err).Error("error reading task result after complete")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"task": gin.H{
+			"status": status,
+			"result": result,
+		},
+	})
 }
 
 func (s *OrchestratorService) UpdateSharedState(c *gin.Context) {
