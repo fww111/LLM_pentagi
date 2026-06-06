@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"pentagi/pkg/cast"
+	"pentagi/pkg/csum"
 	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/orchestrator"
@@ -65,6 +67,14 @@ func agentTypeToToolName(agentType string) (string, error) {
 		return tools.MemoristToolName, nil
 	case "adviser":
 		return tools.AdviceToolName, nil
+	case "reviewer":
+		return tools.ReviewResultToolName, nil
+	case "reporter":
+		return tools.ReportResultToolName, nil
+	case "designer":
+		return tools.ScopeContractToolName, nil
+	case "planner":
+		return tools.TodoListToolName, nil
 	default:
 		return "", fmt.Errorf("unsupported delegated agent type %q", agentType)
 	}
@@ -296,34 +306,43 @@ func (fp *flowProvider) ExecuteDelegatedAgent(
 		return nil, err
 	}
 
+	// In multi-agent mode (designer/planner/supervisor), tasks use the todo system
+	// and have no subtasks. When subtaskID is 0, pass nil so handlers skip the
+	// subtask DB query instead of trying to fetch a non-existent row.
+	taskIDPtr := &taskID
+	var subtaskIDPtr *int64
+	if subtaskID > 0 {
+		subtaskIDPtr = &subtaskID
+	}
+
 	var handler tools.ExecutorHandler
 	switch agentType {
 	case "builder":
-		handler, err = fp.GetInstallerHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetInstallerHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "generator":
-		handler, err = fp.GetCoderHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetCoderHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "coder":
-		handler, err = fp.GetCoderHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetCoderHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "integrator":
-		handler, err = fp.GetIntegratorHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetIntegratorHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "pentester":
-		handler, err = fp.GetPentesterHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetPentesterHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "tester":
-		handler, err = fp.GetTesterHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetTesterHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "researcher":
-		handler, err = fp.GetSubtaskSearcherHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetSubtaskSearcherHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "searcher":
-		handler, err = fp.GetSubtaskSearcherHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetSubtaskSearcherHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "installer":
-		handler, err = fp.GetInstallerHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetInstallerHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "memorist":
-		handler, err = fp.GetMemoristHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetMemoristHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "adviser":
-		handler, err = fp.GetAskAdviceHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetAskAdviceHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "reviewer":
-		handler, err = fp.GetReviewerHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetReviewerHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "reporter":
-		handler, err = fp.GetReporterHandler(ctx, &taskID, &subtaskID)
+		handler, err = fp.GetReporterHandler(ctx, taskIDPtr, subtaskIDPtr)
 	default:
 		err = fmt.Errorf("unsupported delegated agent type %q", agentType)
 	}
@@ -460,17 +479,71 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 		promptType = templates.PromptTypeDesigner
 		questionType = templates.PromptTypeQuestionDesigner
 	} else if nodeRole == "planner" {
-		promptType = templates.PromptTypeGenerator // reuse until dedicated planner.tmpl
-		questionType = templates.PromptTypeSubtasksGenerator
+		promptType = templates.PromptTypePlanner
+		questionType = templates.PromptTypeQuestionPlanner
 	}
 
 	barrierToolNames := executor.GetBarrierToolNames()
-	systemPrompt, err := fp.prompter.RenderTemplate(promptType, map[string]string{
-		"BarrierTools":     strings.Join(barrierToolNames, ", "),
-		"CurrentTime":      time.Now().Format(time.RFC3339),
-		"Lang":             fp.Language(),
-		"ExecutionContext": executionContext,
-	})
+
+	// Build template variables — common to all roles
+	templateVars := map[string]string{
+		"BarrierTools":            strings.Join(barrierToolNames, ", "),
+		"CurrentTime":             time.Now().Format(time.RFC3339),
+		"Lang":                    fp.Language(),
+		"ExecutionContext":        executionContext,
+		"ToolPlaceholder":         ToolPlaceholder,
+		"SummarizationToolName":   cast.SummarizationToolName,
+		"SummarizedContentPrefix": csum.SummarizedContentPrefix,
+	}
+
+	// Role-specific variables
+	switch nodeRole {
+	case "designer":
+		templateVars["SearchToolName"] = tools.SearchToolName
+		templateVars["MemoristToolName"] = tools.MemoristToolName
+		templateVars["AskUserToolName"] = tools.AskUserToolName
+		templateVars["FinalyToolName"] = tools.FinalyToolName
+
+	case "supervisor":
+		templateVars["AskUserToolName"] = tools.AskUserToolName
+		templateVars["FinalyToolName"] = tools.FinalyToolName
+
+	case "planner":
+		// Check if todos already exist to decide mode
+		accessor, ok := fp.db.(dbAccessor)
+		if !ok {
+			return nil, fmt.Errorf("db does not implement dbAccessor for planner mode detection")
+		}
+		maQ := database.NewMultiAgentQueries(accessor.DB())
+		existingTodos, todosErr := maQ.GetTodosByTaskID(ctx, taskID)
+
+		if todosErr != nil {
+
+			logger.WithError(todosErr).Warn("failed to check existing todos, defaulting to generate mode")
+
+		}
+
+		if todosErr == nil && len(existingTodos) > 0 {
+
+			templateVars["Mode"] = "refine"
+
+		} else {
+
+			templateVars["Mode"] = "generate"
+
+		}
+
+		templateVars["TodoListToolName"] = tools.TodoListToolName
+		templateVars["TodoPatchToolName"] = tools.TodoPatchToolName
+		templateVars["N"] = "10"
+		templateVars["SearchToolName"] = tools.SearchToolName
+		templateVars["TerminalToolName"] = tools.TerminalToolName
+		templateVars["FileToolName"] = tools.FileToolName
+		templateVars["BrowserToolName"] = tools.BrowserToolName
+		templateVars["DockerImage"] = "vxcontrol/kali-linux"
+	}
+
+	systemPrompt, err := fp.prompter.RenderTemplate(promptType, templateVars)
 	if err != nil {
 		return nil, fmt.Errorf("failed to render %s system prompt: %w", nodeRole, err)
 	}
@@ -480,13 +553,22 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 	var msgChain database.Msgchain
 
 	if msgChainID > 0 {
-		// Restore existing chain — supervisor needs history from previous rounds
+		// Restore existing chain — supervisor/planner need history from previous rounds
 		msgChain, err = fp.db.GetMsgChain(ctx, msgChainID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get %s msg chain %d: %w", nodeRole, msgChainID, err)
 		}
 		if err := json.Unmarshal(msgChain.Chain, &chain); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal %s msg chain %d: %w", nodeRole, msgChainID, err)
+		}
+
+		// For returning rounds add a continuation prompt
+		if nodeRole == "designer" {
+			continuation := "The user has provided their response. Use this information to finalize the scope contract."
+			chain = append(chain, llms.TextParts(llms.ChatMessageTypeHuman, continuation))
+		} else if nodeRole == "planner" {
+			continuation := "The supervisor has returned to you for plan refinement. Review the current state and update the todo plan as needed using the todo_list or todo_patch tools."
+			chain = append(chain, llms.TextParts(llms.ChatMessageTypeHuman, continuation))
 		}
 	} else {
 		// First call — build initial chain with system prompt and user input
@@ -498,9 +580,38 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get task %d: %w", taskID, err)
 		}
-		questionPrompt, _ := fp.prompter.RenderTemplate(questionType, map[string]string{
-			"Question": task.Input,
-		})
+		// Build question prompt with role-appropriate variables
+		var questionParams map[string]any
+		if nodeRole == "planner" {
+			// Planner question template needs nested Task object
+			questionParams = map[string]any{
+				"Mode": templateVars["Mode"],
+				"Task": map[string]string{
+					"ID":     fmt.Sprintf("%d", task.ID),
+					"Input":  task.Input,
+					"Title":  task.Input,
+					"Status": string(task.Status),
+					"Result": task.Result,
+				},
+			}
+			// Load scope_contract from multi-agent extension if available
+			accessor, ok := fp.db.(dbAccessor)
+			if !ok {
+				return nil, fmt.Errorf("db does not implement dbAccessor for scope contract loading")
+			}
+			maQueries := database.NewMultiAgentQueries(accessor.DB())
+			ext, extErr := maQueries.GetTaskExtension(ctx, task.ID)
+			if extErr == nil && ext != nil && len(ext.ScopeContract) > 0 {
+				questionParams["ScopeContract"] = string(ext.ScopeContract)
+				questionParams["SharedState"] = string(ext.SharedState)
+			}
+		} else {
+			// Designer and Supervisor use simple Question variable
+			questionParams = map[string]any{
+				"Question": task.Input,
+			}
+		}
+		questionPrompt, _ := fp.prompter.RenderTemplate(questionType, questionParams)
 		if questionPrompt != "" {
 			chain = append(chain, llms.TextParts(llms.ChatMessageTypeHuman, questionPrompt))
 		}
@@ -616,8 +727,108 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 		logger.WithError(err).Warn("failed to append tool response to chain")
 	}
 
+	// If action is empty, check whether a barrier tool was called
 	if decision.Action == "" {
-		return nil, fmt.Errorf("%s decision handler produced empty action", nodeRole)
+		toolName := selectedToolCall.FunctionCall.Name
+		if executor.IsBarrierFunction(toolName) {
+			return nil, fmt.Errorf("%s barrier tool %q was called but decision handler produced empty action", nodeRole, toolName)
+		}
+	}
+
+	// If action is empty (non-barrier tool was called, e.g. search), loop back to LLM
+	maxLoops := 3
+	for loop := 0; decision.Action == "" && loop < maxLoops; loop++ {
+		// Reset decision fields to prevent stale state from previous iterations.
+		// Non-barrier tool handlers (search, memorist) do not modify decision,
+		// but a future handler might accidentally set a field — guard against that.
+		decision.AgentRole = ""
+		decision.Payload = nil
+		decision.TodoID = ""
+		decision.Message = ""
+		decision.Result = ""
+		decision.Error = ""
+
+		logger.WithField("loop", loop).WithField("tool", selectedToolCall.FunctionCall.Name).Info("non-barrier tool called, retrying LLM")
+
+		result, err = fp.callWithRetries(
+			ctx,
+			optAgentType,
+			msgChain.ID,
+			&taskID,
+			nil,
+			chain,
+			executor,
+			executionContext,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to call %s LLM (loop %d): %w", nodeRole, loop, err)
+		}
+
+		if err := fp.updateMsgChainUsage(ctx, msgChain.ID, optAgentType, result.info, rollLastUpdateTime()); err != nil {
+			logger.WithError(err).Warn("failed to update msg chain usage")
+		}
+
+		if len(result.funcCalls) == 0 {
+			return nil, fmt.Errorf("%s returned no structured tool call (loop %d)", nodeRole, loop)
+		}
+
+		selectedToolCall = result.funcCalls[0]
+		msg = llms.MessageContent{Role: llms.ChatMessageTypeAI}
+		if result.content != "" || !result.thinking.IsEmpty() {
+			msg.Parts = append(msg.Parts, llms.TextPartWithReasoning(result.content, result.thinking))
+		}
+		msg.Parts = append(msg.Parts, selectedToolCall)
+		chain = append(chain, msg)
+
+		if err := fp.updateMsgChain(ctx, optAgentType, msgChain.ID, chain, rollLastUpdateTime()); err != nil {
+			logger.WithError(err).Warn("failed to append tool call to chain")
+		}
+
+		selectedResult = &callResult{
+			streamID:  result.streamID,
+			funcCalls: []llms.ToolCall{selectedToolCall},
+			thinking:  result.thinking,
+			content:   result.content,
+			info:      result.info,
+		}
+
+		response, err = fp.execToolCall(
+			ctx,
+			optAgentType,
+			msgChain.ID,
+			0,
+			selectedResult,
+			fp.buildMonitor(),
+			&repeatingDetector{},
+			executor,
+			&taskID,
+			nil,
+			chain,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to execute %s tool call (loop %d): %w", nodeRole, loop, err)
+		}
+
+		decision.ToolCallID = selectedToolCall.ID
+
+		chain = append(chain, llms.MessageContent{
+			Role: llms.ChatMessageTypeTool,
+			Parts: []llms.ContentPart{
+				llms.ToolCallResponse{
+					ToolCallID: selectedToolCall.ID,
+					Name:       selectedToolCall.FunctionCall.Name,
+					Content:    response,
+				},
+			},
+		})
+
+		if err := fp.updateMsgChain(ctx, optAgentType, msgChain.ID, chain, rollLastUpdateTime()); err != nil {
+			logger.WithError(err).Warn("failed to append tool response to chain")
+		}
+	}
+
+	if decision.Action == "" {
+		return nil, fmt.Errorf("%s decision handler still has empty action after %d retries", nodeRole, maxLoops)
 	}
 
 	return decision, nil
@@ -705,7 +916,8 @@ func (fp *flowProvider) buildSupervisorTools(
 	if nodeRole == "supervisor" {
 		// Supervisor delegates to all agent roles via route_to_* tools
 		routeMappings := map[string]orchestrator.AgentRole{
-			tools.RouteToDesignerToolName:   orchestrator.AgentRoleDesigner,
+			// Note: route_to_designer is intentionally excluded — topology is one-way
+			// (designer -> planner -> supervisor -> agents). Re-enable if graph changes.
 			tools.RouteToPlannerToolName:    orchestrator.AgentRolePlanner,
 			tools.RouteToBuilderToolName:    orchestrator.AgentRoleBuilder,
 			tools.RouteToGeneratorToolName:  orchestrator.AgentRoleGenerator,
@@ -729,6 +941,13 @@ func (fp *flowProvider) buildSupervisorTools(
 				decision.Action = orchestrator.SupervisorActionDelegate
 				decision.AgentRole = capturedRole
 				decision.Payload = append(json.RawMessage(nil), args...)
+				// Extract todo_id from args if present
+				var routeArgs struct {
+					TodoID string `json:"todo_id"`
+				}
+				if json.Unmarshal(args, &routeArgs) == nil && routeArgs.TodoID != "" {
+					decision.TodoID = routeArgs.TodoID
+				}
 				return fmt.Sprintf("delegated to %s; waiting for execution", capturedRole), nil
 			}
 		}
@@ -744,8 +963,7 @@ func (fp *flowProvider) buildSupervisorTools(
 				return "authorization requested", nil
 			}
 		}
-		}
-
+	}
 
 	// Planner node uses todo_list and todo_patch as barrier tools
 	if nodeRole == "planner" {
@@ -755,7 +973,7 @@ func (fp *flowProvider) buildSupervisorTools(
 			defs = append(defs, todoListDef)
 			barriers = append(barriers, tools.TodoListToolName)
 			handlers[tools.TodoListToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
-				decision.Action = orchestrator.SupervisorActionCompleted
+				decision.Action = orchestrator.SupervisorActionPlanReady
 				decision.Result = string(args)
 				return "todo plan accepted", nil
 			}
@@ -764,7 +982,7 @@ func (fp *flowProvider) buildSupervisorTools(
 			defs = append(defs, todoPatchDef)
 			barriers = append(barriers, tools.TodoPatchToolName)
 			handlers[tools.TodoPatchToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
-				decision.Action = orchestrator.SupervisorActionCompleted
+				decision.Action = orchestrator.SupervisorActionPlanReady
 				decision.Result = string(args)
 				return "todo patch accepted", nil
 			}

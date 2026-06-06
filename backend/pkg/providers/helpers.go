@@ -731,7 +731,7 @@ func (fp *flowProvider) prepareExecutionContext(ctx context.Context, taskID, sub
 }
 
 func (fp *flowProvider) getExecutionContext(ctx context.Context, taskID, subtaskID *int64) (string, error) {
-	if taskID != nil && subtaskID != nil {
+	if taskID != nil && subtaskID != nil && *subtaskID > 0 {
 		return fp.getExecutionContextBySubtask(ctx, *taskID, *subtaskID)
 	}
 

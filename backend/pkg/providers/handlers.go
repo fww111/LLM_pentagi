@@ -58,7 +58,7 @@ func (fp *flowProvider) getTaskAndSubtask(ctx context.Context, taskID, subtaskID
 		}
 		ptrTask = &task
 	}
-	if subtaskID != nil {
+	if subtaskID != nil && *subtaskID > 0 {
 		subtask, err := fp.db.GetSubtask(ctx, *subtaskID)
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed to get subtask: %w", err)
