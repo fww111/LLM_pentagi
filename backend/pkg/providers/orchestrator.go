@@ -2,6 +2,7 @@ package providers
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -661,6 +662,11 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 	}
 
 	if len(result.funcCalls) == 0 {
+		if nodeRole == "supervisor" {
+			errMsg := "supervisor returned no structured tool call"
+			logger.WithField("content", cutString(result.content, 1000)).Warn(errMsg)
+			return fp.fallbackSupervisorDecision(ctx, taskID, msgChain.ID, result.content, errMsg)
+		}
 		return nil, fmt.Errorf("%s returned no structured tool call", nodeRole)
 	}
 
@@ -731,6 +737,11 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 	if decision.Action == "" {
 		toolName := selectedToolCall.FunctionCall.Name
 		if executor.IsBarrierFunction(toolName) {
+			if nodeRole == "supervisor" {
+				errMsg := fmt.Sprintf("%s barrier tool %q was called but decision handler produced empty action", nodeRole, toolName)
+				logger.Warn(errMsg)
+				return failedSupervisorDecision(msgChain.ID, errMsg), nil
+			}
 			return nil, fmt.Errorf("%s barrier tool %q was called but decision handler produced empty action", nodeRole, toolName)
 		}
 	}
@@ -769,6 +780,11 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 		}
 
 		if len(result.funcCalls) == 0 {
+			if nodeRole == "supervisor" {
+				errMsg := fmt.Sprintf("supervisor returned no structured tool call (loop %d)", loop)
+				logger.WithField("content", cutString(result.content, 1000)).Warn(errMsg)
+				return fp.fallbackSupervisorDecision(ctx, taskID, msgChain.ID, result.content, errMsg)
+			}
 			return nil, fmt.Errorf("%s returned no structured tool call (loop %d)", nodeRole, loop)
 		}
 
@@ -828,10 +844,218 @@ func (fp *flowProvider) DecideSupervisorStep(ctx context.Context, taskID int64, 
 	}
 
 	if decision.Action == "" {
+		if nodeRole == "supervisor" {
+			errMsg := fmt.Sprintf("%s decision handler still has empty action after %d retries", nodeRole, maxLoops)
+			logger.Warn(errMsg)
+			return failedSupervisorDecision(msgChain.ID, errMsg), nil
+		}
 		return nil, fmt.Errorf("%s decision handler still has empty action after %d retries", nodeRole, maxLoops)
 	}
 
 	return decision, nil
+}
+
+func failedSupervisorDecision(msgChainID int64, errMsg string) *orchestrator.SupervisorDecision {
+	return &orchestrator.SupervisorDecision{
+		Action:     orchestrator.SupervisorActionFailed,
+		MsgChainID: msgChainID,
+		Message:    errMsg,
+		Error:      errMsg,
+	}
+}
+
+func (fp *flowProvider) fallbackSupervisorDecision(
+	ctx context.Context,
+	taskID, msgChainID int64,
+	content, reason string,
+) (*orchestrator.SupervisorDecision, error) {
+	accessor, ok := fp.db.(dbAccessor)
+	if !ok {
+		return failedSupervisorDecision(msgChainID, reason), nil
+	}
+
+	ma := database.NewMultiAgentQueries(accessor.DB())
+	todos, err := ma.GetTodosByTaskID(ctx, taskID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load todos for supervisor fallback: %w", err)
+	}
+
+	if todo, ok := selectFallbackSupervisorTodo(todos); ok {
+		role := fallbackAgentRole(todo.OwnerAgent)
+		payload, _ := json.Marshal(map[string]any{
+			"question": fmt.Sprintf(
+				"Continue the next unfinished todo. Active todo id: %s. Todo title: %s. Inputs: %s. Success criteria: %s. Supervisor fallback reason: %s. Previous supervisor text: %s",
+				todo.TodoID,
+				todo.Title,
+				nullStringValue(todo.Inputs),
+				nullStringValue(todo.SuccessCriteria),
+				reason,
+				content,
+			),
+			"message": fmt.Sprintf("Continue todo %s: %s", todo.TodoID, todo.Title),
+			"metadata": map[string]string{
+				"active_todo_id": todo.TodoID,
+			},
+		})
+
+		return &orchestrator.SupervisorDecision{
+			Action:     orchestrator.SupervisorActionDelegate,
+			AgentRole:  role,
+			TodoID:     todo.TodoID,
+			Payload:    payload,
+			MsgChainID: msgChainID,
+			Message:    "supervisor fallback delegated to next unfinished todo",
+		}, nil
+	}
+
+	return &orchestrator.SupervisorDecision{
+		Action:     orchestrator.SupervisorActionCompleted,
+		MsgChainID: msgChainID,
+		Message:    "supervisor fallback completed because no open todos remain",
+		Result:     content,
+	}, nil
+}
+
+func selectFallbackSupervisorTodo(todos []database.Todo) (database.Todo, bool) {
+	todosByID := make(map[string]database.Todo, len(todos))
+	for _, todo := range todos {
+		if todo.TodoID != "" {
+			todosByID[todo.TodoID] = todo
+		}
+	}
+
+	var reporter *database.Todo
+	var firstOpen *database.Todo
+	for i := range todos {
+		todo := todos[i]
+		if !isOpenTodoStatus(todo.Status) {
+			continue
+		}
+		if firstOpen == nil {
+			firstOpen = &todo
+		}
+		if !todoDependenciesSatisfied(todo, todosByID) {
+			continue
+		}
+		if fallbackAgentRole(todo.OwnerAgent) == orchestrator.AgentRoleReporter {
+			if reporter == nil {
+				reporter = &todo
+			}
+			continue
+		}
+		return todo, true
+	}
+
+	if reporter != nil && nonReporterTodosClosed(todos) {
+		return *reporter, true
+	}
+	if firstOpen != nil {
+		return *firstOpen, true
+	}
+	return database.Todo{}, false
+}
+
+func fallbackAgentRole(ownerAgent string) orchestrator.AgentRole {
+	switch strings.ToLower(strings.TrimSpace(ownerAgent)) {
+	case "builder", "installer":
+		return orchestrator.AgentRoleBuilder
+	case "generator", "coder":
+		return orchestrator.AgentRoleGenerator
+	case "integrator":
+		return orchestrator.AgentRoleIntegrator
+	case "tester":
+		return orchestrator.AgentRoleTester
+	case "reviewer":
+		return orchestrator.AgentRoleReviewer
+	case "reporter":
+		return orchestrator.AgentRoleReporter
+	case "researcher", "searcher":
+		return orchestrator.AgentRoleResearcher
+	default:
+		return orchestrator.AgentRolePentester
+	}
+}
+
+func isOpenTodoStatus(status string) bool {
+	switch strings.ToLower(strings.TrimSpace(status)) {
+	case "", "pending", "created", "queued", "not_started", "running", "in_progress", "blocked":
+		return true
+	default:
+		return false
+	}
+}
+
+func isClosedTodoStatus(status string) bool {
+	switch strings.ToLower(strings.TrimSpace(status)) {
+	case "completed", "finished", "done", "success", "skipped", "failed":
+		return true
+	default:
+		return false
+	}
+}
+
+func todoDependenciesSatisfied(todo database.Todo, todosByID map[string]database.Todo) bool {
+	for _, depID := range todoDependsOn(todo.DependsOn) {
+		dep, ok := todosByID[depID]
+		if !ok || !isClosedTodoStatus(dep.Status) || strings.EqualFold(strings.TrimSpace(dep.Status), "failed") {
+			return false
+		}
+	}
+	return true
+}
+
+func todoDependsOn(raw json.RawMessage) []string {
+	raw = json.RawMessage(strings.TrimSpace(string(raw)))
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil
+	}
+
+	var ids []string
+	if err := json.Unmarshal(raw, &ids); err == nil {
+		return compactStrings(ids)
+	}
+
+	var values []any
+	if err := json.Unmarshal(raw, &values); err == nil {
+		ids = make([]string, 0, len(values))
+		for _, value := range values {
+			ids = append(ids, fmt.Sprint(value))
+		}
+		return compactStrings(ids)
+	}
+
+	text := strings.Trim(string(raw), "\"")
+	return compactStrings(strings.Split(text, ","))
+}
+
+func compactStrings(values []string) []string {
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value != "" {
+			out = append(out, value)
+		}
+	}
+	return out
+}
+
+func nonReporterTodosClosed(todos []database.Todo) bool {
+	for _, todo := range todos {
+		if fallbackAgentRole(todo.OwnerAgent) == orchestrator.AgentRoleReporter {
+			continue
+		}
+		if isOpenTodoStatus(todo.Status) {
+			return false
+		}
+	}
+	return true
+}
+
+func nullStringValue(value sql.NullString) string {
+	if !value.Valid {
+		return ""
+	}
+	return value.String
 }
 
 // buildSupervisorTools builds tool definitions/handlers for designer or supervisor nodes.
@@ -991,4 +1215,3 @@ func (fp *flowProvider) buildSupervisorTools(
 
 	return defs, handlers, barriers, nil
 }
-

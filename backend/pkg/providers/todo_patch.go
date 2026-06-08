@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func applyTodoOperations(
+func ApplyTodoOperations(
 	current []tools.TodoItem,
 	patch tools.TodoPatchAction,
 	logger *logrus.Entry,

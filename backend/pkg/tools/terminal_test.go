@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"strings"
 	"testing"
 	"time"
 
@@ -35,6 +36,9 @@ type contextAwareMockDockerClient struct {
 	attachOutput   []byte
 	attachDelay    time.Duration
 	inspectResp    container.ExecInspect
+	cleanupCreated bool
+	attachDelays   map[string]time.Duration
+	attachOutputs  map[string][]byte
 
 	// Set by ContainerExecAttach to track if ctx was canceled during attach
 	ctxWasCanceled bool
@@ -53,14 +57,25 @@ func (m *contextAwareMockDockerClient) RemoveContainer(_ context.Context, _ stri
 func (m *contextAwareMockDockerClient) IsContainerRunning(_ context.Context, _ string) (bool, error) {
 	return m.isRunning, nil
 }
-func (m *contextAwareMockDockerClient) ContainerExecCreate(_ context.Context, _ string, _ container.ExecOptions) (container.ExecCreateResponse, error) {
+func (m *contextAwareMockDockerClient) ContainerExecCreate(_ context.Context, _ string, opts container.ExecOptions) (container.ExecCreateResponse, error) {
+	if len(opts.Cmd) >= 3 && strings.Contains(opts.Cmd[2], "pkill") {
+		m.cleanupCreated = true
+		return container.ExecCreateResponse{ID: "exec-cleanup"}, nil
+	}
 	return m.execCreateResp, nil
 }
-func (m *contextAwareMockDockerClient) ContainerExecAttach(ctx context.Context, _ string, _ container.ExecAttachOptions) (types.HijackedResponse, error) {
+func (m *contextAwareMockDockerClient) ContainerExecAttach(ctx context.Context, id string, _ container.ExecAttachOptions) (types.HijackedResponse, error) {
+	attachDelay := m.attachDelay
+	if m.attachDelays != nil {
+		if delay, ok := m.attachDelays[id]; ok {
+			attachDelay = delay
+		}
+	}
+
 	// Wait for the configured delay, simulating a long-running command
-	if m.attachDelay > 0 {
+	if attachDelay > 0 {
 		select {
-		case <-time.After(m.attachDelay):
+		case <-time.After(attachDelay):
 			// Command completed normally
 		case <-ctx.Done():
 			// Context was canceled -- this is the bug behavior (without WithoutCancel)
@@ -77,9 +92,16 @@ func (m *contextAwareMockDockerClient) ContainerExecAttach(ctx context.Context, 
 	default:
 	}
 
+	attachOutput := m.attachOutput
+	if m.attachOutputs != nil {
+		if output, ok := m.attachOutputs[id]; ok {
+			attachOutput = output
+		}
+	}
+
 	pr, pw := net.Pipe()
 	go func() {
-		pw.Write(m.attachOutput)
+		pw.Write(attachOutput)
 		pw.Close()
 	}()
 
@@ -184,6 +206,34 @@ func TestExecCommandNonDetachRespectsParentCancel(t *testing.T) {
 	assert.Error(t, err)
 	assert.True(t, mock.ctxWasCanceled,
 		"non-detached command SHOULD see parent context cancellation")
+}
+
+func TestCleanupTimedOutCommandCreatesCleanupExec(t *testing.T) {
+	mock := &contextAwareMockDockerClient{
+		isRunning:      true,
+		execCreateResp: container.ExecCreateResponse{ID: "exec-original"},
+		attachOutput:   []byte(""),
+		inspectResp:    container.ExecInspect{Pid: 1234, ExitCode: 0},
+	}
+
+	term := &terminal{
+		flowID:       1,
+		containerID:  1,
+		containerLID: "test-container",
+		dockerClient: mock,
+		tlp:          &contextTestTermLogProvider{},
+	}
+
+	err := term.cleanupTimedOutCommand(t.Context(), "exec-original", "sqlmap --dump")
+
+	assert.NoError(t, err)
+	assert.True(t, mock.cleanupCreated, "timeout cleanup should create a cleanup exec")
+}
+
+func TestShellSingleQuote(t *testing.T) {
+	assert.Equal(t, "''", shellSingleQuote(""))
+	assert.Equal(t, "'simple'", shellSingleQuote("simple"))
+	assert.Equal(t, "'it'\"'\"'s ok'", shellSingleQuote("it's ok"))
 }
 
 func TestPrimaryTerminalName(t *testing.T) {

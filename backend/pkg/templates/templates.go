@@ -411,6 +411,10 @@ var PromptVariables = map[PromptType][]string{
 		"Tasks",
 		"CompletedSubtasks",
 		"PlannedSubtasks",
+		"Todos",
+		"Findings",
+		"Evidence",
+		"EvidenceRequirements",
 		"ExecutionLogs",
 		"ExecutionState",
 	},
@@ -576,8 +580,8 @@ type AgentsPrompts struct {
 	Reporter      AgentPrompts
 	Reflector     AgentPrompts
 	Enricher      AgentPrompts
-		Designer      AgentPrompts
-		Supervisor    AgentPrompts
+	Designer      AgentPrompts
+	Supervisor    AgentPrompts
 	ToolCallFixer AgentPrompts
 	Summarizer    AgentPrompt
 }

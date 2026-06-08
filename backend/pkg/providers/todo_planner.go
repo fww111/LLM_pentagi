@@ -242,7 +242,7 @@ func (fp *flowProvider) performTodoPlanner(
 		todos = normalizeTodoItems(todoList.Todos)
 	case "refine":
 		mutableTodos, completedTodos := splitMutableTodoItems(existingTodos)
-		planned, err := applyTodoOperations(mutableTodos, todoPatch, logrus.WithContext(ctx))
+		planned, err := ApplyTodoOperations(mutableTodos, todoPatch, logrus.WithContext(ctx))
 		if err != nil {
 			return nil, err
 		}

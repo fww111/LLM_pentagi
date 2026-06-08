@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -158,9 +159,33 @@ func (q *MultiAgentQueries) GetTodosByTaskID(ctx context.Context, taskID int64) 
 
 // UpdateTodoStatus updates the status of a todo item
 func (q *MultiAgentQueries) UpdateTodoStatus(ctx context.Context, taskID int64, todoID, status, result string) error {
-	_, err := q.db.ExecContext(ctx,
+	res, err := q.db.ExecContext(ctx,
 		`UPDATE todos SET status = $1, result = $2, updated_at = $3 WHERE task_id = $4 AND todo_id = $5`,
 		status, result, time.Now(), taskID, todoID)
+	if err != nil {
+		return err
+	}
+	if affected, aerr := res.RowsAffected(); aerr == nil && affected == 0 {
+		return fmt.Errorf("todo %s for task %d was not found", todoID, taskID)
+	}
+	return nil
+}
+
+// ClearTaskActiveTodo clears the runtime active todo pointer after a delegated
+// agent result has been persisted.
+func (q *MultiAgentQueries) ClearTaskActiveTodo(ctx context.Context, taskID int64) error {
+	_, err := q.db.ExecContext(ctx,
+		`UPDATE tasks SET active_todo_id = NULL, updated_at = $1 WHERE id = $2`,
+		time.Now(), taskID)
+	return err
+}
+
+// UpdateLegacySubtaskForTodo keeps the current Tasks tab in sync while the
+// frontend still renders legacy subtasks instead of multi-agent todos.
+func (q *MultiAgentQueries) UpdateLegacySubtaskForTodo(ctx context.Context, taskID int64, todoID, status, result string) error {
+	_, err := q.db.ExecContext(ctx,
+		`UPDATE subtasks SET status = $1, result = $2, updated_at = $3 WHERE task_id = $4 AND context = $5`,
+		todoStatusToSubtaskStatus(status), result, time.Now(), taskID, todoID)
 	return err
 }
 
@@ -213,6 +238,52 @@ func (q *MultiAgentQueries) InsertEvidence(ctx context.Context, e *Evidence) err
 	return err
 }
 
+// GetFindingsByTaskID retrieves stored findings for reporter context.
+func (q *MultiAgentQueries) GetFindingsByTaskID(ctx context.Context, taskID int64) ([]Finding, error) {
+	rows, err := q.db.QueryContext(ctx,
+		`SELECT id, task_id, todo_id, finding_type, severity, title, description,
+			COALESCE(evidence, '[]'::jsonb), raw_output, created_at
+		 FROM findings WHERE task_id = $1 ORDER BY id`, taskID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var findings []Finding
+	for rows.Next() {
+		var f Finding
+		if err := rows.Scan(&f.ID, &f.TaskID, &f.TodoID, &f.FindingType, &f.Severity,
+			&f.Title, &f.Description, &f.Evidence, &f.RawOutput, &f.CreatedAt); err != nil {
+			return nil, err
+		}
+		findings = append(findings, f)
+	}
+	return findings, rows.Err()
+}
+
+// GetEvidenceByTaskID retrieves stored evidence entries for reporter context.
+func (q *MultiAgentQueries) GetEvidenceByTaskID(ctx context.Context, taskID int64) ([]Evidence, error) {
+	rows, err := q.db.QueryContext(ctx,
+		`SELECT id, task_id, todo_id, artifact_id, evidence_type, relative_path,
+			description, hash, created_at
+		 FROM evidence WHERE task_id = $1 ORDER BY id`, taskID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var evidence []Evidence
+	for rows.Next() {
+		var e Evidence
+		if err := rows.Scan(&e.ID, &e.TaskID, &e.TodoID, &e.ArtifactID, &e.EvidenceType,
+			&e.RelativePath, &e.Description, &e.Hash, &e.CreatedAt); err != nil {
+			return nil, err
+		}
+		evidence = append(evidence, e)
+	}
+	return evidence, rows.Err()
+}
+
 // UpdateTaskExtension updates the multi-agent extension fields on a task
 func (q *MultiAgentQueries) UpdateTaskExtension(ctx context.Context, taskID int64, ext *TaskExt) error {
 	_, err := q.db.ExecContext(ctx,
@@ -223,6 +294,41 @@ func (q *MultiAgentQueries) UpdateTaskExtension(ctx context.Context, taskID int6
 		ext.ContextID, ext.StateID, ext.SharedState, ext.TaskStatusCode,
 		ext.ScopeContract, ext.NormalizedState, ext.ActiveNode, ext.ActiveTodoID,
 		time.Now(), taskID)
+	return err
+}
+
+// UpdateTaskSharedState updates runtime-only multi-agent fields without clearing
+// the task extension fields maintained by other planner/controller steps.
+func (q *MultiAgentQueries) UpdateTaskSharedState(
+	ctx context.Context,
+	taskID int64,
+	activeNode sql.NullString,
+	activeTodoID sql.NullString,
+	statusCode *int,
+	sharedState json.RawMessage,
+) error {
+	taskStatusCodeExpr := "task_status_code"
+	args := []interface{}{activeNode, activeTodoID, time.Now(), taskID}
+	if statusCode != nil {
+		taskStatusCodeExpr = "$5"
+		args = append(args, *statusCode)
+	}
+
+	sharedStateExpr := "shared_state"
+	if len(sharedState) > 0 {
+		sharedStateExpr = fmt.Sprintf("$%d::jsonb", len(args)+1)
+		args = append(args, string(sharedState))
+	}
+
+	_, err := q.db.ExecContext(ctx,
+		fmt.Sprintf(`UPDATE tasks SET
+			active_node = COALESCE($1, active_node),
+			active_todo_id = COALESCE($2, active_todo_id),
+			updated_at = $3,
+			task_status_code = %s,
+			shared_state = %s
+		 WHERE id = $4`, taskStatusCodeExpr, sharedStateExpr),
+		args...)
 	return err
 }
 
@@ -292,6 +398,9 @@ func (q *MultiAgentQueries) ReplaceTodosByTaskID(ctx context.Context, taskID int
 	if _, err := tx.ExecContext(ctx, `DELETE FROM todos WHERE task_id = $1`, taskID); err != nil {
 		return fmt.Errorf("failed to delete todos for task %d: %w", taskID, err)
 	}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM subtasks WHERE task_id = $1`, taskID); err != nil {
+		return fmt.Errorf("failed to delete legacy subtasks for task %d: %w", taskID, err)
+	}
 
 	for _, todo := range todos {
 		_, err := tx.ExecContext(ctx,
@@ -305,6 +414,130 @@ func (q *MultiAgentQueries) ReplaceTodosByTaskID(ctx context.Context, taskID int
 			todo.TodoStatusCode, todo.Status, todo.Result)
 		if err != nil {
 			return fmt.Errorf("failed to insert todo %s: %w", todo.TodoID, err)
+		}
+
+		_, err = tx.ExecContext(ctx,
+			`INSERT INTO subtasks (status, title, description, result, task_id, context)
+			 VALUES ($1, $2, $3, $4, $5, $6)`,
+			todoStatusToSubtaskStatus(todo.Status), todo.Title, legacySubtaskDescription(todo),
+			nullStringValue(todo.Result), todo.TaskID, todo.TodoID)
+		if err != nil {
+			return fmt.Errorf("failed to insert legacy subtask for todo %s: %w", todo.TodoID, err)
+		}
+	}
+
+	if commit {
+		return tx.Commit()
+	}
+	return nil
+}
+
+func todoStatusToSubtaskStatus(status string) string {
+	switch status {
+	case "completed", "done":
+		return "finished"
+	case "failed":
+		return "failed"
+	case "in_progress", "running":
+		return "running"
+	case "blocked", "waiting":
+		return "waiting"
+	default:
+		return "created"
+	}
+}
+
+func legacySubtaskDescription(todo Todo) string {
+	var builder strings.Builder
+	builder.WriteString(fmt.Sprintf("todo_id: %s\n", todo.TodoID))
+	builder.WriteString(fmt.Sprintf("owner_agent: %s\n", todo.OwnerAgent))
+	builder.WriteString(fmt.Sprintf("risk_level: %s\n", todo.RiskLevel))
+	builder.WriteString(fmt.Sprintf("need_env: %t\n", todo.NeedEnv))
+	builder.WriteString(fmt.Sprintf("need_code: %t\n", todo.NeedCode))
+	builder.WriteString(fmt.Sprintf("auth_required: %t\n", todo.AuthRequired))
+	writeNullStringLine(&builder, "inputs", todo.Inputs)
+	writeNullStringLine(&builder, "success_criteria", todo.SuccessCriteria)
+	writeJSONListLine(&builder, "depends_on", todo.DependsOn)
+	writeJSONListLine(&builder, "evidence_requirements", todo.EvidenceRequirements)
+	return strings.TrimSpace(builder.String())
+}
+
+func writeNullStringLine(builder *strings.Builder, key string, value sql.NullString) {
+	if value.Valid && value.String != "" {
+		builder.WriteString(fmt.Sprintf("%s: %s\n", key, value.String))
+	}
+}
+
+func writeJSONListLine(builder *strings.Builder, key string, raw json.RawMessage) {
+	var values []string
+	if len(raw) == 0 || json.Unmarshal(raw, &values) != nil || len(values) == 0 {
+		return
+	}
+	builder.WriteString(fmt.Sprintf("%s: %s\n", key, strings.Join(values, ", ")))
+}
+
+func nullStringValue(value sql.NullString) string {
+	if value.Valid {
+		return value.String
+	}
+	return ""
+}
+
+// PersistTodoExecution stores the delegated agent result atomically so todos,
+// legacy subtasks, evidence, findings, and active todo state cannot diverge.
+func (q *MultiAgentQueries) PersistTodoExecution(
+	ctx context.Context,
+	taskID int64,
+	todoID, status, result string,
+	evidence *Evidence,
+	finding *Finding,
+) error {
+	tx, commit, err := q.beginTx(ctx)
+	if err != nil {
+		return err
+	}
+	if commit {
+		defer tx.Rollback()
+	}
+
+	res, err := tx.ExecContext(ctx,
+		`UPDATE todos SET status = $1, result = $2, updated_at = $3 WHERE task_id = $4 AND todo_id = $5`,
+		status, result, time.Now(), taskID, todoID)
+	if err != nil {
+		return err
+	}
+	if affected, aerr := res.RowsAffected(); aerr == nil && affected == 0 {
+		return fmt.Errorf("todo %s for task %d was not found", todoID, taskID)
+	}
+
+	if _, err := tx.ExecContext(ctx,
+		`UPDATE subtasks SET status = $1, result = $2, updated_at = $3 WHERE task_id = $4 AND context = $5`,
+		todoStatusToSubtaskStatus(status), result, time.Now(), taskID, todoID); err != nil {
+		return err
+	}
+
+	if _, err := tx.ExecContext(ctx,
+		`UPDATE tasks SET active_todo_id = NULL, updated_at = $1 WHERE id = $2`,
+		time.Now(), taskID); err != nil {
+		return err
+	}
+
+	if evidence != nil {
+		if _, err := tx.ExecContext(ctx,
+			`INSERT INTO evidence (task_id, todo_id, artifact_id, evidence_type, relative_path, description, hash)
+			 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+			evidence.TaskID, evidence.TodoID, evidence.ArtifactID, evidence.EvidenceType,
+			evidence.RelativePath, evidence.Description, evidence.Hash); err != nil {
+			return err
+		}
+	}
+	if finding != nil {
+		if _, err := tx.ExecContext(ctx,
+			`INSERT INTO findings (task_id, todo_id, finding_type, severity, title, description, evidence, raw_output)
+			 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+			finding.TaskID, finding.TodoID, finding.FindingType, finding.Severity,
+			finding.Title, finding.Description, finding.Evidence, finding.RawOutput); err != nil {
+			return err
 		}
 	}
 

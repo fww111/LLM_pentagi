@@ -264,6 +264,42 @@ func CreateDummyTemplateData() map[string]any {
 		},
 		"BlockedTodos": []map[string]any{},
 		"FailedTodos":  []map[string]any{},
+		"Todos": []map[string]any{
+			{
+				"ID":                   "todo_001",
+				"Title":                "Validate SQL injection",
+				"OwnerAgent":           "pentester",
+				"Status":               "completed",
+				"RiskLevel":            "medium",
+				"Inputs":               "Test authorized DVWA SQL injection page",
+				"SuccessCriteria":      "Confirm whether injectable parameter exists",
+				"EvidenceRequirements": []string{"request", "response", "payload"},
+				"Result":               "Injection point confirmed with controlled payload",
+			},
+		},
+		"Findings": []map[string]any{
+			{
+				"ID":          int64(1),
+				"TodoID":      "todo_001",
+				"FindingType": "sql_injection",
+				"Severity":    "high",
+				"Title":       "SQL injection in authorized test target",
+				"Description": "The test parameter accepted a SQL payload.",
+				"RawOutput":   "HTTP response evidence",
+			},
+		},
+		"Evidence": []map[string]any{
+			{
+				"ID":           int64(1),
+				"TodoID":       "todo_001",
+				"ArtifactID":   "artifact_001",
+				"EvidenceType": "agent_result",
+				"RelativePath": "reports/evidence.txt",
+				"Description":  "Captured agent output for the todo.",
+				"Hash":         "sha256:test",
+			},
+		},
+		"EvidenceRequirements": []string{"request", "response", "payload"},
 
 		"MsgLogs": []database.Msglog{
 			{

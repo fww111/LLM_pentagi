@@ -91,9 +91,9 @@ type Done struct {
 }
 
 type TerminalAction struct {
-	Input   string `json:"input" jsonschema:"required" jsonschema_description:"Command to be run in the docker container terminal according to rules to execute commands"`
+	Input   string `json:"input" jsonschema:"required" jsonschema_description:"Command to be run in the docker container terminal. Prefer non-interactive one-shot commands that finish by themselves. Do not use telnet for Redis checks; use redis-cli if available, otherwise Python standard-library sockets. Do not open interactive mysql/psql shells; use -e, -c, or piped SQL instead"`
 	Cwd     string `json:"cwd" jsonschema:"required" jsonschema_description:"Custom current working directory to execute commands in or default directory otherwise if it's not specified"`
-	Detach  Bool   `json:"detach" jsonschema:"required,type=boolean" jsonschema_description:"Set to true for INTERACTIVE or LONG-RUNNING commands: shells (msfconsole, bash, python), listeners (nc -lvnp, socat TCP-LISTEN), servers (python -m http.server, php -S), monitors (tcpdump, tail -f). These commands expect user input or run indefinitely. When true: command runs in background, you get immediate confirmation, no stdout/stderr captured. When false: command must complete within timeout and return output. For quick batch commands (nmap, curl, ls) use false"`
+	Detach  Bool   `json:"detach" jsonschema:"required,type=boolean" jsonschema_description:"Set to true only for intentionally INTERACTIVE or LONG-RUNNING commands: shells (msfconsole, bash, python), listeners (nc -lvnp, socat TCP-LISTEN), servers (python -m http.server, php -S), monitors (tcpdump, tail -f). For vulnerability verification, prefer detach=false with one-shot commands that complete and return evidence. Do not use detach=true to open mysql, redis, psql, telnet, or other service clients unless the task explicitly requires an interactive session"`
 	Timeout Int64  `json:"timeout" jsonschema:"required,type=integer" jsonschema_description:"Execution time limit in seconds (minimum 10; maximum 1200; default 60). For batch commands that may run long, use the 'timeout' shell utility INSIDE your command to ensure clean completion with full output: 'timeout 55 nmap -sV target' (set 5-10 seconds less than this parameter). For interactive/long-running commands, use detach=true instead of relying solely on timeout"`
 	Message string `json:"message" jsonschema:"required,title=Terminal command message" jsonschema_description:"Not so long message which explain what do you want to achieve and to execute in terminal to send to the user in user's language only"`
 }
@@ -357,14 +357,14 @@ type ReviewResultAction struct {
 	Message  string   `json:"message" jsonschema:"required,title=Review result message" jsonschema_description:"Summary of the review to send to the user in user's language only"`
 }
 type ReviewerAction struct {
-        ScopeContract string `json:"scope_contract" jsonschema:"required" jsonschema_description:"The contract defining the boundaries and objectives of the penetration test"`
-        Plan         string `json:"plan" jsonschema:"required" jsonschema_description:"The penetrationtesting plan outlining the methodology and approach to be followed"`
-        Findings     string `json:"findings" jsonschema:"required" jsonschema_description:"Summary ofdiscovered vulnerabilities and findings from the penetration test"`
-        Evidence     string `json:"evidence" jsonschema:"required" jsonschema_description:"Detailed evand proof of concept for each finding discovered during the test"`
-        Message      string `json:"message" jsonschema:"required,title=Reviewer action message"
+	ScopeContract string `json:"scope_contract" jsonschema:"required" jsonschema_description:"The contract defining the boundaries and objectives of the penetration test"`
+	Plan          string `json:"plan" jsonschema:"required" jsonschema_description:"The penetrationtesting plan outlining the methodology and approach to be followed"`
+	Findings      string `json:"findings" jsonschema:"required" jsonschema_description:"Summary ofdiscovered vulnerabilities and findings from the penetration test"`
+	Evidence      string `json:"evidence" jsonschema:"required" jsonschema_description:"Detailed evand proof of concept for each finding discovered during the test"`
+	Message       string `json:"message" jsonschema:"required,title=Reviewer action message"
 		jsonschema_description:"Not so long message which explains what needs to be reviewed and validated
   to send to the user in user's language only"`
-  }
+}
 
 type Bool bool
 
@@ -449,14 +449,15 @@ func (i *Int64) String() string {
 	}
 	return strconv.FormatInt(int64(*i), 10)
 }
+
 type ReviewResult struct {
-        Verdict    string `json:"verdict" jsonschema:"required,title=Review verdict"
+	Verdict string `json:"verdict" jsonschema:"required,title=Review verdict"
   jsonschema_description:"The review verdict - either 'PASS' or 'FAIL' indicating whether the
   penetration test results meet the required standards"`
-        Comments   string `json:"comments" jsonschema:"required,title=Review comments"
+	Comments string `json:"comments" jsonschema:"required,title=Review comments"
   jsonschema_description:"Detailed comments explaining the review process, quality assessment, and
   compliance check results"`
-        Suggestions string `json:"suggestions" jsonschema:"required,title=Review suggestions"
+	Suggestions string `json:"suggestions" jsonschema:"required,title=Review suggestions"
   jsonschema_description="Suggestions for improvement, additional tests, or remediation measures based
    on the review findings"`
-  }
+}

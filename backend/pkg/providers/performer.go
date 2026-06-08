@@ -363,6 +363,15 @@ func (fp *flowProvider) execToolCall(
 		}
 	}
 
+	if monitor.recordTerminalResult(funcName, response) {
+		errMsg := fmt.Sprintf(
+			"terminal tool timed out %d times consecutively, aborting chain",
+			monitor.terminalTimeouts,
+		)
+		logger.WithField("terminal_timeout_count", monitor.terminalTimeouts).Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
 	if monitor.shouldInvokeMentor(toolCall) && executor.IsFunctionExists(tools.AdviceToolName) {
 		logger.WithFields(logrus.Fields{
 			"same_tool_count":  monitor.sameToolCount,

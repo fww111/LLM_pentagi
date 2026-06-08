@@ -5,6 +5,60 @@
     <input>{{.Task.Input}}</input>
   </user_task>
 
+  {{if .Todos}}
+  <todo_plan>
+    {{range .Todos}}
+    <todo>
+      <id>{{.ID}}</id>
+      <title>{{.Title}}</title>
+      <owner_agent>{{.OwnerAgent}}</owner_agent>
+      <status>{{.Status}}</status>
+      <risk_level>{{.RiskLevel}}</risk_level>
+      {{if .Inputs}}<inputs>{{.Inputs}}</inputs>{{end}}
+      {{if .SuccessCriteria}}<success_criteria>{{.SuccessCriteria}}</success_criteria>{{end}}
+      {{if .EvidenceRequirements}}
+      <evidence_requirements>
+        {{range .EvidenceRequirements}}<requirement>{{.}}</requirement>{{end}}
+      </evidence_requirements>
+      {{end}}
+      {{if .Result}}<result>{{.Result}}</result>{{end}}
+    </todo>
+    {{end}}
+  </todo_plan>
+  {{end}}
+
+  {{if .Findings}}
+  <findings>
+    {{range .Findings}}
+    <finding>
+      <id>{{.ID}}</id>
+      {{if .TodoID}}<todo_id>{{.TodoID}}</todo_id>{{end}}
+      {{if .FindingType}}<type>{{.FindingType}}</type>{{end}}
+      {{if .Severity}}<severity>{{.Severity}}</severity>{{end}}
+      <title>{{.Title}}</title>
+      {{if .Description}}<description>{{.Description}}</description>{{end}}
+      {{if .RawOutput}}<raw_output>{{.RawOutput}}</raw_output>{{end}}
+    </finding>
+    {{end}}
+  </findings>
+  {{end}}
+
+  {{if .Evidence}}
+  <evidence>
+    {{range .Evidence}}
+    <item>
+      <id>{{.ID}}</id>
+      {{if .TodoID}}<todo_id>{{.TodoID}}</todo_id>{{end}}
+      {{if .ArtifactID}}<artifact_id>{{.ArtifactID}}</artifact_id>{{end}}
+      {{if .EvidenceType}}<type>{{.EvidenceType}}</type>{{end}}
+      {{if .RelativePath}}<relative_path>{{.RelativePath}}</relative_path>{{end}}
+      {{if .Description}}<description>{{.Description}}</description>{{end}}
+      {{if .Hash}}<hash>{{.Hash}}</hash>{{end}}
+    </item>
+    {{end}}
+  </evidence>
+  {{end}}
+
   {{if .Tasks}}
   <previous_tasks>
     {{range .Tasks}}

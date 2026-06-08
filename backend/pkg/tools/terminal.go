@@ -25,6 +25,7 @@ const (
 	defaultExecCommandTimeout = 5 * time.Minute
 	defaultExtraExecTimeout   = 5 * time.Second
 	defaultQuickCheckTimeout  = 500 * time.Millisecond
+	timeoutCleanupTimeout     = 5 * time.Second
 
 	// ANSI terminal color codes (aligned with PentAGI UI palette)
 	ansiColorInputCmd  = "\033[96m" // Bright Cyan - matches UI blue accents
@@ -178,6 +179,7 @@ func (t *terminal) ExecCommand(
 
 	createResp, err := t.dockerClient.ContainerExecCreate(ctx, containerName, container.ExecOptions{
 		Cmd:          cmd,
+		Env:          nonInteractiveTerminalEnv(),
 		AttachStdout: true,
 		AttachStderr: true,
 		WorkingDir:   cwd,
@@ -192,7 +194,7 @@ func (t *terminal) ExecCommand(
 		detachedCtx := context.WithoutCancel(ctx)
 
 		go func() {
-			output, err := t.getExecResult(detachedCtx, createResp.ID, timeout)
+			output, err := t.getExecResult(detachedCtx, createResp.ID, command, timeout)
 			resultChan <- execResult{output: output, err: err}
 		}()
 
@@ -210,10 +212,10 @@ func (t *terminal) ExecCommand(
 		}
 	}
 
-	return t.getExecResult(ctx, createResp.ID, timeout)
+	return t.getExecResult(ctx, createResp.ID, command, timeout)
 }
 
-func (t *terminal) getExecResult(ctx context.Context, id string, timeout time.Duration) (string, error) {
+func (t *terminal) getExecResult(ctx context.Context, id, command string, timeout time.Duration) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
@@ -246,6 +248,15 @@ func (t *terminal) getExecResult(ctx context.Context, id string, timeout time.Du
 		// Wait for the copy goroutine to finish
 		<-errChan
 
+		if strings.TrimSpace(command) != "" {
+			if cleanupErr := t.cleanupTimedOutCommand(context.WithoutCancel(ctx), id, command); cleanupErr != nil {
+				logrus.WithContext(ctx).WithError(cleanupErr).WithFields(logrus.Fields{
+					"exec_id": id,
+					"tool":    TerminalToolName,
+				}).Warn("failed to cleanup timed out terminal command")
+			}
+		}
+
 		suggestedTimeout := max(int(timeout.Seconds())-10, 10)
 		return "", fmt.Errorf(
 			"command execution timeout (%v). Partial output: %s. "+
@@ -276,6 +287,84 @@ func (t *terminal) getExecResult(ctx context.Context, id string, timeout time.Du
 	}
 
 	return results, nil
+}
+
+func (t *terminal) cleanupTimedOutCommand(ctx context.Context, execID, command string) error {
+	ctx, cancel := context.WithTimeout(ctx, timeoutCleanupTimeout)
+	defer cancel()
+
+	inspect, err := t.dockerClient.ContainerExecInspect(ctx, execID)
+	if err != nil {
+		return fmt.Errorf("failed to inspect timed out exec process: %w", err)
+	}
+
+	var cleanupParts []string
+	if inspect.Pid > 0 {
+		pid := strconv.Itoa(inspect.Pid)
+		cleanupParts = append(cleanupParts,
+			fmt.Sprintf("kill -TERM -%s 2>/dev/null || true", pid),
+			fmt.Sprintf("pkill -TERM -P %s 2>/dev/null || true", pid),
+			fmt.Sprintf("kill -TERM %s 2>/dev/null || true", pid),
+		)
+	} else if trimmedCommand := strings.TrimSpace(command); trimmedCommand != "" {
+		quotedCommand := shellSingleQuote(trimmedCommand)
+		cleanupParts = append(cleanupParts,
+			fmt.Sprintf("target=%s; self=$$; ps -eo pid=,args= | awk -v target=\"$target\" -v self=\"$self\" '$1 != self { line=$0; sub(/^[[:space:]]*[0-9]+[[:space:]]+/, \"\", line); if (index(line, target)>0) print $1 }' | xargs -r kill -TERM 2>/dev/null || true", quotedCommand),
+		)
+	}
+
+	if len(cleanupParts) == 0 {
+		return nil
+	}
+
+	cleanupParts = append(cleanupParts, "sleep 1")
+	if inspect.Pid > 0 {
+		pid := strconv.Itoa(inspect.Pid)
+		cleanupParts = append(cleanupParts,
+			fmt.Sprintf("kill -KILL -%s 2>/dev/null || true", pid),
+			fmt.Sprintf("pkill -KILL -P %s 2>/dev/null || true", pid),
+			fmt.Sprintf("kill -KILL %s 2>/dev/null || true", pid),
+		)
+	} else if trimmedCommand := strings.TrimSpace(command); trimmedCommand != "" {
+		quotedCommand := shellSingleQuote(trimmedCommand)
+		cleanupParts = append(cleanupParts,
+			fmt.Sprintf("target=%s; self=$$; ps -eo pid=,args= | awk -v target=\"$target\" -v self=\"$self\" '$1 != self { line=$0; sub(/^[[:space:]]*[0-9]+[[:space:]]+/, \"\", line); if (index(line, target)>0) print $1 }' | xargs -r kill -KILL 2>/dev/null || true", quotedCommand),
+		)
+	}
+
+	cleanupCommand := strings.Join(cleanupParts, "; ")
+	createResp, err := t.dockerClient.ContainerExecCreate(ctx, PrimaryTerminalName(t.flowID), container.ExecOptions{
+		Cmd:          []string{"sh", "-c", cleanupCommand},
+		AttachStdout: true,
+		AttachStderr: true,
+		Tty:          true,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create timeout cleanup exec process: %w", err)
+	}
+
+	_, err = t.getExecResult(ctx, createResp.ID, "", timeoutCleanupTimeout)
+	if err != nil {
+		return fmt.Errorf("failed to run timeout cleanup command: %w", err)
+	}
+	return nil
+}
+
+func nonInteractiveTerminalEnv() []string {
+	return []string{
+		"TERM=dumb",
+		"PAGER=cat",
+		"PSQL_PAGER=cat",
+		"MYSQL_PAGER=cat",
+		"LESS=-F -X",
+	}
+}
+
+func shellSingleQuote(s string) string {
+	if s == "" {
+		return "''"
+	}
+	return "'" + strings.ReplaceAll(s, "'", "'\"'\"'") + "'"
 }
 
 func (t *terminal) ReadFile(ctx context.Context, flowID int64, path string) (string, error) {

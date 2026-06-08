@@ -8,6 +8,9 @@ import (
 	"testing"
 
 	"pentagi/pkg/cast"
+	"pentagi/pkg/database"
+	"pentagi/pkg/orchestrator"
+	"pentagi/pkg/tools"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/vxcontrol/langchaingo/llms"
@@ -1166,6 +1169,95 @@ func TestExecutionMonitorDetector_TotalCallsSequence(t *testing.T) {
 	if emd.totalCallCount != 0 {
 		t.Error("total count should be 0 after reset")
 	}
+}
+
+func TestExecutionMonitorDetector_TerminalTimeoutAbort(t *testing.T) {
+	emd := &executionMonitor{}
+	timeoutResponse := "terminal tool 'terminal' handled with error: command execution timeout (context deadline exceeded)"
+
+	if emd.recordTerminalResult(tools.TerminalToolName, timeoutResponse) {
+		t.Error("first terminal timeout should not abort")
+	}
+	if emd.terminalTimeouts != 1 {
+		t.Errorf("expected timeout count to be 1, got %d", emd.terminalTimeouts)
+	}
+	if !emd.recordTerminalResult(tools.TerminalToolName, timeoutResponse) {
+		t.Error("second consecutive terminal timeout should abort")
+	}
+	if emd.terminalTimeouts != terminalTimeoutAbortLimit {
+		t.Errorf("expected timeout count to be %d, got %d", terminalTimeoutAbortLimit, emd.terminalTimeouts)
+	}
+}
+
+func TestExecutionMonitorDetector_TerminalTimeoutReset(t *testing.T) {
+	emd := &executionMonitor{}
+	timeoutResponse := "terminal tool 'terminal' handled with error: command execution timeout (context deadline exceeded)"
+
+	emd.recordTerminalResult(tools.TerminalToolName, timeoutResponse)
+	if emd.recordTerminalResult(tools.TerminalToolName, "Command completed successfully") {
+		t.Error("successful terminal output should reset timeout count, not abort")
+	}
+	if emd.terminalTimeouts != 0 {
+		t.Errorf("expected timeout count to reset to 0, got %d", emd.terminalTimeouts)
+	}
+
+	emd.recordTerminalResult(tools.TerminalToolName, timeoutResponse)
+	if emd.recordTerminalResult("browser", timeoutResponse) {
+		t.Error("non-terminal tool output should reset timeout count, not abort")
+	}
+	if emd.terminalTimeouts != 0 {
+		t.Errorf("expected non-terminal tool to reset timeout count to 0, got %d", emd.terminalTimeouts)
+	}
+}
+
+func TestFailedSupervisorDecision(t *testing.T) {
+	decision := failedSupervisorDecision(42, "supervisor returned no structured tool call")
+
+	assert.Equal(t, orchestrator.SupervisorActionFailed, decision.Action)
+	assert.Equal(t, int64(42), decision.MsgChainID)
+	assert.Equal(t, "supervisor returned no structured tool call", decision.Error)
+	assert.Equal(t, decision.Error, decision.Message)
+}
+
+func TestSelectFallbackSupervisorTodoSkipsCompletedBuilder(t *testing.T) {
+	todos := []database.Todo{
+		{TodoID: "todo_001", Title: "准备测试环境", OwnerAgent: "builder", Status: "completed"},
+		{TodoID: "todo_002", Title: "验证弱口令", OwnerAgent: "pentester", Status: "created"},
+		{TodoID: "todo_003", Title: "生成报告", OwnerAgent: "reporter", Status: "created"},
+	}
+
+	todo, ok := selectFallbackSupervisorTodo(todos)
+
+	assert.True(t, ok)
+	assert.Equal(t, "todo_002", todo.TodoID)
+	assert.Equal(t, orchestrator.AgentRolePentester, fallbackAgentRole(todo.OwnerAgent))
+}
+
+func TestSelectFallbackSupervisorTodoRunsReporterLast(t *testing.T) {
+	todos := []database.Todo{
+		{TodoID: "todo_001", OwnerAgent: "pentester", Status: "completed"},
+		{TodoID: "todo_002", OwnerAgent: "reporter", Status: "created"},
+	}
+
+	todo, ok := selectFallbackSupervisorTodo(todos)
+
+	assert.True(t, ok)
+	assert.Equal(t, "todo_002", todo.TodoID)
+	assert.Equal(t, orchestrator.AgentRoleReporter, fallbackAgentRole(todo.OwnerAgent))
+}
+
+func TestBuildReporterUserContextUsesTaskSlice(t *testing.T) {
+	task := &database.Task{ID: 7, Input: "authorized test", Title: "test task"}
+	fp := newFlowProvider()
+
+	ctx, err := fp.buildReporterUserContext(t.Context(), nil, task, "execution logs")
+
+	assert.NoError(t, err)
+	assert.Equal(t, *task, ctx["Task"])
+	assert.Equal(t, "execution logs", ctx["ExecutionLogs"])
+	assert.IsType(t, []database.Task{}, ctx["Tasks"])
+	assert.IsType(t, []database.Subtask{}, ctx["CompletedSubtasks"])
+	assert.IsType(t, []database.Subtask{}, ctx["PlannedSubtasks"])
 }
 
 func mockToolCall(name string) llms.ToolCall {

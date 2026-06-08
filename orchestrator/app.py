@@ -183,9 +183,10 @@ def planner(state: MultiAgentState) -> Dict[str, Any]:
             todos = None
     if isinstance(todos, dict) and "todos" in todos:
         todos = todos["todos"]
+    todos = _normalize_todo_plan(todos or state.get("todo_plan", []))
 
     return {
-        "todo_plan": todos or state.get("todo_plan", []),
+        "todo_plan": todos,
         "active_todo_id": None,
         "active_todo": None,
         "plan_needs_update": False,
@@ -200,6 +201,17 @@ def supervisor(state: MultiAgentState) -> Dict[str, Any]:
         {"flow_id": state["flow_id"], "msg_chain_id": state.get("supervisor_msg_chain_id") or 0},
     )
     decision = response.get("decision", {})
+    if decision.get("action") == "completed" and _has_open_todos(state):
+        next_todo = _select_next_todo(state)
+        if next_todo:
+            decision = {
+                "action": "delegate",
+                "agent_role": _todo_owner_agent(next_todo),
+                "todo_id": next_todo.get("todo_id") or next_todo.get("id"),
+                "todo": next_todo,
+                "msg_chain_id": decision.get("msg_chain_id", 0),
+                "message": "continue pending todo before completing task",
+            }
     active_todo = decision.get("todo") or state.get("active_todo")
     active_todo_id = (
         decision.get("todo_id")
@@ -208,6 +220,9 @@ def supervisor(state: MultiAgentState) -> Dict[str, Any]:
         or (active_todo or {}).get("id")
         or state.get("active_todo_id")
     )
+    if decision.get("action") == "delegate" and not active_todo_id:
+        active_todo = _select_next_todo(state, decision.get("agent_role"))
+        active_todo_id = (active_todo or {}).get("todo_id") or (active_todo or {}).get("id")
     return {
         "supervisor_decision": decision,
         "active_todo": active_todo,
@@ -255,6 +270,15 @@ def _agent_question(agent_role: str, state: MultiAgentState) -> str:
     success_criteria = active_todo.get("success_criteria") or "Complete the delegated work and return concrete evidence."
     inputs = active_todo.get("inputs") or ""
 
+    execution_rules = [
+        "Execution rules:",
+        "- Use only non-interactive one-shot commands; every command must finish by itself.",
+        "- Do not use telnet or open interactive database shells for service checks.",
+        "- Do not install packages or troubleshoot Docker unless explicitly requested.",
+        "- For MySQL, use one-shot commands such as mysql --skip-ssl -e \"SQL\" or echo SQL | mysql --skip-ssl.",
+        "- For Redis, if redis-cli is unavailable, use Python standard-library socket code to send RESP commands.",
+    ]
+
     return "\n".join([
         f"Agent role: {agent_role}",
         f"Active todo id: {state.get('active_todo_id') or 'unknown'}",
@@ -264,6 +288,7 @@ def _agent_question(agent_role: str, state: MultiAgentState) -> str:
         f"Scope contract: {scope_contract}",
         f"Shared state: {shared_state}",
         f"Previous agent result: {last_result}",
+        *execution_rules,
         "Execute this todo within scope, update evidence, and return a structured result.",
     ])
 
@@ -276,6 +301,117 @@ def _agent_payload(agent_role: str, state: MultiAgentState) -> Dict[str, Any]:
     if not payload.get("message"):
         payload["message"] = f"Run {agent_role} for todo {state.get('active_todo_id') or 'current task'}"
     return payload
+
+
+def _todo_owner_agent(todo: Dict[str, Any]) -> str:
+    return str(todo.get("owner_agent") or todo.get("owner") or "pentester")
+
+
+def _todo_id(todo: Dict[str, Any]) -> str:
+    return str(todo.get("todo_id") or todo.get("id") or "")
+
+
+def _todo_status(todo: Dict[str, Any]) -> str:
+    return str(todo.get("status") or "pending").strip().lower()
+
+
+def _is_open_todo(todo: Dict[str, Any]) -> bool:
+    return _todo_status(todo) in (
+        "",
+        "pending",
+        "created",
+        "queued",
+        "not_started",
+        "running",
+        "in_progress",
+        "blocked",
+    )
+
+
+def _is_completed_todo(todo: Dict[str, Any]) -> bool:
+    return _todo_status(todo) in ("completed", "finished", "done", "success", "skipped")
+
+
+def _is_reporter_todo(todo: Dict[str, Any]) -> bool:
+    return _todo_owner_agent(todo) == "reporter"
+
+
+def _todo_dependencies(todo: Dict[str, Any]) -> List[str]:
+    deps = todo.get("depends_on") or todo.get("dependencies") or []
+    if isinstance(deps, str):
+        deps = [item.strip() for item in deps.split(",")]
+    if not isinstance(deps, list):
+        return []
+    return [str(item).strip() for item in deps if str(item).strip()]
+
+
+def _dependencies_satisfied(todo: Dict[str, Any], todos_by_id: Dict[str, Dict[str, Any]]) -> bool:
+    for dep_id in _todo_dependencies(todo):
+        dep = todos_by_id.get(dep_id)
+        if dep is None or not _is_completed_todo(dep):
+            return False
+    return True
+
+
+def _non_reporter_todos_closed(todos: List[Dict[str, Any]]) -> bool:
+    return all((not _is_open_todo(todo)) for todo in todos if not _is_reporter_todo(todo))
+
+
+def _has_open_todos(state: MultiAgentState) -> bool:
+    return any(_is_open_todo(todo) for todo in _todo_plan_items(state.get("todo_plan")))
+
+
+def _select_next_todo(state: MultiAgentState, agent_role: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    todos = _todo_plan_items(state.get("todo_plan"))
+    todos_by_id = {_todo_id(todo): todo for todo in todos if _todo_id(todo)}
+
+    candidates = [
+        todo for todo in todos
+        if _is_open_todo(todo)
+        and (not agent_role or _todo_owner_agent(todo) == agent_role)
+        and _dependencies_satisfied(todo, todos_by_id)
+    ]
+    if not candidates:
+        return None
+
+    for todo in candidates:
+        if not _is_reporter_todo(todo):
+            return todo
+
+    if _non_reporter_todos_closed(todos):
+        return candidates[0]
+    return None
+
+
+def _update_todo_status(
+    todos: Optional[List[Dict[str, Any]]],
+    todo_id: str,
+    status: str,
+    result: str,
+) -> Optional[List[Dict[str, Any]]]:
+    items = _todo_plan_items(todos)
+    if not items or not todo_id:
+        return items
+    updated = []
+    for todo in items:
+        item = dict(todo)
+        if str(item.get("todo_id") or item.get("id")) == str(todo_id):
+            item["status"] = status
+            item["result"] = result
+        updated.append(item)
+    return updated
+
+
+def _todo_plan_items(plan: Any) -> List[Dict[str, Any]]:
+    if isinstance(plan, dict):
+        plan = plan.get("todos") or plan.get("items") or []
+    if not isinstance(plan, list):
+        return []
+    return [item for item in plan if isinstance(item, dict)]
+
+
+def _normalize_todo_plan(plan: Any) -> List[Dict[str, Any]]:
+    return [dict(item) for item in _todo_plan_items(plan)]
 
 
 def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[str, Any]]:
@@ -301,6 +437,8 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
             },
         )
         execution = response.get("result", response.get("execution", {}))
+        execution_result = execution.get("result", "")
+        execution_status = "completed" if execution.get("success") else "failed"
 
         # Update shared state on success
         if execution.get("success"):
@@ -315,7 +453,10 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
             )
 
         return {
-            "last_agent_result": execution.get("result", ""),
+            "last_agent_result": execution_result,
+            "todo_plan": _update_todo_status(state.get("todo_plan"), todo_id, execution_status, execution_result),
+            "active_todo_id": None,
+            "active_todo": None,
             "supervisor_decision": None,
         }
 

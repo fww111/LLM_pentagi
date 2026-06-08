@@ -36,6 +36,7 @@ const (
 	msgLogResultEntrySizeLimit   = 1024      // 1 KB
 	extractLastMessagesCount     = 30
 	extractToolCallsCount        = 10
+	terminalTimeoutAbortLimit    = 2
 	toolCallsHistorySeparator    = "---------------TOOL_CALLS_HISTORY---------------"
 	ChainContinuationMessage     = "Continue from where we left off"
 )
@@ -114,12 +115,13 @@ type executionMonitorBuilder func() *executionMonitor
 
 // executionMonitor detects when to invoke mentor (adviser agent) for execution monitoring
 type executionMonitor struct {
-	sameToolCount  int
-	totalCallCount int
-	lastToolName   string
-	sameThreshold  int
-	totalThreshold int
-	enabled        bool
+	sameToolCount    int
+	totalCallCount   int
+	terminalTimeouts int
+	lastToolName     string
+	sameThreshold    int
+	totalThreshold   int
+	enabled          bool
 }
 
 // shouldInvokeMentor checks if mentor (adviser agent) should be invoked based on tool call patterns
@@ -144,7 +146,22 @@ func (emd *executionMonitor) shouldInvokeMentor(toolCall llms.ToolCall) bool {
 func (emd *executionMonitor) reset() {
 	emd.sameToolCount = 0
 	emd.totalCallCount = 0
+	emd.terminalTimeouts = 0
 	emd.lastToolName = ""
+}
+
+func (emd *executionMonitor) recordTerminalResult(toolName, response string) bool {
+	if toolName != tools.TerminalToolName || !isTerminalTimeoutResponse(response) {
+		emd.terminalTimeouts = 0
+		return false
+	}
+
+	emd.terminalTimeouts++
+	return emd.terminalTimeouts >= terminalTimeoutAbortLimit
+}
+
+func isTerminalTimeoutResponse(response string) bool {
+	return strings.Contains(response, "terminal tool 'terminal' handled with error: command execution timeout")
 }
 
 func (fp *flowProvider) getTasksInfo(ctx context.Context, taskID int64) (*tasksInfo, error) {

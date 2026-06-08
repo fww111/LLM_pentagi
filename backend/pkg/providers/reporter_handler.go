@@ -2,11 +2,13 @@ package providers
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 
 	"pentagi/pkg/cast"
 	"pentagi/pkg/csum"
+	"pentagi/pkg/database"
 	obs "pentagi/pkg/observability"
 	"pentagi/pkg/observability/langfuse"
 	"pentagi/pkg/templates"
@@ -14,6 +16,38 @@ import (
 
 	"github.com/sirupsen/logrus"
 )
+
+type reporterTodoView struct {
+	ID                   string
+	Title                string
+	OwnerAgent           string
+	Status               string
+	RiskLevel            string
+	Inputs               string
+	SuccessCriteria      string
+	EvidenceRequirements []string
+	Result               string
+}
+
+type reporterFindingView struct {
+	ID          int64
+	TodoID      string
+	FindingType string
+	Severity    string
+	Title       string
+	Description string
+	RawOutput   string
+}
+
+type reporterEvidenceView struct {
+	ID           int64
+	TodoID       string
+	ArtifactID   string
+	EvidenceType string
+	RelativePath string
+	Description  string
+	Hash         string
+}
 
 func (fp *flowProvider) GetReporterHandler(ctx context.Context, taskID, subtaskID *int64) (tools.ExecutorHandler, error) {
 	ptrTask, ptrSubtask, err := fp.getTaskAndSubtask(ctx, taskID, subtaskID)
@@ -27,15 +61,13 @@ func (fp *flowProvider) GetReporterHandler(ctx context.Context, taskID, subtaskI
 	}
 
 	reporterHandler := func(ctx context.Context, input string) (string, error) {
+		userContext, err := fp.buildReporterUserContext(ctx, taskID, ptrTask, executionContext)
+		if err != nil {
+			return "", fmt.Errorf("failed to build reporter context: %w", err)
+		}
+
 		reporterContext := map[string]map[string]any{
-			"user": {
-				"Task":               ptrTask,
-				"Tasks":              ptrTask,
-				"CompletedSubtasks":  "",
-				"PlannedSubtasks":    "",
-				"ExecutionLogs":      executionContext,
-				"ExecutionState":     "",
-			},
+			"user": userContext,
 			"system": {
 				"ReportResultToolName":    tools.ReportResultToolName,
 				"SummarizationToolName":   cast.SummarizationToolName,
@@ -109,4 +141,127 @@ func (fp *flowProvider) GetReporterHandler(ctx context.Context, taskID, subtaskI
 
 		return reporterResult, nil
 	}, nil
+}
+
+func (fp *flowProvider) buildReporterUserContext(
+	ctx context.Context,
+	taskID *int64,
+	ptrTask *database.Task,
+	executionContext string,
+) (map[string]any, error) {
+	task := database.Task{}
+	if ptrTask != nil {
+		task = *ptrTask
+	}
+
+	previousTasks := []database.Task{}
+	completedSubtasks := []database.Subtask{}
+	plannedSubtasks := []database.Subtask{}
+	todos := []reporterTodoView{}
+	findings := []reporterFindingView{}
+	evidence := []reporterEvidenceView{}
+
+	if taskID != nil {
+		tasksInfo, err := fp.getTasksInfo(ctx, *taskID)
+		if err != nil {
+			return nil, err
+		}
+		if tasksInfo.Task.ID != 0 {
+			task = tasksInfo.Task
+		}
+		previousTasks = tasksInfo.Tasks
+
+		subtasksInfo := fp.getSubtasksInfo(*taskID, tasksInfo.Subtasks)
+		completedSubtasks = subtasksInfo.Completed
+		plannedSubtasks = subtasksInfo.Planned
+
+		ma, err := fp.multiAgentQueries()
+		if err != nil {
+			return nil, err
+		}
+		dbTodos, err := ma.GetTodosByTaskID(ctx, *taskID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load todos for reporter context: %w", err)
+		}
+		dbFindings, err := ma.GetFindingsByTaskID(ctx, *taskID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load findings for reporter context: %w", err)
+		}
+		dbEvidence, err := ma.GetEvidenceByTaskID(ctx, *taskID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load evidence for reporter context: %w", err)
+		}
+		todos = reporterTodos(dbTodos)
+		findings = reporterFindings(dbFindings)
+		evidence = reporterEvidence(dbEvidence)
+	}
+
+	return map[string]any{
+		"Task":              task,
+		"Tasks":             previousTasks,
+		"CompletedSubtasks": completedSubtasks,
+		"PlannedSubtasks":   plannedSubtasks,
+		"Todos":             todos,
+		"Findings":          findings,
+		"Evidence":          evidence,
+		"ExecutionLogs":     executionContext,
+		"ExecutionState":    "",
+	}, nil
+}
+
+func reporterTodos(todos []database.Todo) []reporterTodoView {
+	views := make([]reporterTodoView, 0, len(todos))
+	for _, todo := range todos {
+		views = append(views, reporterTodoView{
+			ID:                   todo.TodoID,
+			Title:                todo.Title,
+			OwnerAgent:           todo.OwnerAgent,
+			Status:               todo.Status,
+			RiskLevel:            todo.RiskLevel,
+			Inputs:               reporterNullString(todo.Inputs),
+			SuccessCriteria:      reporterNullString(todo.SuccessCriteria),
+			EvidenceRequirements: decodeStringList(todo.EvidenceRequirements),
+			Result:               reporterNullString(todo.Result),
+		})
+	}
+	return views
+}
+
+func reporterFindings(findings []database.Finding) []reporterFindingView {
+	views := make([]reporterFindingView, 0, len(findings))
+	for _, finding := range findings {
+		views = append(views, reporterFindingView{
+			ID:          finding.ID,
+			TodoID:      reporterNullString(finding.TodoID),
+			FindingType: reporterNullString(finding.FindingType),
+			Severity:    reporterNullString(finding.Severity),
+			Title:       finding.Title,
+			Description: reporterNullString(finding.Description),
+			RawOutput:   reporterNullString(finding.RawOutput),
+		})
+	}
+	return views
+}
+
+func reporterEvidence(evidence []database.Evidence) []reporterEvidenceView {
+	views := make([]reporterEvidenceView, 0, len(evidence))
+	for _, item := range evidence {
+		views = append(views, reporterEvidenceView{
+			ID:           item.ID,
+			TodoID:       reporterNullString(item.TodoID),
+			ArtifactID:   reporterNullString(item.ArtifactID),
+			EvidenceType: reporterNullString(item.EvidenceType),
+			RelativePath: reporterNullString(item.RelativePath),
+			Description:  reporterNullString(item.Description),
+			Hash:         reporterNullString(item.Hash),
+		})
+	}
+	return views
+}
+
+func reporterNullString(value sql.NullString) string {
+	if value.Valid {
+		return value.String
+	}
+	return ""
 }
