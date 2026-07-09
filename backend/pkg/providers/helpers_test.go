@@ -1,6 +1,7 @@
 package providers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"slices"
 	"sync"
@@ -1210,6 +1211,18 @@ func TestExecutionMonitorDetector_TerminalTimeoutReset(t *testing.T) {
 	}
 }
 
+func TestExecutionMonitorDetector_TerminalTimeoutWithPartialOutput(t *testing.T) {
+	emd := &executionMonitor{terminalTimeouts: 1}
+	timeoutResponse := "terminal tool 'terminal' handled with error: command execution timeout (context deadline exceeded). Partial output: +PONG\r\n. HINT: use timeout"
+
+	if emd.recordTerminalResult(tools.TerminalToolName, timeoutResponse) {
+		t.Error("timeout with useful partial output should not abort")
+	}
+	if emd.terminalTimeouts != 0 {
+		t.Errorf("expected timeout count to reset after partial output, got %d", emd.terminalTimeouts)
+	}
+}
+
 func TestFailedSupervisorDecision(t *testing.T) {
 	decision := failedSupervisorDecision(42, "supervisor returned no structured tool call")
 
@@ -1246,6 +1259,53 @@ func TestSelectFallbackSupervisorTodoRunsReporterLast(t *testing.T) {
 	assert.Equal(t, orchestrator.AgentRoleReporter, fallbackAgentRole(todo.OwnerAgent))
 }
 
+func TestSelectFallbackSupervisorTodoDoesNotRunDependencyBlockedTodo(t *testing.T) {
+	dependsOn, err := json.Marshal([]string{"todo_001"})
+	assert.NoError(t, err)
+	todos := []database.Todo{
+		{TodoID: "todo_001", OwnerAgent: "pentester", Status: "failed"},
+		{TodoID: "todo_002", OwnerAgent: "tester", Status: "created", DependsOn: dependsOn},
+	}
+
+	todo, ok := selectFallbackSupervisorTodo(todos)
+
+	assert.False(t, ok)
+	assert.Empty(t, todo.TodoID)
+	assert.True(t, hasOpenSupervisorTodos(todos))
+}
+
+func TestSupervisorTextLooksFinal(t *testing.T) {
+	assert.True(t, supervisorTextLooksFinal("结构化安全测试报告已成功生成，任务已完成。"))
+	assert.True(t, supervisorTextLooksFinal("The security report has been generated and the task completed."))
+	assert.False(t, supervisorTextLooksFinal("Continue the next unfinished todo."))
+}
+
+func TestLatestClosedReporterResultDetectsFailure(t *testing.T) {
+	todos := []database.Todo{
+		{TodoID: "todo_001", OwnerAgent: "pentester", Status: "in_progress"},
+		{
+			TodoID:     "todo_002",
+			OwnerAgent: "reporter",
+			Status:     "completed",
+			Result:     sqlNullString(`{"success":false,"result":"insufficient evidence to finish cleanly"}`),
+		},
+	}
+
+	result, failed := latestClosedReporterResult(todos)
+
+	assert.True(t, failed)
+	assert.Equal(t, "insufficient evidence to finish cleanly", result)
+}
+
+func TestLatestClosedReporterTextIgnoresOpenReporter(t *testing.T) {
+	todos := []database.Todo{
+		{TodoID: "todo_001", OwnerAgent: "reporter", Status: "pending", Result: sqlNullString("draft")},
+		{TodoID: "todo_002", OwnerAgent: "reporter", Status: "completed", Result: sqlNullString("final report")},
+	}
+
+	assert.Equal(t, "final report", latestClosedReporterText(todos))
+}
+
 func TestBuildReporterUserContextUsesTaskSlice(t *testing.T) {
 	task := &database.Task{ID: 7, Input: "authorized test", Title: "test task"}
 	fp := newFlowProvider()
@@ -1262,4 +1322,8 @@ func TestBuildReporterUserContextUsesTaskSlice(t *testing.T) {
 
 func mockToolCall(name string) llms.ToolCall {
 	return llms.ToolCall{FunctionCall: &llms.FunctionCall{Name: name}}
+}
+
+func sqlNullString(value string) sql.NullString {
+	return sql.NullString{String: value, Valid: true}
 }

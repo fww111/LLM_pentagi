@@ -320,6 +320,7 @@ type FlowToolsExecutor interface {
 	SetGraphitiClient(client *graphiti.Client)
 
 	Prepare(ctx context.Context) error
+	CleanupActiveCommands(ctx context.Context) error
 	Release(ctx context.Context) error
 	GetCustomExecutor(cfg CustomExecutorConfig) (ContextToolsExecutor, error)
 	GetAssistantExecutor(cfg AssistantExecutorConfig) (ContextToolsExecutor, error)
@@ -483,6 +484,38 @@ func (fte *flowToolsExecutor) Release(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (fte *flowToolsExecutor) CleanupActiveCommands(ctx context.Context) error {
+	if fte.primaryLID == "" || fte.primaryID == 0 {
+		cnt, err := fte.db.GetFlowPrimaryContainer(ctx, fte.flowID)
+		if err != nil {
+			return fmt.Errorf("failed to get primary container for flow %d: %w", fte.flowID, err)
+		}
+		fte.primaryID = cnt.ID
+		fte.primaryLID = cnt.LocalID.String
+	}
+
+	if fte.primaryLID == "" {
+		return nil
+	}
+
+	running, err := fte.docker.IsContainerRunning(ctx, fte.primaryLID)
+	if err != nil {
+		return fmt.Errorf("failed to verify primary container runtime for flow %d: %w", fte.flowID, err)
+	}
+	if !running {
+		return nil
+	}
+
+	term := &terminal{
+		flowID:       fte.flowID,
+		containerID:  fte.primaryID,
+		containerLID: fte.primaryLID,
+		dockerClient: fte.docker,
+		tlp:          fte.tlp,
+	}
+	return term.cleanupActiveCommands(ctx)
 }
 
 func (fte *flowToolsExecutor) GetCustomExecutor(cfg CustomExecutorConfig) (ContextToolsExecutor, error) {

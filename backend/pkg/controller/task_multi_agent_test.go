@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"pentagi/pkg/database"
+	"pentagi/pkg/tools"
 )
 
 func TestExtractTodoIDFromPayload(t *testing.T) {
@@ -118,6 +119,29 @@ func TestMultiAgentCompletionStatusAcceptsClosedAliases(t *testing.T) {
 	}
 }
 
+func TestTodoStatusClassificationPreventsClosedTodoReopen(t *testing.T) {
+	for _, status := range []string{"completed", "done", "skipped", "success", "failed", "error", "rejected"} {
+		if isOpenTodoStatus(status) {
+			t.Fatalf("expected closed status %q to be non-open", status)
+		}
+	}
+	for _, status := range []string{"pending", "in_progress", "blocked", "created", "waiting", "running", ""} {
+		if !isOpenTodoStatus(status) {
+			t.Fatalf("expected status %q to be open", status)
+		}
+	}
+	for _, status := range []string{"failed", "error", "rejected"} {
+		if !isFailedTodoStatus(status) {
+			t.Fatalf("expected status %q to be failed", status)
+		}
+	}
+	for _, status := range []string{"completed", "done", "skipped", "success"} {
+		if isFailedTodoStatus(status) {
+			t.Fatalf("did not expect status %q to be failed", status)
+		}
+	}
+}
+
 func TestShouldStoreFindingForSecurityRoles(t *testing.T) {
 	for _, role := range []string{"pentester", "tester", "reviewer", "security_tester"} {
 		if !shouldStoreFindingForRole(role) {
@@ -128,5 +152,55 @@ func TestShouldStoreFindingForSecurityRoles(t *testing.T) {
 		if shouldStoreFindingForRole(role) {
 			t.Fatalf("did not expect %s result to be stored as finding", role)
 		}
+	}
+}
+
+func TestSanitizeTodoPlanRewritesEnvironmentOnlySecurityPlan(t *testing.T) {
+	input := "对本地 Redis 4.0 靶场进行授权安全测试，验证未授权访问风险，只使用只读命令，不要配置 Redis。"
+	plan := []tools.TodoItem{{
+		TodoID:       "todo_001",
+		Title:        "环境准备：检查并配置 Redis 4.0 靶场环境",
+		OwnerAgent:   "builder",
+		NeedEnv:      true,
+		RiskLevel:    "low",
+		Inputs:       "配置 Redis 环境",
+		Status:       "pending",
+		AuthRequired: false,
+	}}
+
+	got := sanitizeTodoPlanForSecurityValidation(input, plan)
+	if len(got) != 2 {
+		t.Fatalf("expected validation todo plus reporter todo, got %d: %+v", len(got), got)
+	}
+	if got[0].OwnerAgent != "pentester" || got[0].NeedEnv || got[0].NeedCode {
+		t.Fatalf("expected first todo to be non-env pentester validation, got %+v", got[0])
+	}
+	if got[1].OwnerAgent != "reporter" {
+		t.Fatalf("expected reporter todo to be appended, got %+v", got[1])
+	}
+	if !strings.Contains(got[0].Inputs, "不要配置") {
+		t.Fatalf("expected validation todo to preserve no-configuration constraint, got %q", got[0].Inputs)
+	}
+}
+
+func TestSanitizeTodoPlanKeepsExplicitEnvironmentWork(t *testing.T) {
+	input := "请先搭建靶场环境，然后进行授权安全测试。"
+	plan := []tools.TodoItem{{
+		TodoID:     "todo_001",
+		Title:      "搭建测试环境",
+		OwnerAgent: "builder",
+		NeedEnv:    true,
+		Status:     "pending",
+	}}
+
+	got := sanitizeTodoPlanForSecurityValidation(input, plan)
+	foundBuilder := false
+	for _, item := range got {
+		if item.TodoID == "todo_001" && item.OwnerAgent == "builder" && item.NeedEnv {
+			foundBuilder = true
+		}
+	}
+	if !foundBuilder {
+		t.Fatalf("expected explicit environment work to remain builder, got %+v", got)
 	}
 }

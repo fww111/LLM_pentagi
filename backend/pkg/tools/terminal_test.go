@@ -31,14 +31,15 @@ var _ TermLogProvider = (*contextTestTermLogProvider)(nil)
 // contextAwareMockDockerClient tracks whether the context was canceled
 // when getExecResult runs, proving context.WithoutCancel works.
 type contextAwareMockDockerClient struct {
-	isRunning      bool
-	execCreateResp container.ExecCreateResponse
-	attachOutput   []byte
-	attachDelay    time.Duration
-	inspectResp    container.ExecInspect
-	cleanupCreated bool
-	attachDelays   map[string]time.Duration
-	attachOutputs  map[string][]byte
+	isRunning       bool
+	execCreateResp  container.ExecCreateResponse
+	attachOutput    []byte
+	attachDelay     time.Duration
+	inspectResp     container.ExecInspect
+	cleanupCreated  bool
+	createdCommands []string
+	attachDelays    map[string]time.Duration
+	attachOutputs   map[string][]byte
 
 	// Set by ContainerExecAttach to track if ctx was canceled during attach
 	ctxWasCanceled bool
@@ -58,7 +59,10 @@ func (m *contextAwareMockDockerClient) IsContainerRunning(_ context.Context, _ s
 	return m.isRunning, nil
 }
 func (m *contextAwareMockDockerClient) ContainerExecCreate(_ context.Context, _ string, opts container.ExecOptions) (container.ExecCreateResponse, error) {
-	if len(opts.Cmd) >= 3 && strings.Contains(opts.Cmd[2], "pkill") {
+	if len(opts.Cmd) >= 3 {
+		m.createdCommands = append(m.createdCommands, opts.Cmd[2])
+	}
+	if len(opts.Cmd) >= 3 && strings.Contains(opts.Cmd[2], "pattern=") {
 		m.cleanupCreated = true
 		return container.ExecCreateResponse{ID: "exec-cleanup"}, nil
 	}
@@ -228,6 +232,80 @@ func TestCleanupTimedOutCommandCreatesCleanupExec(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.True(t, mock.cleanupCreated, "timeout cleanup should create a cleanup exec")
+	assert.NotEmpty(t, mock.createdCommands)
+	assert.Contains(t, mock.createdCommands[len(mock.createdCommands)-1], "[m]ysql")
+}
+
+func TestRejectInteractiveTerminalCommandRejectsMysqlPasswordPrompt(t *testing.T) {
+	err := rejectInteractiveTerminalCommand(`mysql -h host.docker.internal -P 13306 -u root -p -e "SELECT VERSION();"`)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "mysql")
+}
+
+func TestRejectInteractiveTerminalCommandAllowsMysqlNonInteractivePassword(t *testing.T) {
+	tests := []string{
+		`MYSQL_PWD=root mysql -h host.docker.internal -P 13306 -u root -e "SELECT VERSION();"`,
+		`mysql -h host.docker.internal -P 13306 -u root -proot -e "SELECT VERSION();"`,
+		`mysql -h host.docker.internal -P 13306 -u root --password=root -e "SELECT VERSION();"`,
+	}
+
+	for _, command := range tests {
+		t.Run(command, func(t *testing.T) {
+			assert.NoError(t, rejectInteractiveTerminalCommand(command))
+		})
+	}
+}
+
+func TestRejectInteractiveTerminalCommandRejectsOpenSessions(t *testing.T) {
+	tests := []string{
+		`psql -h host.docker.internal -p 15432 -U postgres`,
+		`redis-cli -h host.docker.internal -p 6379`,
+		`ssh admin@host.docker.internal`,
+		`telnet host.docker.internal 23`,
+	}
+
+	for _, command := range tests {
+		t.Run(command, func(t *testing.T) {
+			assert.Error(t, rejectInteractiveTerminalCommand(command))
+		})
+	}
+}
+
+func TestRejectInteractiveTerminalCommandAllowsBoundedDatabaseCommands(t *testing.T) {
+	tests := []string{
+		`psql -h host.docker.internal -p 15432 -U postgres -c "SELECT version();"`,
+		`echo "SELECT version();" | psql -h host.docker.internal -p 15432 -U postgres`,
+		`redis-cli -h host.docker.internal -p 6379 PING`,
+	}
+
+	for _, command := range tests {
+		t.Run(command, func(t *testing.T) {
+			assert.NoError(t, rejectInteractiveTerminalCommand(command))
+		})
+	}
+}
+
+func TestCleanupActiveCommandsCreatesCleanupExec(t *testing.T) {
+	mock := &contextAwareMockDockerClient{
+		isRunning:      true,
+		execCreateResp: container.ExecCreateResponse{ID: "exec-original"},
+		attachOutput:   []byte(""),
+		inspectResp:    container.ExecInspect{ExitCode: 0},
+	}
+
+	term := &terminal{
+		flowID:       1,
+		containerID:  1,
+		containerLID: "test-container",
+		dockerClient: mock,
+		tlp:          &contextTestTermLogProvider{},
+	}
+
+	err := term.cleanupActiveCommands(t.Context())
+
+	assert.NoError(t, err)
+	assert.True(t, mock.cleanupCreated, "flow cleanup should create a cleanup exec")
 }
 
 func TestShellSingleQuote(t *testing.T) {

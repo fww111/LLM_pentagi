@@ -190,7 +190,7 @@ type Config struct {
 	LangGraphEnabled       bool   `env:"LANGGRAPH_ENABLED" envDefault:"false"`
 	LangGraphURL           string `env:"LANGGRAPH_URL" envDefault:"http://127.0.0.1:8091"`
 	LangGraphInternalToken string `env:"LANGGRAPH_INTERNAL_TOKEN"`
-	LangGraphTimeout       int    `env:"LANGGRAPH_TIMEOUT" envDefault:"600"`
+	LangGraphTimeout       int    `env:"LANGGRAPH_TIMEOUT" envDefault:"3600"`
 
 	// === Network Proxy Settings ===
 	ProxyURL string `env:"PROXY_URL"`

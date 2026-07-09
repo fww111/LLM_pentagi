@@ -146,6 +146,10 @@ func (t *terminal) ExecCommand(
 ) (string, error) {
 	containerName := PrimaryTerminalName(t.flowID)
 
+	if err := rejectInteractiveTerminalCommand(command); err != nil {
+		return "", err
+	}
+
 	// create options for starting the exec process
 	cmd := []string{
 		"sh",
@@ -258,6 +262,20 @@ func (t *terminal) getExecResult(ctx context.Context, id, command string, timeou
 		}
 
 		suggestedTimeout := max(int(timeout.Seconds())-10, 10)
+		partialOutput := dst.String()
+		if strings.TrimSpace(partialOutput) != "" {
+			styledOutput := fmt.Sprintf("%s%s%s%s", ansiColorSystemMsg, partialOutput, ansiColorReset, ansiLineTerminator)
+			if _, logErr := t.tlp.PutMsg(context.WithoutCancel(ctx), database.TermlogTypeStdout, styledOutput, t.containerID, t.taskID, t.subtaskID); logErr != nil {
+				logrus.WithContext(ctx).WithError(logErr).Warn("failed to put partial terminal log after timeout")
+			}
+			return fmt.Sprintf(
+				"Command timed out before clean exit, but produced partial output:\n%s\n\n"+
+					"HINT: The command may be interactive or waiting for the remote side to close. "+
+					"Use bounded non-interactive forms such as 'timeout %d <command>' or command-specific wait/quit flags.",
+				truncateString(partialOutput, 4000),
+				suggestedTimeout,
+			), nil
+		}
 		return "", fmt.Errorf(
 			"command execution timeout (%v). Partial output: %s. "+
 				"HINT: If this is an interactive command (shell/REPL/listener), use detach=true. "+
@@ -306,12 +324,14 @@ func (t *terminal) cleanupTimedOutCommand(ctx context.Context, execID, command s
 			fmt.Sprintf("pkill -TERM -P %s 2>/dev/null || true", pid),
 			fmt.Sprintf("kill -TERM %s 2>/dev/null || true", pid),
 		)
-	} else if trimmedCommand := strings.TrimSpace(command); trimmedCommand != "" {
+	}
+	if trimmedCommand := strings.TrimSpace(command); trimmedCommand != "" {
 		quotedCommand := shellSingleQuote(trimmedCommand)
 		cleanupParts = append(cleanupParts,
 			fmt.Sprintf("target=%s; self=$$; ps -eo pid=,args= | awk -v target=\"$target\" -v self=\"$self\" '$1 != self { line=$0; sub(/^[[:space:]]*[0-9]+[[:space:]]+/, \"\", line); if (index(line, target)>0) print $1 }' | xargs -r kill -TERM 2>/dev/null || true", quotedCommand),
 		)
 	}
+	cleanupParts = append(cleanupParts, knownInteractiveCleanupCommands("TERM")...)
 
 	if len(cleanupParts) == 0 {
 		return nil
@@ -325,12 +345,14 @@ func (t *terminal) cleanupTimedOutCommand(ctx context.Context, execID, command s
 			fmt.Sprintf("pkill -KILL -P %s 2>/dev/null || true", pid),
 			fmt.Sprintf("kill -KILL %s 2>/dev/null || true", pid),
 		)
-	} else if trimmedCommand := strings.TrimSpace(command); trimmedCommand != "" {
+	}
+	if trimmedCommand := strings.TrimSpace(command); trimmedCommand != "" {
 		quotedCommand := shellSingleQuote(trimmedCommand)
 		cleanupParts = append(cleanupParts,
 			fmt.Sprintf("target=%s; self=$$; ps -eo pid=,args= | awk -v target=\"$target\" -v self=\"$self\" '$1 != self { line=$0; sub(/^[[:space:]]*[0-9]+[[:space:]]+/, \"\", line); if (index(line, target)>0) print $1 }' | xargs -r kill -KILL 2>/dev/null || true", quotedCommand),
 		)
 	}
+	cleanupParts = append(cleanupParts, knownInteractiveCleanupCommands("KILL")...)
 
 	cleanupCommand := strings.Join(cleanupParts, "; ")
 	createResp, err := t.dockerClient.ContainerExecCreate(ctx, PrimaryTerminalName(t.flowID), container.ExecOptions{
@@ -348,6 +370,207 @@ func (t *terminal) cleanupTimedOutCommand(ctx context.Context, execID, command s
 		return fmt.Errorf("failed to run timeout cleanup command: %w", err)
 	}
 	return nil
+}
+
+func (t *terminal) cleanupActiveCommands(ctx context.Context) error {
+	ctx, cancel := context.WithTimeout(ctx, timeoutCleanupTimeout)
+	defer cancel()
+
+	cleanupParts := knownInteractiveCleanupCommands("TERM")
+	cleanupParts = append(cleanupParts, "sleep 1")
+	cleanupParts = append(cleanupParts, knownInteractiveCleanupCommands("KILL")...)
+	cleanupCommand := strings.Join(cleanupParts, "; ")
+
+	createResp, err := t.dockerClient.ContainerExecCreate(ctx, PrimaryTerminalName(t.flowID), container.ExecOptions{
+		Cmd:          []string{"sh", "-c", cleanupCommand},
+		AttachStdout: true,
+		AttachStderr: true,
+		Tty:          true,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create terminal cleanup exec process: %w", err)
+	}
+
+	if _, err := t.getExecResult(ctx, createResp.ID, "", timeoutCleanupTimeout); err != nil {
+		return fmt.Errorf("failed to run terminal cleanup command: %w", err)
+	}
+	return nil
+}
+
+func knownInteractiveCleanupCommands(signal string) []string {
+	patterns := []string{
+		"[m]ysql([[:space:]]|$)",
+		"[p]sql([[:space:]]|$)",
+		"[r]edis-cli([[:space:]]|$)",
+		"[s]sh([[:space:]]|$)",
+		"[t]elnet([[:space:]]|$)",
+		"[f]tp([[:space:]]|$)",
+		"[s]ftp([[:space:]]|$)",
+	}
+
+	commands := make([]string, 0, len(patterns))
+	for _, pattern := range patterns {
+		commands = append(commands, fmt.Sprintf(
+			"pattern=%s; self=$$; ps -eo pid=,stat=,args= | awk -v pattern=\"$pattern\" -v self=\"$self\" '$1 != self && $2 !~ /Z/ { line=$0; sub(/^[[:space:]]*[0-9]+[[:space:]]+[^[:space:]]+[[:space:]]+/, \"\", line); if (line ~ pattern) print $1 }' | xargs -r kill -%s 2>/dev/null || true",
+			shellSingleQuote(pattern),
+			signal,
+		))
+	}
+	return commands
+}
+
+func rejectInteractiveTerminalCommand(command string) error {
+	tokens := splitShellFields(command)
+	for i, token := range tokens {
+		name := shellCommandName(token)
+		if name == "" {
+			continue
+		}
+
+		switch name {
+		case "mysql":
+			if hasInteractiveMysqlPasswordFlag(tokens[i+1:]) {
+				return fmt.Errorf("interactive terminal command rejected: mysql '-p' or '--password' without an inline value waits for a password prompt; use MYSQL_PWD, '-p<password>', or '--password=<password>' with a non-interactive query")
+			}
+		case "psql":
+			if !hasNonInteractiveSQLFlag(tokens[i+1:]) && !hasPipeBefore(tokens, i) {
+				return fmt.Errorf("interactive terminal command rejected: psql without '-c' or '-f' opens an interactive session")
+			}
+		case "redis-cli":
+			if !hasRedisCommand(tokens[i+1:]) {
+				return fmt.Errorf("interactive terminal command rejected: redis-cli without a command opens an interactive session")
+			}
+		case "ssh", "telnet", "ftp", "sftp":
+			return fmt.Errorf("interactive terminal command rejected: %s opens an interactive network session", name)
+		}
+	}
+	return nil
+}
+
+func splitShellFields(command string) []string {
+	fields := make([]string, 0)
+	var builder strings.Builder
+	var quote rune
+	escaped := false
+
+	flush := func() {
+		if builder.Len() == 0 {
+			return
+		}
+		fields = append(fields, builder.String())
+		builder.Reset()
+	}
+
+	for _, r := range command {
+		switch {
+		case escaped:
+			builder.WriteRune(r)
+			escaped = false
+		case r == '\\' && quote != '\'':
+			escaped = true
+		case quote != 0:
+			if r == quote {
+				quote = 0
+				continue
+			}
+			builder.WriteRune(r)
+		case r == '\'' || r == '"':
+			quote = r
+		case r == ' ' || r == '\t' || r == '\n' || r == '\r':
+			flush()
+		case r == '|' || r == ';':
+			flush()
+			fields = append(fields, string(r))
+		default:
+			builder.WriteRune(r)
+		}
+	}
+	flush()
+	return fields
+}
+
+func shellCommandName(token string) string {
+	token = strings.TrimSpace(token)
+	if token == "" || token == "|" || token == ";" || token == "&&" || token == "||" {
+		return ""
+	}
+	if strings.Contains(token, "=") && !strings.Contains(token, "/") {
+		return ""
+	}
+	token = strings.Trim(token, "\"'")
+	token = filepath.Base(token)
+	return strings.ToLower(token)
+}
+
+func hasInteractiveMysqlPasswordFlag(tokens []string) bool {
+	for _, token := range tokens {
+		if isCommandSeparator(token) {
+			return false
+		}
+		lower := strings.ToLower(token)
+		if token == "-p" || lower == "--password" || lower == "--password=" {
+			return true
+		}
+	}
+	return false
+}
+
+func hasNonInteractiveSQLFlag(tokens []string) bool {
+	for _, token := range tokens {
+		if isCommandSeparator(token) {
+			return false
+		}
+		lower := strings.ToLower(token)
+		if lower == "-c" || lower == "--command" || strings.HasPrefix(lower, "--command=") ||
+			lower == "-f" || lower == "--file" || strings.HasPrefix(lower, "--file=") {
+			return true
+		}
+	}
+	return false
+}
+
+func hasRedisCommand(tokens []string) bool {
+	skipNext := false
+	for _, token := range tokens {
+		if isCommandSeparator(token) {
+			return false
+		}
+		if skipNext {
+			skipNext = false
+			continue
+		}
+		if strings.HasPrefix(token, "-") {
+			skipNext = redisOptionNeedsValue(token)
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+func redisOptionNeedsValue(token string) bool {
+	switch strings.ToLower(token) {
+	case "-h", "-p", "-a", "-n", "-u", "--user", "--pass", "--raw":
+		return true
+	default:
+		return false
+	}
+}
+
+func hasPipeBefore(tokens []string, idx int) bool {
+	for i := idx - 1; i >= 0; i-- {
+		if tokens[i] == "|" {
+			return true
+		}
+		if tokens[i] == ";" {
+			return false
+		}
+	}
+	return false
+}
+
+func isCommandSeparator(token string) bool {
+	return token == "|" || token == ";" || token == "&&" || token == "||"
 }
 
 func nonInteractiveTerminalEnv() []string {

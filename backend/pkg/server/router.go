@@ -325,17 +325,8 @@ func setProvidersGroup(parent *gin.RouterGroup, svc *services.ProviderService) {
 func setInternalOrchestratorGroup(parent *gin.RouterGroup, svc *services.OrchestratorService) {
 	tasksGroup := parent.Group("/tasks/:taskID")
 	{
-		tasksGroup.POST("/generate-subtasks", svc.GenerateSubtasks)
-		tasksGroup.POST("/select-next-subtask", svc.SelectNextSubtask)
-		tasksGroup.POST("/refine-subtasks", svc.RefineSubtasks)
-		tasksGroup.POST("/report-task-result", svc.ReportTaskResult)
 		tasksGroup.POST("/fail-task", svc.FailTask)
-		tasksGroup.POST("/subtasks/:subtaskID/prepare-primary-agent-context", svc.PreparePrimaryAgentContext)
-		tasksGroup.POST("/subtasks/:subtaskID/primary-agent-step", svc.PrimaryAgentStep)
-		tasksGroup.POST("/subtasks/:subtaskID/execute-agent", svc.ExecuteAgent)
-		tasksGroup.POST("/subtasks/:subtaskID/write-primary-agent-result", svc.WritePrimaryAgentResult)
 
-		// Multi-agent migration: new endpoints
 		tasksGroup.POST("/designer-step", svc.DesignerStep)
 		tasksGroup.POST("/planner-step", svc.PlannerStep)
 		tasksGroup.POST("/supervisor-step", svc.SupervisorStep)

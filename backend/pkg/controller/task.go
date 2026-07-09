@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	"pentagi/pkg/database"
@@ -383,6 +384,10 @@ func (tw *taskWorker) Fail(ctx context.Context, result string) error {
 		result = "task failed"
 	}
 
+	if tw.taskCtx.Orchestrator != nil {
+		return tw.finalizeMultiAgentTask(ctx, database.TaskStatusFailed, result)
+	}
+
 	return tw.finalizeTask(ctx, database.TaskStatusFailed, result)
 }
 
@@ -495,7 +500,14 @@ func (tw *taskWorker) runWithOrchestrator(ctx context.Context) error {
 		}
 	}
 	if err != nil {
-		return fmt.Errorf("failed to orchestrate task %d via langgraph: %w", tw.taskCtx.TaskID, err)
+		if errors.Is(err, context.Canceled) {
+			return fmt.Errorf("failed to orchestrate task %d via langgraph: %w", tw.taskCtx.TaskID, err)
+		}
+		reason := fmt.Sprintf("failed to orchestrate task %d via langgraph: %v", tw.taskCtx.TaskID, err)
+		if ferr := tw.Fail(ctx, reason); ferr != nil {
+			return fmt.Errorf("%s; also failed to finalize multi-agent task: %w", reason, ferr)
+		}
+		return nil
 	}
 
 	if snapshot == nil {
@@ -519,7 +531,11 @@ func (tw *taskWorker) runWithOrchestrator(ctx context.Context) error {
 		currentStatus, _ := tw.GetStatus(ctx)
 		if currentStatus != database.TaskStatusFinished && currentStatus != database.TaskStatusFailed {
 			if cerr := tw.CompleteTask(ctx); cerr != nil {
-				return fmt.Errorf("failed to complete task %d after langgraph completion: %w", tw.taskCtx.TaskID, cerr)
+				reason := fmt.Sprintf("failed to complete task %d after langgraph completion: %v", tw.taskCtx.TaskID, cerr)
+				if ferr := tw.Fail(ctx, reason); ferr != nil {
+					return fmt.Errorf("%s; also failed to finalize multi-agent task: %w", reason, ferr)
+				}
+				return nil
 			}
 		}
 	}
@@ -597,6 +613,32 @@ func (tw *taskWorker) AgentExecute(ctx context.Context, agentRole, todoID string
 		return nil, fmt.Errorf("cannot execute agent %s without a valid todo_id", agentRole)
 	}
 
+	if !isOpenTodoStatus(resolvedTodo.Status) {
+		result := strings.TrimSpace(nullStringToString(resolvedTodo.Result))
+		if result == "" {
+			result = fmt.Sprintf("todo %s is already closed with status %s; duplicate delegation skipped", todoID, resolvedTodo.Status)
+		}
+		if err := ma.ClearTaskActiveTodo(ctx, tw.taskCtx.TaskID); err != nil {
+			return nil, fmt.Errorf("failed to clear active todo after duplicate delegation for %s: %w", todoID, err)
+		}
+		if err := tw.publishTaskUpdate(ctx); err != nil {
+			return nil, err
+		}
+		if isFailedTodoStatus(resolvedTodo.Status) {
+			return &orchestrator.AgentExecutionResult{
+				AgentType: agentRole,
+				Success:   false,
+				Result:    result,
+				Error:     result,
+			}, nil
+		}
+		return &orchestrator.AgentExecutionResult{
+			AgentType: agentRole,
+			Success:   true,
+			Result:    result,
+		}, nil
+	}
+
 	if err := ma.UpdateTodoStatus(ctx, tw.taskCtx.TaskID, todoID, string(orchestrator.TodoStatusInProgress), ""); err != nil {
 		return nil, fmt.Errorf("failed to mark todo %s in progress: %w", todoID, err)
 	}
@@ -616,7 +658,12 @@ func (tw *taskWorker) AgentExecute(ctx context.Context, agentRole, todoID string
 		if writeErr != nil {
 			return nil, fmt.Errorf("failed to execute agent %s: %w; also failed to persist failure for todo %s: %v", agentRole, err, todoID, writeErr)
 		}
-		return nil, fmt.Errorf("failed to execute agent %s: %w", agentRole, err)
+		return &orchestrator.AgentExecutionResult{
+			AgentType: agentRole,
+			Success:   false,
+			Result:    err.Error(),
+			Error:     err.Error(),
+		}, nil
 	}
 	if result == nil {
 		err := fmt.Errorf("agent %s returned nil execution result", agentRole)
@@ -624,7 +671,12 @@ func (tw *taskWorker) AgentExecute(ctx context.Context, agentRole, todoID string
 		if writeErr != nil {
 			return nil, fmt.Errorf("%w; also failed to persist failure for todo %s: %v", err, todoID, writeErr)
 		}
-		return nil, err
+		return &orchestrator.AgentExecutionResult{
+			AgentType: agentRole,
+			Success:   false,
+			Result:    err.Error(),
+			Error:     err.Error(),
+		}, nil
 	}
 
 	status := string(orchestrator.TodoStatusCompleted)
@@ -731,6 +783,9 @@ func (tw *taskWorker) StoreFinding(ctx context.Context, todoID, findingType, sev
 }
 
 func (tw *taskWorker) RejectTask(ctx context.Context, result string) error {
+	if tw.taskCtx.Orchestrator != nil {
+		return tw.finalizeMultiAgentTask(ctx, database.TaskStatusFailed, "REJECTED: "+result)
+	}
 	return tw.finalizeTask(ctx, database.TaskStatusFailed, "REJECTED: "+result)
 }
 
@@ -777,7 +832,40 @@ func (tw *taskWorker) completeMultiAgentTask(ctx context.Context) error {
 	if err := ma.ClearTaskActiveTodo(ctx, tw.taskCtx.TaskID); err != nil {
 		return fmt.Errorf("failed to clear active todo for completed task %d: %w", tw.taskCtx.TaskID, err)
 	}
-	return tw.finalizeTask(ctx, status, result)
+	return tw.finalizeMultiAgentTask(ctx, status, result)
+}
+
+func (tw *taskWorker) finalizeMultiAgentTask(ctx context.Context, status database.TaskStatus, result string) error {
+	if err := tw.finalizeTask(ctx, status, result); err != nil {
+		return err
+	}
+
+	tw.cleanupMultiAgentRuntime(ctx)
+
+	flowStatus := database.FlowStatusFinished
+	if status == database.TaskStatusFailed {
+		flowStatus = database.FlowStatusFailed
+	}
+	if err := tw.updater.SetStatus(ctx, flowStatus); err != nil {
+		return fmt.Errorf("failed to set flow status after multi-agent task completion: %w", err)
+	}
+	return nil
+}
+
+func (tw *taskWorker) cleanupMultiAgentRuntime(ctx context.Context) {
+	if tw.taskCtx.Executor == nil {
+		return
+	}
+
+	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 10*time.Second)
+	defer cancel()
+
+	if err := tw.taskCtx.Executor.CleanupActiveCommands(cleanupCtx); err != nil {
+		logrus.WithContext(cleanupCtx).WithError(err).WithFields(logrus.Fields{
+			"flow_id": tw.taskCtx.FlowID,
+			"task_id": tw.taskCtx.TaskID,
+		}).Warn("failed to cleanup active terminal commands after multi-agent task finalization")
+	}
 }
 
 func (tw *taskWorker) UpdateSharedState(ctx context.Context, activeNode, activeTodoID string, statusCode *int, updates map[string]interface{}) error {
@@ -811,6 +899,8 @@ func (tw *taskWorker) replaceTodoPlan(ctx context.Context, plan []tools.TodoItem
 	for _, todo := range existing {
 		existingByID[todo.TodoID] = todo
 	}
+
+	plan = sanitizeTodoPlanForSecurityValidation(tw.taskCtx.TaskInput, plan)
 
 	todos, err := todoItemsToDB(tw.taskCtx.TaskID, plan, existingByID)
 	if err != nil {
@@ -890,6 +980,162 @@ func dbTodosToToolItems(todos []database.Todo) []tools.TodoItem {
 		})
 	}
 	return items
+}
+
+func sanitizeTodoPlanForSecurityValidation(taskInput string, plan []tools.TodoItem) []tools.TodoItem {
+	if !isSecurityValidationRequest(taskInput) || len(plan) == 0 {
+		return plan
+	}
+
+	items := make([]tools.TodoItem, len(plan))
+	copy(items, plan)
+
+	wantsEnvWork := explicitlyRequestsEnvironmentWork(taskInput)
+	hasExecutionTodo := false
+	hasReporterTodo := false
+	nonReporterIDs := make([]string, 0, len(items))
+
+	for i := range items {
+		if strings.TrimSpace(items[i].TodoID) == "" {
+			items[i].TodoID = fmt.Sprintf("todo_%03d", i+1)
+		}
+		owner := normalizeAgentRole(items[i].OwnerAgent)
+		if owner == "reporter" {
+			hasReporterTodo = true
+			continue
+		}
+
+		if isEnvironmentPreparationTodo(items[i]) && !wantsEnvWork {
+			items[i] = rewriteEnvironmentTodoAsValidation(taskInput, items[i])
+			owner = normalizeAgentRole(items[i].OwnerAgent)
+		}
+
+		if owner == "pentester" || owner == "tester" || owner == "reviewer" {
+			hasExecutionTodo = true
+		}
+		nonReporterIDs = append(nonReporterIDs, items[i].TodoID)
+	}
+
+	if !hasExecutionTodo {
+		validationID := nextTodoID(items)
+		items = append([]tools.TodoItem{newValidationTodo(validationID, taskInput)}, items...)
+		nonReporterIDs = append([]string{validationID}, nonReporterIDs...)
+	}
+
+	if !hasReporterTodo {
+		items = append(items, newReporterTodo(nextTodoID(items), nonReporterIDs))
+	}
+
+	return items
+}
+
+func isSecurityValidationRequest(input string) bool {
+	return containsAnyFold(input,
+		"安全测试", "授权测试", "授权安全", "漏洞", "验证", "弱口令", "默认口令", "未授权", "敏感信息", "只读", "枚举",
+		"security test", "penetration", "vulnerability", "verify", "validation", "audit", "weak password", "default password", "unauthorized", "read-only", "enumerate",
+	)
+}
+
+func explicitlyRequestsEnvironmentWork(input string) bool {
+	if containsAnyFold(input, "不要配置", "不要部署", "不要搭建", "不要启动", "不要安装", "do not configure", "do not deploy", "do not install", "do not start") {
+		return false
+	}
+	return containsAnyFold(input, "搭建靶场", "启动靶场", "部署", "安装", "配置环境", "准备环境", "set up", "setup environment", "deploy", "install")
+}
+
+func isEnvironmentPreparationTodo(todo tools.TodoItem) bool {
+	owner := normalizeAgentRole(todo.OwnerAgent)
+	if owner == "builder" || todo.NeedEnv {
+		return true
+	}
+	return containsAnyFold(todo.Title+" "+todo.Inputs,
+		"环境准备", "准备环境", "配置", "部署", "安装", "启动", "重启", "搭建", "configure", "deploy", "install", "start service", "restart", "set up",
+	)
+}
+
+func rewriteEnvironmentTodoAsValidation(taskInput string, todo tools.TodoItem) tools.TodoItem {
+	todo.OwnerAgent = "pentester"
+	todo.Title = "验证目标可达性并收集安全证据"
+	todo.NeedEnv = false
+	todo.NeedCode = false
+	todo.AuthRequired = false
+	if strings.TrimSpace(todo.RiskLevel) == "" {
+		todo.RiskLevel = "low"
+	}
+	todo.Inputs = strings.TrimSpace(taskInput + "\n只执行目标可达性、服务指纹和授权范围内的只读安全验证；不要配置、启动、重启、部署或修改目标服务。")
+	todo.SuccessCriteria = "确认目标是否可达并记录安全验证证据；如果目标不可达，记录明确连接错误并返回失败。"
+	todo.EvidenceRequirements = []string{"目标可达性结果", "只读验证命令输出", "错误信息或服务响应"}
+	if strings.TrimSpace(todo.Status) == "" {
+		todo.Status = string(orchestrator.TodoStatusPending)
+	}
+	return todo
+}
+
+func newValidationTodo(todoID, taskInput string) tools.TodoItem {
+	return tools.TodoItem{
+		TodoID:               todoID,
+		Title:                "执行授权安全验证并收集证据",
+		OwnerAgent:           "pentester",
+		RiskLevel:            "low",
+		Inputs:               strings.TrimSpace(taskInput + "\n只使用现有工具进行非破坏性、只读验证；不要配置、部署、重启或修改目标服务。"),
+		SuccessCriteria:      "完成授权范围内的安全验证，记录可复现证据、影响和失败原因。",
+		EvidenceRequirements: []string{"命令输出", "服务响应", "漏洞证据或失败原因"},
+		Status:               string(orchestrator.TodoStatusPending),
+	}
+}
+
+func newReporterTodo(todoID string, dependencies []string) tools.TodoItem {
+	return tools.TodoItem{
+		TodoID:               todoID,
+		Title:                "生成结构化安全测试报告",
+		OwnerAgent:           "reporter",
+		DependsOn:            uniqueNonEmptyStrings(dependencies),
+		RiskLevel:            "low",
+		Inputs:               "汇总已完成 todo 的证据、发现、影响和修复建议。",
+		SuccessCriteria:      "生成包含 findings、evidence、todos 和 recommendations 的结构化报告。",
+		EvidenceRequirements: []string{"结构化安全测试报告"},
+		Status:               string(orchestrator.TodoStatusPending),
+	}
+}
+
+func nextTodoID(items []tools.TodoItem) string {
+	used := make(map[string]struct{}, len(items))
+	for _, item := range items {
+		used[item.TodoID] = struct{}{}
+	}
+	for i := 1; ; i++ {
+		id := fmt.Sprintf("todo_%03d", i)
+		if _, ok := used[id]; !ok {
+			return id
+		}
+	}
+}
+
+func containsAnyFold(text string, needles ...string) bool {
+	text = strings.ToLower(text)
+	for _, needle := range needles {
+		if strings.Contains(text, strings.ToLower(needle)) {
+			return true
+		}
+	}
+	return false
+}
+
+func uniqueNonEmptyStrings(values []string) []string {
+	seen := make(map[string]struct{}, len(values))
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value == "" {
+			continue
+		}
+		if _, ok := seen[value]; ok {
+			continue
+		}
+		seen[value] = struct{}{}
+		out = append(out, value)
+	}
+	return out
 }
 
 func decodeStringSlice(raw json.RawMessage) []string {
@@ -1051,6 +1297,15 @@ func normalizeAgentRole(role string) string {
 func isOpenTodoStatus(status string) bool {
 	switch strings.ToLower(strings.TrimSpace(status)) {
 	case "", "created", "running", "waiting", string(orchestrator.TodoStatusPending), string(orchestrator.TodoStatusInProgress), string(orchestrator.TodoStatusBlocked):
+		return true
+	default:
+		return false
+	}
+}
+
+func isFailedTodoStatus(status string) bool {
+	switch strings.ToLower(strings.TrimSpace(status)) {
+	case string(orchestrator.TodoStatusFailed), "error", "rejected":
 		return true
 	default:
 		return false

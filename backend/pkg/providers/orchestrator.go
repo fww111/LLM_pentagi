@@ -880,6 +880,20 @@ func (fp *flowProvider) fallbackSupervisorDecision(
 		return nil, fmt.Errorf("failed to load todos for supervisor fallback: %w", err)
 	}
 
+	if supervisorTextLooksFinal(content) {
+		if result, failed := latestClosedReporterResult(todos); failed {
+			return failedSupervisorDecision(msgChainID, firstNonEmpty(result, content, reason)), nil
+		}
+		if result := latestClosedReporterText(todos); result != "" {
+			return &orchestrator.SupervisorDecision{
+				Action:     orchestrator.SupervisorActionCompleted,
+				MsgChainID: msgChainID,
+				Message:    "supervisor fallback completed from final reporter text",
+				Result:     result,
+			}, nil
+		}
+	}
+
 	if todo, ok := selectFallbackSupervisorTodo(todos); ok {
 		role := fallbackAgentRole(todo.OwnerAgent)
 		payload, _ := json.Marshal(map[string]any{
@@ -908,6 +922,10 @@ func (fp *flowProvider) fallbackSupervisorDecision(
 		}, nil
 	}
 
+	if hasOpenSupervisorTodos(todos) {
+		return failedSupervisorDecision(msgChainID, "supervisor fallback found open todos but none are runnable"), nil
+	}
+
 	return &orchestrator.SupervisorDecision{
 		Action:     orchestrator.SupervisorActionCompleted,
 		MsgChainID: msgChainID,
@@ -925,14 +943,10 @@ func selectFallbackSupervisorTodo(todos []database.Todo) (database.Todo, bool) {
 	}
 
 	var reporter *database.Todo
-	var firstOpen *database.Todo
 	for i := range todos {
 		todo := todos[i]
 		if !isOpenTodoStatus(todo.Status) {
 			continue
-		}
-		if firstOpen == nil {
-			firstOpen = &todo
 		}
 		if !todoDependenciesSatisfied(todo, todosByID) {
 			continue
@@ -949,10 +963,16 @@ func selectFallbackSupervisorTodo(todos []database.Todo) (database.Todo, bool) {
 	if reporter != nil && nonReporterTodosClosed(todos) {
 		return *reporter, true
 	}
-	if firstOpen != nil {
-		return *firstOpen, true
-	}
 	return database.Todo{}, false
+}
+
+func hasOpenSupervisorTodos(todos []database.Todo) bool {
+	for _, todo := range todos {
+		if isOpenTodoStatus(todo.Status) {
+			return true
+		}
+	}
+	return false
 }
 
 func fallbackAgentRole(ownerAgent string) orchestrator.AgentRole {
@@ -1037,6 +1057,86 @@ func compactStrings(values []string) []string {
 		}
 	}
 	return out
+}
+
+func supervisorTextLooksFinal(content string) bool {
+	text := strings.ToLower(strings.TrimSpace(content))
+	if text == "" {
+		return false
+	}
+
+	finalPhrases := []string{
+		"报告已生成",
+		"报告已成功生成",
+		"结构化安全测试报告已生成",
+		"结构化安全测试报告已成功生成",
+		"测试已顺利完成",
+		"任务已完成",
+		"已完成",
+		"report generated",
+		"report has been generated",
+		"task completed",
+		"successfully completed",
+	}
+	for _, phrase := range finalPhrases {
+		if strings.Contains(text, phrase) {
+			return true
+		}
+	}
+	return false
+}
+
+func latestClosedReporterResult(todos []database.Todo) (string, bool) {
+	for i := len(todos) - 1; i >= 0; i-- {
+		todo := todos[i]
+		if fallbackAgentRole(todo.OwnerAgent) != orchestrator.AgentRoleReporter {
+			continue
+		}
+		if !isClosedTodoStatus(todo.Status) {
+			continue
+		}
+		result := strings.TrimSpace(nullStringValue(todo.Result))
+		if result == "" {
+			continue
+		}
+
+		var parsed struct {
+			Success *bool  `json:"success"`
+			Result  string `json:"result"`
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}
+		if err := json.Unmarshal([]byte(result), &parsed); err == nil && parsed.Success != nil {
+			return firstNonEmpty(parsed.Error, parsed.Result, parsed.Message, result), !*parsed.Success
+		}
+	}
+	return "", false
+}
+
+func latestClosedReporterText(todos []database.Todo) string {
+	for i := len(todos) - 1; i >= 0; i-- {
+		todo := todos[i]
+		if fallbackAgentRole(todo.OwnerAgent) != orchestrator.AgentRoleReporter {
+			continue
+		}
+		if !isClosedTodoStatus(todo.Status) {
+			continue
+		}
+		if result := strings.TrimSpace(nullStringValue(todo.Result)); result != "" {
+			return result
+		}
+	}
+	return ""
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value != "" {
+			return value
+		}
+	}
+	return ""
 }
 
 func nonReporterTodosClosed(todos []database.Todo) bool {

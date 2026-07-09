@@ -155,6 +155,10 @@ func (emd *executionMonitor) recordTerminalResult(toolName, response string) boo
 		emd.terminalTimeouts = 0
 		return false
 	}
+	if terminalTimeoutHasPartialOutput(response) {
+		emd.terminalTimeouts = 0
+		return false
+	}
 
 	emd.terminalTimeouts++
 	return emd.terminalTimeouts >= terminalTimeoutAbortLimit
@@ -162,6 +166,22 @@ func (emd *executionMonitor) recordTerminalResult(toolName, response string) boo
 
 func isTerminalTimeoutResponse(response string) bool {
 	return strings.Contains(response, "terminal tool 'terminal' handled with error: command execution timeout")
+}
+
+func terminalTimeoutHasPartialOutput(response string) bool {
+	const marker = "Partial output:"
+	idx := strings.Index(response, marker)
+	if idx < 0 {
+		return false
+	}
+
+	partial := response[idx+len(marker):]
+	if hintIdx := strings.Index(partial, "HINT:"); hintIdx >= 0 {
+		partial = partial[:hintIdx]
+	}
+
+	partial = strings.TrimSpace(strings.Trim(partial, "."))
+	return partial != ""
 }
 
 func (fp *flowProvider) getTasksInfo(ctx context.Context, taskID int64) (*tasksInfo, error) {

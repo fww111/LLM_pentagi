@@ -15,6 +15,7 @@ import (
 	"pentagi/pkg/observability/langfuse"
 	"pentagi/pkg/schema"
 
+	"github.com/sirupsen/logrus"
 	"github.com/vxcontrol/langchaingo/documentloaders"
 	"github.com/vxcontrol/langchaingo/llms"
 	"github.com/vxcontrol/langchaingo/textsplitter"
@@ -350,7 +351,7 @@ func (ce *customExecutor) Execute(
 			ID:              tc.ID,
 		})
 		if err != nil {
-			return "", resultFormat, fmt.Errorf("failed to update toolcall result: %w", err)
+			logrus.WithContext(ctx).WithError(err).WithField("tool", name).Warn("failed to update toolcall result; continuing with tool output")
 		}
 
 		return result, resultFormat, nil
@@ -369,14 +370,12 @@ func (ce *customExecutor) Execute(
 	}
 
 	if err := ce.storeToolResult(ctx, name, result, args); err != nil {
-		obsWrapper.end(result, err, time.Since(startTime).Seconds())
-		return "", fmt.Errorf("failed to store tool result in long-term memory: %w", err)
+		logrus.WithContext(ctx).WithError(err).WithField("tool", name).Warn("failed to store tool result in long-term memory; continuing with tool output")
 	}
 
 	if msgID != 0 {
 		if err := ce.mlp.UpdateMsgResult(ctx, msgID, streamID, result, resultFormat); err != nil {
-			obsWrapper.end(result, err, time.Since(startTime).Seconds())
-			return "", err
+			logrus.WithContext(ctx).WithError(err).WithField("tool", name).Warn("failed to update message result; continuing with tool output")
 		}
 	}
 

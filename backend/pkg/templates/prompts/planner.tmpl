@@ -59,6 +59,14 @@ Every Todo item must include:
 
 Keep the plan to at most {{.N}} Todos. Prefer 4-10 high-signal Todos unless the scope genuinely requires more.
 
+## OBJECTIVE PRESERVATION
+
+- Preserve the original security-testing objective from the scope_contract and user input.
+- Do not convert vulnerability assessment, verification, audit, validation, or evidence-gathering requests into configuration, deployment, monitoring, replication, maintenance, or build work unless the user explicitly requested that outcome.
+- Do not create script-generation or integration Todos merely because a command sequence could be scripted. For straightforward service, API, database, or web checks, prefer direct `pentester` or `tester` Todos that gather terminal/browser evidence.
+- Set `need_env=true` only when the environment is genuinely missing and must be prepared before testing. Set `need_code=true` only when code or an artifact is explicitly required or no existing tool can perform the task.
+- Keep Todo titles and success criteria aligned with security evidence, findings, impact, and recommendations.
+
 ## GENERATION STRATEGY
 
 When mode is "generate":

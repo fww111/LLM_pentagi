@@ -88,7 +88,16 @@ def _thread_config(task_id: int) -> Dict[str, Any]:
 
 def _go_post(path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     url = f"{GO_INTERNAL_BASE_URL}/{path.lstrip('/')}"
-    response = SESSION.post(url, json=payload, timeout=600)
+    try:
+        response = SESSION.post(url, json=payload, timeout=600)
+    except requests.RequestException as exc:
+        raise HTTPException(
+            status_code=504,
+            detail={
+                "message": f"go internal orchestrator call failed: {exc}",
+                "url": url,
+            },
+        ) from exc
     if response.status_code >= 400:
         raise HTTPException(
             status_code=502,
@@ -99,6 +108,17 @@ def _go_post(path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
             },
         )
     return response.json()
+
+
+def _exception_message(exc: Exception) -> str:
+    detail = getattr(exc, "detail", None)
+    if isinstance(detail, dict):
+        message = detail.get("message")
+        if message:
+            return str(message)
+    if detail:
+        return str(detail)
+    return str(exc)
 
 
 # ========================================
@@ -201,7 +221,11 @@ def supervisor(state: MultiAgentState) -> Dict[str, Any]:
         {"flow_id": state["flow_id"], "msg_chain_id": state.get("supervisor_msg_chain_id") or 0},
     )
     decision = response.get("decision", {})
-    if decision.get("action") == "completed" and _has_open_todos(state):
+    if (
+        decision.get("action") == "completed"
+        and _has_open_todos(state)
+        and not _is_final_reporter_fallback(decision)
+    ):
         next_todo = _select_next_todo(state)
         if next_todo:
             decision = {
@@ -211,6 +235,44 @@ def supervisor(state: MultiAgentState) -> Dict[str, Any]:
                 "todo": next_todo,
                 "msg_chain_id": decision.get("msg_chain_id", 0),
                 "message": "continue pending todo before completing task",
+            }
+        else:
+            decision = {
+                "action": "failed",
+                "msg_chain_id": decision.get("msg_chain_id", 0),
+                "message": "cannot complete task because open todos remain but none are runnable",
+                "error": "open todos remain with unsatisfied dependencies",
+            }
+    elif decision.get("action") not in {
+        "delegate",
+        "auth_required",
+        "input_required",
+        "completed",
+        "failed",
+        "rejected",
+    }:
+        next_todo = _select_next_todo(state)
+        if next_todo:
+            decision = {
+                "action": "delegate",
+                "agent_role": _todo_owner_agent(next_todo),
+                "todo_id": _todo_id(next_todo),
+                "todo": next_todo,
+                "msg_chain_id": decision.get("msg_chain_id", 0),
+                "message": "fallback delegated after supervisor returned no structured route",
+            }
+        elif _has_open_todos(state):
+            decision = {
+                "action": "failed",
+                "msg_chain_id": decision.get("msg_chain_id", 0),
+                "message": "fallback failed because open todos remain but none are runnable",
+                "error": "open todos remain with unsatisfied dependencies",
+            }
+        else:
+            decision = {
+                "action": "completed",
+                "msg_chain_id": decision.get("msg_chain_id", 0),
+                "message": "fallback completed because no open todos remain",
             }
     active_todo = decision.get("todo") or state.get("active_todo")
     active_todo_id = (
@@ -256,7 +318,7 @@ def route_after_supervisor(state: MultiAgentState) -> str:
     if action == "rejected":
         return "rejected"
 
-    LOGGER.warning(f"Unknown supervisor action: {action}, defaulting to failed")
+    LOGGER.warning(f"Unknown supervisor action after fallback: {action}, defaulting to failed")
     return "failed"
 
 
@@ -273,10 +335,10 @@ def _agent_question(agent_role: str, state: MultiAgentState) -> str:
     execution_rules = [
         "Execution rules:",
         "- Use only non-interactive one-shot commands; every command must finish by itself.",
-        "- Do not use telnet or open interactive database shells for service checks.",
+        "- Do not open interactive shells for service checks; prefer bounded commands with explicit timeouts.",
         "- Do not install packages or troubleshoot Docker unless explicitly requested.",
-        "- For MySQL, use one-shot commands such as mysql --skip-ssl -e \"SQL\" or echo SQL | mysql --skip-ssl.",
-        "- For Redis, if redis-cli is unavailable, use Python standard-library socket code to send RESP commands.",
+        "- Use tools that are already available in the execution environment.",
+        "- Record concrete command output, observations, and errors as evidence for this todo.",
     ]
 
     return "\n".join([
@@ -334,6 +396,11 @@ def _is_completed_todo(todo: Dict[str, Any]) -> bool:
 
 def _is_reporter_todo(todo: Dict[str, Any]) -> bool:
     return _todo_owner_agent(todo) == "reporter"
+
+
+def _is_final_reporter_fallback(decision: Dict[str, Any]) -> bool:
+    message = str(decision.get("message") or "").strip().lower()
+    return "final reporter" in message or "reporter text" in message
 
 
 def _todo_dependencies(todo: Dict[str, Any]) -> List[str]:
@@ -427,15 +494,29 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
         elif agent_role == "researcher":
             go_agent_type = "searcher"
 
-        response = _go_post(
-            f"tasks/{state['task_id']}/execute-agent",
-            {
-                "flow_id": state["flow_id"],
-                "agent_role": agent_role,
-                "todo_id": todo_id,
-                "payload": _agent_payload(agent_role, state),
-            },
-        )
+        try:
+            response = _go_post(
+                f"tasks/{state['task_id']}/execute-agent",
+                {
+                    "flow_id": state["flow_id"],
+                    "agent_role": agent_role,
+                    "todo_id": todo_id,
+                    "payload": _agent_payload(agent_role, state),
+                },
+            )
+        except Exception as exc:
+            execution_result = f"{agent_role} execution failed: {_exception_message(exc)}"
+            LOGGER.warning(
+                "agent execution failed without crashing graph",
+                extra={"task_id": state.get("task_id"), "agent_role": agent_role, "todo_id": todo_id},
+            )
+            return {
+                "last_agent_result": execution_result,
+                "todo_plan": _update_todo_status(state.get("todo_plan"), todo_id, "failed", execution_result),
+                "active_todo_id": None,
+                "active_todo": None,
+                "supervisor_decision": None,
+            }
         execution = response.get("result", response.get("execution", {}))
         execution_result = execution.get("result", "")
         execution_status = "completed" if execution.get("success") else "failed"
@@ -529,10 +610,23 @@ def ma_input_required(state: MultiAgentState) -> Dict[str, Any]:
 
 
 def ma_completed(state: MultiAgentState) -> Dict[str, Any]:
-    response = _go_post(
-        f"tasks/{state['task_id']}/complete-task",
-        {"flow_id": state["flow_id"]},
-    )
+    try:
+        response = _go_post(
+            f"tasks/{state['task_id']}/complete-task",
+            {"flow_id": state["flow_id"]},
+        )
+    except HTTPException as exc:
+        failure_reason = f"complete-task failed: {exc.detail}"
+        _go_post(
+            f"tasks/{state['task_id']}/fail-task",
+            {"flow_id": state["flow_id"], "result": failure_reason},
+        )
+        return {
+            "task_status": "failed",
+            "task_result": failure_reason,
+            "failure_reason": failure_reason,
+            "supervisor_decision": None,
+        }
     return {
         "task_status": "completed",
         "task_result": response.get("task", {}).get("result", ""),
@@ -686,8 +780,23 @@ def _serialize_snapshot(task_id: int) -> Dict[str, Any]:
 
 def _run_stream(input_value: Any, task_id: int) -> Dict[str, Any]:
     config = _thread_config(task_id)
-    for _ in GRAPH.stream(input_value, config, stream_mode="values"):
-        pass
+    try:
+        for _ in GRAPH.stream(input_value, config, stream_mode="values"):
+            pass
+    except Exception as exc:
+        reason = _exception_message(exc)
+        LOGGER.exception("orchestrator graph failed; marking task failed")
+        flow_id = None
+        if isinstance(input_value, dict):
+            flow_id = input_value.get("flow_id")
+        if flow_id is None:
+            values = getattr(GRAPH.get_state(config), "values", {}) or {}
+            flow_id = values.get("flow_id")
+        if flow_id:
+            try:
+                _go_post(f"tasks/{task_id}/fail-task", {"flow_id": flow_id, "result": reason})
+            except Exception:
+                LOGGER.exception("failed to mark task failed after graph exception")
     return _serialize_snapshot(task_id)
 
 
