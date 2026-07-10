@@ -137,8 +137,8 @@ func (b *browser) Handle(ctx context.Context, name string, args json.RawMessage)
 		result, screen, err := b.Links(ctx, action.Url)
 		return b.wrapCommandResult(ctx, name, result, action.Url, screen, err)
 	default:
-		logger.Error("unknown file action")
-		return "", fmt.Errorf("unknown file action: %s", action.Action)
+		logger.Error("unknown browser action")
+		return "", fmt.Errorf("unknown browser action: %q (valid actions: markdown, html, links). Note: this tool only fetches web pages; to create/write files use the \"file\" tool with action \"update_file\"", action.Action)
 	}
 }
 

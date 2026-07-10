@@ -131,7 +131,7 @@ func (t *terminal) Handle(ctx context.Context, name string, args json.RawMessage
 			return t.wrapCommandResult(ctx, args, name, result, err)
 		default:
 			logger.Error("unknown file action")
-			return "", fmt.Errorf("unknown file action: %s", action.Action)
+			return "", fmt.Errorf("unknown file action: %q (valid actions: read_file, update_file). To create a new file, use action \"update_file\"", action.Action)
 		}
 	default:
 		return "", fmt.Errorf("unknown tool: %s", name)
