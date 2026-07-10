@@ -8,6 +8,9 @@
 backend/tmp
 backend/build
 
+# Local pentest lab targets (test-only, not part of the project)
+lab/
+
 frontend/coverage
 frontend/dist
 frontend/node_modules
