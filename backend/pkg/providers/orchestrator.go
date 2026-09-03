@@ -21,64 +21,12 @@ import (
 	"github.com/vxcontrol/langchaingo/llms"
 )
 
-func toolNameToAgentType(toolName string) (string, error) {
-	switch toolName {
-	case tools.CoderToolName:
-		return "coder", nil
-	case tools.IntegratorToolName:
-		return "integrator", nil
-	case tools.PentesterToolName:
-		return "pentester", nil
-	case tools.TesterToolName:
-		return "tester", nil
-	case tools.SearchToolName:
-		return "searcher", nil
-	case tools.MaintenanceToolName:
-		return "installer", nil
-	case tools.MemoristToolName:
-		return "memorist", nil
-	case tools.AdviceToolName:
-		return "adviser", nil
-	default:
-		return "", fmt.Errorf("unsupported primary agent tool %q", toolName)
-	}
-}
-
 func agentTypeToToolName(agentType string) (string, error) {
-	switch agentType {
-	case "builder":
-		return tools.MaintenanceToolName, nil
-	case "generator":
-		return tools.CoderToolName, nil
-	case "coder":
-		return tools.CoderToolName, nil
-	case "integrator":
-		return tools.IntegratorToolName, nil
-	case "pentester":
-		return tools.PentesterToolName, nil
-	case "tester":
-		return tools.TesterToolName, nil
-	case "researcher":
-		return tools.SearchToolName, nil
-	case "searcher":
-		return tools.SearchToolName, nil
-	case "installer":
-		return tools.MaintenanceToolName, nil
-	case "memorist":
-		return tools.MemoristToolName, nil
-	case "adviser":
-		return tools.AdviceToolName, nil
-	case "reviewer":
-		return tools.ReviewResultToolName, nil
-	case "reporter":
-		return tools.ReportResultToolName, nil
-	case "designer":
-		return tools.ScopeContractToolName, nil
-	case "planner":
-		return tools.TodoListToolName, nil
-	default:
+	spec, ok := lookupRole(agentType)
+	if !ok || spec.ToolName == "" {
 		return "", fmt.Errorf("unsupported delegated agent type %q", agentType)
 	}
+	return spec.ToolName, nil
 }
 
 func (fp *flowProvider) DecidePrimaryAgentStep(
@@ -316,12 +264,15 @@ func (fp *flowProvider) ExecuteDelegatedAgent(
 		subtaskIDPtr = &subtaskID
 	}
 
+	spec, ok := lookupRole(agentType)
+	if !ok {
+		return nil, fmt.Errorf("unsupported delegated agent type %q", agentType)
+	}
+
 	var handler tools.ExecutorHandler
-	switch agentType {
-	case "builder":
+	switch spec.HandlerKey {
+	case "installer":
 		handler, err = fp.GetInstallerHandler(ctx, taskIDPtr, subtaskIDPtr)
-	case "generator":
-		handler, err = fp.GetCoderHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "coder":
 		handler, err = fp.GetCoderHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "integrator":
@@ -330,12 +281,8 @@ func (fp *flowProvider) ExecuteDelegatedAgent(
 		handler, err = fp.GetPentesterHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "tester":
 		handler, err = fp.GetTesterHandler(ctx, taskIDPtr, subtaskIDPtr)
-	case "researcher":
-		handler, err = fp.GetSubtaskSearcherHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "searcher":
 		handler, err = fp.GetSubtaskSearcherHandler(ctx, taskIDPtr, subtaskIDPtr)
-	case "installer":
-		handler, err = fp.GetInstallerHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "memorist":
 		handler, err = fp.GetMemoristHandler(ctx, taskIDPtr, subtaskIDPtr)
 	case "adviser":
@@ -976,24 +923,10 @@ func hasOpenSupervisorTodos(todos []database.Todo) bool {
 }
 
 func fallbackAgentRole(ownerAgent string) orchestrator.AgentRole {
-	switch strings.ToLower(strings.TrimSpace(ownerAgent)) {
-	case "builder", "installer":
-		return orchestrator.AgentRoleBuilder
-	case "generator", "coder":
-		return orchestrator.AgentRoleGenerator
-	case "integrator":
-		return orchestrator.AgentRoleIntegrator
-	case "tester":
-		return orchestrator.AgentRoleTester
-	case "reviewer":
-		return orchestrator.AgentRoleReviewer
-	case "reporter":
-		return orchestrator.AgentRoleReporter
-	case "researcher", "searcher":
-		return orchestrator.AgentRoleResearcher
-	default:
-		return orchestrator.AgentRolePentester
+	if spec, ok := lookupRole(ownerAgent); ok && !spec.Pipeline {
+		return spec.Role
 	}
+	return orchestrator.AgentRolePentester
 }
 
 func isOpenTodoStatus(status string) bool {
@@ -1238,30 +1171,20 @@ func (fp *flowProvider) buildSupervisorTools(
 	}
 
 	if nodeRole == "supervisor" {
-		// Supervisor delegates to all agent roles via route_to_* tools
-		routeMappings := map[string]orchestrator.AgentRole{
-			// Note: route_to_designer is intentionally excluded — topology is one-way
-			// (designer -> planner -> supervisor -> agents). Re-enable if graph changes.
-			tools.RouteToPlannerToolName:    orchestrator.AgentRolePlanner,
-			tools.RouteToBuilderToolName:    orchestrator.AgentRoleBuilder,
-			tools.RouteToGeneratorToolName:  orchestrator.AgentRoleGenerator,
-			tools.RouteToIntegratorToolName: orchestrator.AgentRoleIntegrator,
-			tools.RouteToTesterToolName:     orchestrator.AgentRoleTester,
-			tools.RouteToPentesterToolName:  orchestrator.AgentRolePentester,
-			tools.RouteToReviewerToolName:   orchestrator.AgentRoleReviewer,
-			tools.RouteToReporterToolName:   orchestrator.AgentRoleReporter,
-			tools.RouteToResearcherToolName: orchestrator.AgentRoleResearcher,
-		}
-
-		for toolName, role := range routeMappings {
-			def, ok := tools.GetRegistryDefinitions()[toolName]
+		// Supervisor delegates to all worker agent roles via route_to_* tools.
+		// The registry excludes pipeline nodes: the topology is one-way
+		// (designer -> planner -> supervisor -> agents).
+		for _, spec := range workerRoles() {
+			role := spec.Role
+			def, ok := tools.GetRegistryDefinitions()[spec.RouteToolName]
 			if !ok {
 				continue
 			}
+			routeToolName := spec.RouteToolName
 			defs = append(defs, def)
-			barriers = append(barriers, toolName)
+			barriers = append(barriers, routeToolName)
 			capturedRole := role
-			handlers[toolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+			handlers[routeToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
 				decision.Action = orchestrator.SupervisorActionDelegate
 				decision.AgentRole = capturedRole
 				decision.Payload = append(json.RawMessage(nil), args...)

@@ -1236,16 +1236,7 @@ func findTodoByID(todos []database.Todo, todoID string) *database.Todo {
 }
 
 func normalizeAgentRole(role string) string {
-	switch strings.ToLower(strings.TrimSpace(role)) {
-	case "coder", "code", "developer":
-		return "generator"
-	case "installer", "builder":
-		return "builder"
-	case "pentest", "tester", "security_tester":
-		return "pentester"
-	default:
-		return strings.ToLower(strings.TrimSpace(role))
-	}
+	return providers.NormalizeRole(role)
 }
 
 func isOpenTodoStatus(status string) bool {
@@ -1267,7 +1258,7 @@ func isFailedTodoStatus(status string) bool {
 }
 
 func isPentesterRole(role string) bool {
-	return normalizeAgentRole(role) == "pentester"
+	return normalizeAgentRole(role) == string(orchestrator.AgentRolePentester)
 }
 
 func shouldStoreFindingForRole(role string) bool {
