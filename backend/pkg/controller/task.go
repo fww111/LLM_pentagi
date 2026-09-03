@@ -43,6 +43,7 @@ type TaskWorker interface {
 	SupervisorStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error)
 	AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
 	StoreAuthRequest(ctx context.Context, todoID, action, riskLevel, justification string) error
+	InputRequired(ctx context.Context, message string) error
 	RejectTask(ctx context.Context, result string) error
 	CompleteTask(ctx context.Context) error
 	UpdateSharedState(ctx context.Context, activeNode, activeTodoID string, statusCode *int, updates map[string]interface{}) error
@@ -575,6 +576,27 @@ func (tw *taskWorker) StoreAuthRequest(ctx context.Context, todoID, action, risk
 		Justification: justification,
 		Status:        "pending",
 	})
+}
+
+// InputRequired marks the task waiting after the orchestrator raised an
+// ask_user interrupt. The pending user reply resumes the graph.
+func (tw *taskWorker) InputRequired(ctx context.Context, message string) error {
+	if message != "" {
+		_, err := tw.taskCtx.MsgLog.PutTaskMsg(
+			ctx,
+			database.MsglogTypeReport,
+			tw.taskCtx.TaskID,
+			message,
+			tw.taskCtx.TaskTitle,
+		)
+		if err != nil {
+			return fmt.Errorf("failed to store interrupt message for task %d: %w", tw.taskCtx.TaskID, err)
+		}
+	}
+	if err := tw.SetStatus(ctx, database.TaskStatusWaiting); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (tw *taskWorker) RejectTask(ctx context.Context, result string) error {

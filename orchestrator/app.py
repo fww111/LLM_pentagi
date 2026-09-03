@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import sqlite3
+import threading
 from typing import Any, Callable, Dict, List, Optional, TypedDict
 
 import requests
@@ -767,9 +768,64 @@ def health() -> Dict[str, str]:
     return {"status": "ok", "graph_mode": "multi_agent"}
 
 
+# Graph execution runs on a background thread so /runs/start and /runs/resume
+# return immediately. Go is notified out-of-band: completed/failed by the
+# graph's terminal nodes (complete-task / fail-task), and ask_user interrupts
+# via the input-required endpoint.
+_RUNNING_TASKS: set = set()
+_RUNNING_TASKS_LOCK = threading.Lock()
+
+
+def _notify_input_required(task_id: int) -> None:
+    """Report an ask_user interrupt back to Go so the task can go to waiting."""
+    snapshot = _serialize_snapshot(task_id)
+    values = snapshot.get("task") or {}
+    flow_id = values.get("flow_id")
+    if flow_id is None:
+        return
+    message = ""
+    for intr in snapshot.get("interrupts", []):
+        value = intr.get("value")
+        if isinstance(value, dict) and value.get("message"):
+            message = value.get("message")
+            break
+    try:
+        _go_post(
+            f"tasks/{task_id}/input-required",
+            {"flow_id": flow_id, "message": message or "agent requested user input"},
+        )
+    except Exception:
+        LOGGER.exception("failed to report input-required for task %s", task_id)
+
+
+def _execute_graph_background(flow_id: int, task_id: int, input_value: Any) -> None:
+    try:
+        _run_stream(input_value, task_id)
+        snapshot = _serialize_snapshot(task_id)
+        if snapshot.get("status") == "waiting":
+            _notify_input_required(task_id)
+    finally:
+        with _RUNNING_TASKS_LOCK:
+            _RUNNING_TASKS.discard(task_id)
+
+
+def _start_background(flow_id: int, task_id: int, input_value: Any) -> Dict[str, Any]:
+    with _RUNNING_TASKS_LOCK:
+        if task_id in _RUNNING_TASKS:
+            return {"status": "already_running", "flow_id": flow_id, "task_id": task_id}
+        _RUNNING_TASKS.add(task_id)
+    thread = threading.Thread(
+        target=_execute_graph_background,
+        args=(flow_id, task_id, input_value),
+        daemon=True,
+    )
+    thread.start()
+    return {"status": "started", "flow_id": flow_id, "task_id": task_id}
+
+
 @app.post("/runs/start")
 def start_run(req: RunTaskRequest) -> Dict[str, Any]:
-    return _run_stream({"flow_id": req.flow_id, "task_id": req.task_id}, req.task_id)
+    return _start_background(req.flow_id, req.task_id, {"flow_id": req.flow_id, "task_id": req.task_id})
 
 
 @app.post("/runs/resume")
@@ -778,18 +834,18 @@ def resume_run(req: ResumeTaskRequest) -> Dict[str, Any]:
     interrupts = list(getattr(snapshot, "interrupts", ()) or ())
     next_nodes = list(getattr(snapshot, "next", ()) or ())
 
+    resume_val: Any = req.user_input if req.user_input else {"resumed": True}
     if interrupts:
-        resume_val = req.user_input if req.user_input else {"resumed": True}
-        return _run_stream(Command(resume=resume_val), req.task_id)
+        input_value: Any = Command(resume=resume_val)
+    elif next_nodes:
+        input_value = None
+    else:
+        values = getattr(snapshot, "values", {}) or {}
+        if values:
+            return {"status": "already_completed", "flow_id": req.flow_id, "task_id": req.task_id}
+        input_value = {"flow_id": req.flow_id, "task_id": req.task_id}
 
-    if next_nodes:
-        return _run_stream(None, req.task_id)
-
-    values = getattr(snapshot, "values", {}) or {}
-    if values:
-        return _serialize_snapshot(req.task_id)
-
-    return _run_stream({"flow_id": req.flow_id, "task_id": req.task_id}, req.task_id)
+    return _start_background(req.flow_id, req.task_id, input_value)
 
 
 if __name__ == "__main__":

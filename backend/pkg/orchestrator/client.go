@@ -112,6 +112,14 @@ func (c *httpTaskClient) post(ctx context.Context, path string, payload any) (*T
 		return nil, fmt.Errorf("failed to decode orchestrator response: %w", err)
 	}
 
+	// Async mode: the orchestrator runs the graph on a background thread and
+	// reports progress via the input-required / complete-task / fail-task
+	// callbacks, so an accepted request simply means "keep the task running".
+	switch result["status"] {
+	case "started", "already_running", "already_completed":
+		return &TaskSnapshot{HasInterrupt: false, IsCompleted: false}, nil
+	}
+
 	snapshot := &TaskSnapshot{
 		HasInterrupt: false,
 		IsCompleted:  false,

@@ -332,6 +332,7 @@ func setInternalOrchestratorGroup(parent *gin.RouterGroup, svc *services.Orchest
 		tasksGroup.POST("/supervisor-step", svc.SupervisorStep)
 		tasksGroup.POST("/agent-execute", svc.AgentExecute)
 		tasksGroup.POST("/store-auth-request", svc.StoreAuthRequest)
+		tasksGroup.POST("/input-required", svc.InputRequired)
 		tasksGroup.POST("/reject-task", svc.RejectTask)
 		tasksGroup.POST("/complete-task", svc.CompleteTask)
 		tasksGroup.POST("/update-shared-state", svc.UpdateSharedState)

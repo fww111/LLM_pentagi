@@ -1102,12 +1102,11 @@ func (fp *flowProvider) buildSupervisorTools(
 	handlers := make(map[string]tools.ExecutorHandler)
 	var barriers []string
 
-	// Common barrier tools: done, ask_user
-	barriers = append(barriers, tools.FinalyToolName, tools.AskUserToolName)
+	// Common barrier tool: done
+	barriers = append(barriers, tools.FinalyToolName)
 
 	doneDef := tools.GetRegistryDefinitions()[tools.FinalyToolName]
-	askDef := tools.GetRegistryDefinitions()[tools.AskUserToolName]
-	defs = append(defs, doneDef, askDef)
+	defs = append(defs, doneDef)
 
 	handlers[tools.FinalyToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
 		var done tools.Done
@@ -1127,14 +1126,21 @@ func (fp *flowProvider) buildSupervisorTools(
 		return done.Result, nil
 	}
 
-	handlers[tools.AskUserToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
-		var ask tools.AskUser
-		if err := json.Unmarshal(args, &ask); err != nil {
-			return "", fmt.Errorf("failed to unmarshal ask_user: %w", err)
+	// ask_user is only offered when the flow was created with ASK_USER enabled;
+	// otherwise the agent must proceed autonomously instead of interrupting.
+	if fp.askUser {
+		barriers = append(barriers, tools.AskUserToolName)
+		askDef := tools.GetRegistryDefinitions()[tools.AskUserToolName]
+		defs = append(defs, askDef)
+		handlers[tools.AskUserToolName] = func(ctx context.Context, name string, args json.RawMessage) (string, error) {
+			var ask tools.AskUser
+			if err := json.Unmarshal(args, &ask); err != nil {
+				return "", fmt.Errorf("failed to unmarshal ask_user: %w", err)
+			}
+			decision.Action = orchestrator.SupervisorActionInputRequired
+			decision.Message = ask.Message
+			return ask.Message, nil
 		}
-		decision.Action = orchestrator.SupervisorActionInputRequired
-		decision.Message = ask.Message
-		return ask.Message, nil
 	}
 
 	if nodeRole == "designer" {

@@ -342,3 +342,29 @@ func (s *OrchestratorService) UpdateSharedState(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"ok": true})
 }
+
+// InputRequired marks a running task as waiting after the LangGraph graph
+// raised an ask_user interrupt. The graph thread keeps its checkpoint, so a
+// later putUserInput resumes execution from the interrupt.
+func (s *OrchestratorService) InputRequired(c *gin.Context) {
+	var req orchestratorInputRequiredRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	task, ok := s.getTask(c, req.FlowID)
+	if !ok {
+		return
+	}
+	if err := task.InputRequired(c, req.Message); err != nil {
+		logger.FromContext(c).WithError(err).Error("error marking task input-required")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+type orchestratorInputRequiredRequest struct {
+	FlowID  int64  `json:"flow_id" binding:"required,min=1"`
+	Message string `json:"message"`
+}
