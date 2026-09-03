@@ -47,8 +47,6 @@ Thumbs.db
 .ruff_cache/
 .screenshot-env.html
 
-# Local demo environment (Python venv for scripts/demo)
-.venv-demo/
 
 # Runtime data produced by the LangGraph orchestrator
 pentagentx-langgraph-data/
@@ -56,5 +54,3 @@ pentagentx-langgraph-data/
 # Python bytecode cache
 __pycache__/
 
-# Local demo automation scripts (contain no secrets, kept out of repo by policy)
-scripts/demo/
