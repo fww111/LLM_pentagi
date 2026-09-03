@@ -320,7 +320,6 @@ func getStructTypeForFunction(funcName string) (reflect.Type, error) {
 		tools.HackResultToolName:        &tools.HackResult{},
 		tools.EnricherResultToolName:    &tools.EnricherResult{},
 		tools.ReportResultToolName:      &tools.TaskResult{},
-		tools.SubtaskListToolName:       &tools.SubtaskList{},
 	}
 
 	structType, ok := typeMap[funcName]

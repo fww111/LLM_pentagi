@@ -45,9 +45,7 @@ const (
 	PromptTypeAdviser                  PromptType = "adviser"                    // provides security recommendations and guidance
 	PromptTypeQuestionAdviser          PromptType = "question_adviser"           // human input seeking expert advice
 	PromptTypeGenerator                PromptType = "generator"                  // creates structured subtask breakdown
-	PromptTypeSubtasksGenerator        PromptType = "subtasks_generator"         // human input for task decomposition
 	PromptTypeRefiner                  PromptType = "refiner"                    // optimizes and adjusts planned subtasks
-	PromptTypeSubtasksRefiner          PromptType = "subtasks_refiner"           // human input for task refinement
 	PromptTypePlanner                  PromptType = "planner"                    // creates or refines multi-agent todo plans
 	PromptTypeQuestionPlanner          PromptType = "question_planner"           // human input for multi-agent todo planning
 	PromptTypeReviewer                 PromptType = "reviewer"                   // reviews penetration test results for quality and compliance
@@ -305,7 +303,6 @@ var PromptVariables = map[PromptType][]string{
 		"Enriches",
 	},
 	PromptTypeGenerator: {
-		"SubtaskListToolName",
 		"SearchToolName",
 		"TerminalToolName",
 		"FileToolName",
@@ -317,14 +314,8 @@ var PromptVariables = map[PromptType][]string{
 		"CurrentTime",
 		"N",
 		"ToolPlaceholder",
-	},
-	PromptTypeSubtasksGenerator: {
-		"Task",
-		"Tasks",
-		"Subtasks",
 	},
 	PromptTypeRefiner: {
-		"SubtaskPatchToolName",
 		"SearchToolName",
 		"TerminalToolName",
 		"FileToolName",
@@ -336,14 +327,6 @@ var PromptVariables = map[PromptType][]string{
 		"CurrentTime",
 		"N",
 		"ToolPlaceholder",
-	},
-	PromptTypeSubtasksRefiner: {
-		"Task",
-		"Tasks",
-		"PlannedSubtasks",
-		"CompletedSubtasks",
-		"ExecutionLogs",
-		"ExecutionState",
 	},
 	PromptTypePlanner: {
 		"Mode",
@@ -673,11 +656,11 @@ func GetDefaultPrompts() (*DefaultPrompts, error) {
 			},
 			Generator: AgentPrompts{
 				System: getPrompt(PromptTypeGenerator),
-				Human:  getPrompt(PromptTypeSubtasksGenerator),
+				Human:  getPrompt(PromptTypeGenerator),
 			},
 			Refiner: AgentPrompts{
 				System: getPrompt(PromptTypeRefiner),
-				Human:  getPrompt(PromptTypeSubtasksRefiner),
+				Human:  getPrompt(PromptTypeRefiner),
 			},
 			Planner: AgentPrompts{
 				System: getPrompt(PromptTypePlanner),

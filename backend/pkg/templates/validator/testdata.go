@@ -58,8 +58,6 @@ func CreateDummyTemplateData() map[string]any {
 		"HackResultToolName":        tools.HackResultToolName,
 		"EnricherResultToolName":    tools.EnricherResultToolName,
 		"ReportResultToolName":      tools.ReportResultToolName,
-		"SubtaskListToolName":       tools.SubtaskListToolName,
-		"SubtaskPatchToolName":      tools.SubtaskPatchToolName,
 		"TodoListToolName":          tools.TodoListToolName,
 		"TodoPatchToolName":         tools.TodoPatchToolName,
 		"AskUserToolName":           tools.AskUserToolName,

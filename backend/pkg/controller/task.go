@@ -34,11 +34,6 @@ type TaskWorker interface {
 	GetResult(ctx context.Context) (string, error)
 	SetResult(ctx context.Context, result string) error
 	PutInput(ctx context.Context, input string) error
-	GenerateSubtasks(ctx context.Context) error
-	RefineSubtasks(ctx context.Context) error
-	SelectNextSubtask(ctx context.Context) (SubtaskWorker, error)
-	GetSubtask(ctx context.Context, subtaskID int64) (SubtaskWorker, error)
-	ReportTaskResult(ctx context.Context) error
 	Fail(ctx context.Context, result string) error
 	Run(ctx context.Context) error
 	Finish(ctx context.Context) error
@@ -55,7 +50,6 @@ type TaskWorker interface {
 
 type taskWorker struct {
 	mx           *sync.RWMutex
-	stc          SubtaskController
 	taskCtx      *TaskContext
 	updater      FlowUpdater
 	completed    bool
@@ -97,7 +91,6 @@ func NewTaskWorker(
 		TaskTitle:   title,
 		TaskInput:   input,
 	}
-	stc := NewSubtaskController(taskCtx)
 
 	_, err = taskCtx.MsgLog.PutTaskMsg(
 		ctx,
@@ -110,13 +103,6 @@ func NewTaskWorker(
 		return nil, fmt.Errorf("failed to put input for task %d: %w", taskCtx.TaskID, err)
 	}
 
-	if flowCtx.Orchestrator == nil {
-		err = stc.GenerateSubtasks(ctx)
-		if err != nil {
-			return nil, fmt.Errorf("failed to generate subtasks: %w", err)
-		}
-	}
-
 	subtasks, err := flowCtx.DB.GetTaskSubtasks(ctx, task.ID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get subtasks for task %d: %w", task.ID, err)
@@ -126,7 +112,6 @@ func NewTaskWorker(
 
 	return &taskWorker{
 		mx:        &sync.RWMutex{},
-		stc:       stc,
 		taskCtx:   taskCtx,
 		updater:   updater,
 		completed: false,
@@ -151,7 +136,6 @@ func LoadTaskWorker(
 		TaskInput:   task.Input,
 	}
 
-	stc := NewSubtaskController(taskCtx)
 	var completed, waiting bool
 	switch task.Status {
 	case database.TaskStatusFinished, database.TaskStatusFailed:
@@ -163,20 +147,13 @@ func LoadTaskWorker(
 		return nil, fmt.Errorf("task %d has created yet: loading aborted: %w", task.ID, ErrNothingToLoad)
 	}
 
-	tw := &taskWorker{
+	return &taskWorker{
 		mx:        &sync.RWMutex{},
-		stc:       stc,
 		taskCtx:   taskCtx,
 		updater:   updater,
 		completed: completed,
 		waiting:   waiting,
-	}
-
-	if err := tw.stc.LoadSubtasks(ctx, task.ID, tw); err != nil {
-		return nil, fmt.Errorf("failed to load subtasks for task %d: %w", task.ID, err)
-	}
-
-	return tw, nil
+	}, nil
 }
 
 func (tw *taskWorker) GetTaskID() int64 {
@@ -289,88 +266,10 @@ func (tw *taskWorker) PutInput(ctx context.Context, input string) error {
 		return fmt.Errorf("task is not waiting")
 	}
 
-	if tw.taskCtx.Orchestrator != nil {
-		tw.mx.Lock()
-		tw.pendingInput = input
-		tw.mx.Unlock()
-		return nil
-	}
-
-	for _, st := range tw.stc.ListSubtasks(ctx) {
-		if !st.IsCompleted() && st.IsWaiting() {
-			if err := st.PutInput(ctx, input); err != nil {
-				return fmt.Errorf("failed to put input to subtask %d: %w", st.GetSubtaskID(), err)
-			} else {
-				break
-			}
-		}
-	}
-
+	tw.mx.Lock()
+	tw.pendingInput = input
+	tw.mx.Unlock()
 	return nil
-}
-
-func (tw *taskWorker) GenerateSubtasks(ctx context.Context) error {
-	if err := tw.stc.GenerateSubtasks(ctx); err != nil {
-		return err
-	}
-
-	task, err := tw.taskCtx.DB.GetTask(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return fmt.Errorf("failed to get task %d: %w", tw.taskCtx.TaskID, err)
-	}
-
-	subtasks, err := tw.taskCtx.DB.GetTaskSubtasks(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return fmt.Errorf("failed to get subtasks for task %d: %w", tw.taskCtx.TaskID, err)
-	}
-
-	tw.taskCtx.Publisher.TaskUpdated(ctx, task, subtasks)
-
-	return nil
-}
-
-func (tw *taskWorker) RefineSubtasks(ctx context.Context) error {
-	if err := tw.stc.RefineSubtasks(ctx); err != nil {
-		return err
-	}
-
-	task, err := tw.taskCtx.DB.GetTask(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return fmt.Errorf("failed to get task %d: %w", tw.taskCtx.TaskID, err)
-	}
-
-	subtasks, err := tw.taskCtx.DB.GetTaskSubtasks(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return fmt.Errorf("failed to get subtasks for task %d: %w", tw.taskCtx.TaskID, err)
-	}
-
-	tw.taskCtx.Publisher.TaskUpdated(ctx, task, subtasks)
-
-	return nil
-}
-
-func (tw *taskWorker) SelectNextSubtask(ctx context.Context) (SubtaskWorker, error) {
-	return tw.stc.PopSubtask(ctx, tw)
-}
-
-func (tw *taskWorker) GetSubtask(ctx context.Context, subtaskID int64) (SubtaskWorker, error) {
-	return tw.stc.GetSubtask(ctx, subtaskID)
-}
-
-func (tw *taskWorker) ReportTaskResult(ctx context.Context) error {
-	jobResult, err := tw.taskCtx.Provider.GetTaskResult(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return fmt.Errorf("failed to get task %d result: %w", tw.taskCtx.TaskID, err)
-	}
-
-	var taskStatus database.TaskStatus
-	if jobResult.Success {
-		taskStatus = database.TaskStatusFinished
-	} else {
-		taskStatus = database.TaskStatusFailed
-	}
-
-	return tw.finalizeTask(ctx, taskStatus, jobResult.Result)
 }
 
 func (tw *taskWorker) Fail(ctx context.Context, result string) error {
@@ -378,11 +277,7 @@ func (tw *taskWorker) Fail(ctx context.Context, result string) error {
 		result = "task failed"
 	}
 
-	if tw.taskCtx.Orchestrator != nil {
-		return tw.finalizeMultiAgentTask(ctx, database.TaskStatusFailed, result)
-	}
-
-	return tw.finalizeTask(ctx, database.TaskStatusFailed, result)
+	return tw.finalizeMultiAgentTask(ctx, database.TaskStatusFailed, result)
 }
 
 func (tw *taskWorker) finalizeTask(ctx context.Context, status database.TaskStatus, result string) error {
@@ -413,54 +308,12 @@ func (tw *taskWorker) finalizeTask(ctx context.Context, status database.TaskStat
 
 func (tw *taskWorker) Run(ctx context.Context) error {
 	ctx = tools.PutAgentContext(ctx, database.MsgchainTypePrimaryAgent)
-
-	if tw.taskCtx.Orchestrator != nil {
-		return tw.runWithOrchestrator(ctx)
-	}
-
-	for len(tw.stc.ListSubtasks(ctx)) < providers.TasksNumberLimit+3 {
-		st, err := tw.stc.PopSubtask(ctx, tw)
-		if err != nil {
-			return err
-		}
-
-		// empty queue for subtasks means that task is done
-		if st == nil {
-			break
-		}
-
-		if err := st.Run(ctx); err != nil {
-			return err
-		}
-
-		// pass through if task is waiting from back status propagation
-		if tw.IsWaiting() {
-			return nil
-		} // otherwise subtask is done
-
-		if err := tw.stc.RefineSubtasks(ctx); err != nil {
-			if errors.Is(err, context.Canceled) {
-				ctx = context.Background()
-			}
-			_ = tw.SetStatus(ctx, database.TaskStatusWaiting)
-			return fmt.Errorf("failed to refine subtasks list for the task %d: %w", tw.taskCtx.TaskID, err)
-		}
-	}
-
-	return tw.ReportTaskResult(ctx)
+	return tw.runWithOrchestrator(ctx)
 }
 
 func (tw *taskWorker) Finish(ctx context.Context) error {
 	if tw.IsCompleted() {
 		return fmt.Errorf("task has already completed")
-	}
-
-	for _, st := range tw.stc.ListSubtasks(ctx) {
-		if !st.IsCompleted() {
-			if err := st.Finish(ctx); err != nil {
-				return err
-			}
-		}
 	}
 
 	if err := tw.SetStatus(ctx, database.TaskStatusFinished); err != nil {
@@ -725,17 +578,11 @@ func (tw *taskWorker) StoreAuthRequest(ctx context.Context, todoID, action, risk
 }
 
 func (tw *taskWorker) RejectTask(ctx context.Context, result string) error {
-	if tw.taskCtx.Orchestrator != nil {
-		return tw.finalizeMultiAgentTask(ctx, database.TaskStatusFailed, "REJECTED: "+result)
-	}
-	return tw.finalizeTask(ctx, database.TaskStatusFailed, "REJECTED: "+result)
+	return tw.finalizeMultiAgentTask(ctx, database.TaskStatusFailed, "REJECTED: "+result)
 }
 
 func (tw *taskWorker) CompleteTask(ctx context.Context) error {
-	if tw.taskCtx.Orchestrator != nil {
-		return tw.completeMultiAgentTask(ctx)
-	}
-	return tw.ReportTaskResult(ctx)
+	return tw.completeMultiAgentTask(ctx)
 }
 
 func (tw *taskWorker) completeMultiAgentTask(ctx context.Context) error {

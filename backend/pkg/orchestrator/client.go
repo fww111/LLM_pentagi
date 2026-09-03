@@ -47,7 +47,7 @@ type httpTaskClient struct {
 }
 
 func NewTaskClient(cfg *config.Config) TaskClient {
-	if cfg == nil || !cfg.LangGraphEnabled {
+	if cfg == nil {
 		return nil
 	}
 

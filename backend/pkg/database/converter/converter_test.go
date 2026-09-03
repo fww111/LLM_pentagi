@@ -26,8 +26,6 @@ func TestIsAgentTool(t *testing.T) {
 		{"search_result is agent", "search_result", true},
 		{"enricher_result is agent", "enricher_result", true},
 		{"report_result is agent", "report_result", true},
-		{"subtask_list is agent", "subtask_list", true},
-		{"subtask_patch is agent", "subtask_patch", true},
 
 		// Non-agent tools
 		{"terminal is not agent", "terminal", false},

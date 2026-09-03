@@ -264,20 +264,6 @@ type SearcherExecutorConfig struct {
 	Summarizer   SummarizeHandler
 }
 
-type GeneratorExecutorConfig struct {
-	TaskID      int64
-	Memorist    ExecutorHandler
-	Searcher    ExecutorHandler
-	SubtaskList ExecutorHandler
-}
-
-type RefinerExecutorConfig struct {
-	TaskID       int64
-	Memorist     ExecutorHandler
-	Searcher     ExecutorHandler
-	SubtaskPatch ExecutorHandler
-}
-
 type PlannerExecutorConfig struct {
 	TaskID    int64
 	Memorist  ExecutorHandler
@@ -332,8 +318,6 @@ type FlowToolsExecutor interface {
 	GetTesterExecutor(cfg TesterExecutorConfig) (ContextToolsExecutor, error)
 	GetPentesterExecutor(cfg PentesterExecutorConfig) (ContextToolsExecutor, error)
 	GetSearcherExecutor(cfg SearcherExecutorConfig) (ContextToolsExecutor, error)
-	GetGeneratorExecutor(cfg GeneratorExecutorConfig) (ContextToolsExecutor, error)
-	GetRefinerExecutor(cfg RefinerExecutorConfig) (ContextToolsExecutor, error)
 	GetPlannerExecutor(cfg PlannerExecutorConfig) (ContextToolsExecutor, error)
 	GetMemoristExecutor(cfg MemoristExecutorConfig) (ContextToolsExecutor, error)
 	GetEnricherExecutor(cfg EnricherExecutorConfig) (ContextToolsExecutor, error)
@@ -1618,135 +1602,7 @@ func (fte *flowToolsExecutor) GetSearcherExecutor(cfg SearcherExecutorConfig) (C
 	return ce, nil
 }
 
-func (fte *flowToolsExecutor) GetGeneratorExecutor(cfg GeneratorExecutorConfig) (ContextToolsExecutor, error) {
-	if cfg.SubtaskList == nil {
-		return nil, fmt.Errorf("subtask list handler is required")
-	}
 
-	if cfg.Memorist == nil {
-		return nil, fmt.Errorf("memorist handler is required")
-	}
-
-	container, err := fte.db.GetFlowPrimaryContainer(context.Background(), fte.flowID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get container %d: %w", fte.flowID, err)
-	}
-
-	term := NewTerminalTool(
-		fte.flowID,
-		&cfg.TaskID,
-		nil,
-		container.ID,
-		container.LocalID.String,
-		fte.docker,
-		fte.tlp,
-	)
-
-	ce := &customExecutor{
-		flowID: fte.flowID,
-		taskID: &cfg.TaskID,
-		mlp:    fte.mlp,
-		vslp:   fte.vslp,
-		db:     fte.db,
-		store:  fte.store,
-		definitions: []llms.FunctionDefinition{
-			registryDefinitions[MemoristToolName],
-			registryDefinitions[SearchToolName],
-			registryDefinitions[SubtaskListToolName],
-			registryDefinitions[TerminalToolName],
-			registryDefinitions[FileToolName],
-		},
-		handlers: map[string]ExecutorHandler{
-			MemoristToolName:    cfg.Memorist,
-			SearchToolName:      cfg.Searcher,
-			SubtaskListToolName: cfg.SubtaskList,
-			TerminalToolName:    term.Handle,
-			FileToolName:        term.Handle,
-		},
-		barriers: map[string]struct{}{SubtaskListToolName: {}},
-	}
-
-	browser := NewBrowserTool(
-		fte.flowID,
-		&cfg.TaskID,
-		nil,
-		fte.cfg.DataDir,
-		fte.cfg.ScraperPrivateURL,
-		fte.cfg.ScraperPublicURL,
-		fte.scp,
-	)
-	if browser.IsAvailable() {
-		ce.definitions = append(ce.definitions, registryDefinitions[BrowserToolName])
-		ce.handlers[BrowserToolName] = browser.Handle
-	}
-
-	return ce, nil
-}
-
-func (fte *flowToolsExecutor) GetRefinerExecutor(cfg RefinerExecutorConfig) (ContextToolsExecutor, error) {
-	if cfg.SubtaskPatch == nil {
-		return nil, fmt.Errorf("subtask patch handler is required")
-	}
-
-	if cfg.Memorist == nil {
-		return nil, fmt.Errorf("memorist handler is required")
-	}
-
-	container, err := fte.db.GetFlowPrimaryContainer(context.Background(), fte.flowID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get container %d: %w", fte.flowID, err)
-	}
-
-	term := NewTerminalTool(
-		fte.flowID,
-		&cfg.TaskID,
-		nil,
-		container.ID,
-		container.LocalID.String,
-		fte.docker,
-		fte.tlp,
-	)
-
-	ce := &customExecutor{
-		flowID: fte.flowID,
-		taskID: &cfg.TaskID,
-		mlp:    fte.mlp,
-		vslp:   fte.vslp,
-		db:     fte.db,
-		store:  fte.store,
-		definitions: []llms.FunctionDefinition{
-			registryDefinitions[MemoristToolName],
-			registryDefinitions[SearchToolName],
-			registryDefinitions[SubtaskPatchToolName],
-			registryDefinitions[TerminalToolName],
-			registryDefinitions[FileToolName],
-		},
-		handlers: map[string]ExecutorHandler{
-			MemoristToolName:     cfg.Memorist,
-			SearchToolName:       cfg.Searcher,
-			SubtaskPatchToolName: cfg.SubtaskPatch,
-			TerminalToolName:     term.Handle,
-			FileToolName:         term.Handle,
-		},
-		barriers: map[string]struct{}{SubtaskPatchToolName: {}},
-	}
-
-	browser := NewBrowserTool(
-		fte.flowID,
-		&cfg.TaskID,
-		nil,
-		fte.cfg.DataDir,
-		fte.cfg.ScraperPrivateURL,
-		fte.cfg.ScraperPublicURL,
-		fte.scp,
-	)
-	if browser.IsAvailable() {
-		ce.definitions = append(ce.definitions, registryDefinitions[BrowserToolName])
-		ce.handlers[BrowserToolName] = browser.Handle
-	}
-
-	return ce, nil
-}
 
 func (fte *flowToolsExecutor) GetPlannerExecutor(cfg PlannerExecutorConfig) (ContextToolsExecutor, error) {
 	if cfg.TodoList == nil {

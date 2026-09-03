@@ -42,8 +42,6 @@ const (
 	StoreCodeToolName         = "store_code"
 	GraphitiSearchToolName    = "graphiti_search"
 	ReportResultToolName      = "report_result"
-	SubtaskListToolName       = "subtask_list"
-	SubtaskPatchToolName      = "subtask_patch"
 	TerminalToolName          = "terminal"
 	FileToolName              = "file"
 
@@ -146,8 +144,6 @@ var toolsTypeMapping = map[string]ToolType{
 	StoreCodeToolName:         StoreVectorDbToolType,
 	GraphitiSearchToolName:    SearchVectorDbToolType,
 	ReportResultToolName:      StoreAgentResultToolType,
-	SubtaskListToolName:       StoreAgentResultToolType,
-	SubtaskPatchToolName:      StoreAgentResultToolType,
 	TerminalToolName:          EnvironmentToolType,
 	FileToolName:              EnvironmentToolType,
 	// Multi-agent migration: new type mappings
@@ -216,18 +212,6 @@ var registryDefinitions = map[string]llms.FunctionDefinition{
 		Name:        ReportResultToolName,
 		Description: "Send the report result to the user with execution status and description",
 		Parameters:  reflector.Reflect(&TaskResult{}),
-	},
-	SubtaskListToolName: {
-		Name:        SubtaskListToolName,
-		Description: "Send new generated subtask list to the user",
-		Parameters:  reflector.Reflect(&SubtaskList{}),
-	},
-	SubtaskPatchToolName: {
-		Name: SubtaskPatchToolName,
-		Description: "Submit delta operations to modify the current subtask list instead of regenerating all subtasks. " +
-			"Supports add (create new subtask at position), remove (delete by ID), modify (update title/description), " +
-			"and reorder (move to different position) operations. Use empty operations array if no changes needed.",
-		Parameters: reflector.Reflect(&SubtaskPatch{}),
 	},
 	SearchToolName: {
 		Name: SearchToolName,
