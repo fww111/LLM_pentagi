@@ -159,7 +159,7 @@ func (p *AuthMiddleware) tryUserCookieAuthentication(c *gin.Context) (authResult
 	return authResultOk, nil
 }
 
-const PrivilegeAutomation = "pentagi.automation"
+const PrivilegeAutomation = "pentagentx.automation"
 
 func (p *AuthMiddleware) tryProtoTokenAuthentication(c *gin.Context) (authResult, error) {
 	authHeader := c.Request.Header.Get("Authorization")

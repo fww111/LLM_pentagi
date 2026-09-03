@@ -22,11 +22,11 @@ logging.basicConfig(level=os.getenv("ORCHESTRATOR_LOG_LEVEL", "INFO"))
 LOGGER = logging.getLogger("pentagentx-langgraph")
 
 GO_INTERNAL_BASE_URL = os.getenv(
-    "PENTAGI_INTERNAL_BASE_URL",
+    "PENTAGENTX_INTERNAL_BASE_URL",
     "http://127.0.0.1:8080/api/v1/internal/orchestrator",
 ).rstrip("/")
 INTERNAL_TOKEN = os.getenv("LANGGRAPH_INTERNAL_TOKEN", "")
-VERIFY_INTERNAL_SSL = os.getenv("PENTAGI_INTERNAL_VERIFY_SSL", "true").lower() not in {"0", "false", "no"}
+VERIFY_INTERNAL_SSL = os.getenv("PENTAGENTX_INTERNAL_VERIFY_SSL", "true").lower() not in {"0", "false", "no"}
 CHECKPOINT_PATH = os.getenv(
     "LANGGRAPH_CHECKPOINT_PATH",
     os.path.join(os.path.dirname(__file__), "langgraph-checkpoints.sqlite"),
@@ -35,7 +35,7 @@ CHECKPOINT_PATH = os.getenv(
 SESSION = requests.Session()
 SESSION.verify = VERIFY_INTERNAL_SSL
 if INTERNAL_TOKEN:
-    SESSION.headers["X-Pentagi-Internal-Token"] = INTERNAL_TOKEN
+    SESSION.headers["X-Pentagentx-Internal-Token"] = INTERNAL_TOKEN
 
 
 class RunTaskRequest(BaseModel):

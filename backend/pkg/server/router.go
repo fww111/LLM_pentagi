@@ -341,7 +341,7 @@ func setInternalOrchestratorGroup(parent *gin.RouterGroup, svc *services.Orchest
 func internalOrchestratorAuth(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if token != "" {
-			headerToken := c.GetHeader("X-Pentagi-Internal-Token")
+			headerToken := c.GetHeader("X-Pentagentx-Internal-Token")
 			if subtle.ConstantTimeCompare([]byte(headerToken), []byte(token)) == 1 {
 				c.Next()
 				return

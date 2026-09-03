@@ -84,7 +84,7 @@ CREATE INDEX users_hash_idx ON users(hash);
 
 INSERT INTO users (mail, name, password, status, role_id, password_change_required) VALUES
     (
-      'admin@pentagi.com',
+      'admin@pentagentx.com',
       'admin',
       '$2a$10$deVOk0o1nYRHpaVXjIcyCuRmaHvtoMN/2RUT7w5XbZTeiWKEbXx9q',
       'active',

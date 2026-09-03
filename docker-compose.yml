@@ -1,15 +1,15 @@
 volumes:
-  pentagi-data:
+  pentagentx-data:
     driver: local
   pentagentx-langgraph-data:
     driver: local
-  pentagi-ssl:
+  pentagentx-ssl:
     driver: local
-  pentagi-ollama:
+  pentagentx-ollama:
     driver: local
   scraper-ssl:
     driver: local
-  pentagi-postgres-data:
+  pentagentx-postgres-data:
     driver: local
 
 networks:
@@ -27,14 +27,14 @@ networks:
 
 services:
   pentagentx:
-    image: ${PENTAGI_IMAGE:-local/pentagentx:latest}
+    image: ${PENTAGENTX_IMAGE:-local/pentagentx:latest}
     restart: unless-stopped
     container_name: pentagentx
     hostname: pentagentx
     expose:
       - 8443/tcp
     ports:
-      - ${PENTAGI_LISTEN_IP:-127.0.0.1}:${PENTAGI_LISTEN_PORT:-8443}:8443
+      - ${PENTAGENTX_LISTEN_IP:-127.0.0.1}:${PENTAGENTX_LISTEN_PORT:-8443}:8443
     depends_on:
       pgvector:
         condition: service_healthy
@@ -136,7 +136,7 @@ services:
       - OAUTH_GOOGLE_CLIENT_SECRET=${OAUTH_GOOGLE_CLIENT_SECRET:-}
       - OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID:-}
       - OAUTH_GITHUB_CLIENT_SECRET=${OAUTH_GITHUB_CLIENT_SECRET:-}
-      - DATABASE_URL=postgres://${PENTAGI_POSTGRES_USER:-postgres}:${PENTAGI_POSTGRES_PASSWORD:-postgres}@pgvector:5432/${PENTAGI_POSTGRES_DB:-pentagidb}?sslmode=disable
+      - DATABASE_URL=postgres://${PENTAGENTX_POSTGRES_USER:-postgres}:${PENTAGENTX_POSTGRES_PASSWORD:-postgres}@pgvector:5432/${PENTAGENTX_POSTGRES_DB:-pentagentxdb}?sslmode=disable
       - DUCKDUCKGO_ENABLED=${DUCKDUCKGO_ENABLED:-}
       - DUCKDUCKGO_REGION=${DUCKDUCKGO_REGION:-}
       - DUCKDUCKGO_SAFESEARCH=${DUCKDUCKGO_SAFESEARCH:-}
@@ -177,13 +177,13 @@ services:
         max-size: 50m
         max-file: "7"
     volumes:
-      - ${PENTAGI_DATA_DIR:-pentagi-data}:/opt/pentagentx/data
-      - ${PENTAGI_SSL_DIR:-pentagi-ssl}:/opt/pentagentx/ssl
-      - ${PENTAGI_OLLAMA_DIR:-pentagi-ollama}:/root/.ollama
-      - ${PENTAGI_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
-      - ${PENTAGI_LLM_SERVER_CONFIG_PATH:-./example.custom.provider.yml}:/opt/pentagentx/conf/custom.provider.yml
-      - ${PENTAGI_OLLAMA_SERVER_CONFIG_PATH:-./example.ollama.provider.yml}:/opt/pentagentx/conf/ollama.provider.yml
-      - ${PENTAGI_DOCKER_CERT_PATH:-./docker-ssl}:/opt/pentagentx/docker/ssl
+      - ${PENTAGENTX_DATA_DIR:-pentagentx-data}:/opt/pentagentx/data
+      - ${PENTAGENTX_SSL_DIR:-pentagentx-ssl}:/opt/pentagentx/ssl
+      - ${PENTAGENTX_OLLAMA_DIR:-pentagentx-ollama}:/root/.ollama
+      - ${PENTAGENTX_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+      - ${PENTAGENTX_LLM_SERVER_CONFIG_PATH:-./example.custom.provider.yml}:/opt/pentagentx/conf/custom.provider.yml
+      - ${PENTAGENTX_OLLAMA_SERVER_CONFIG_PATH:-./example.ollama.provider.yml}:/opt/pentagentx/conf/ollama.provider.yml
+      - ${PENTAGENTX_DOCKER_CERT_PATH:-./docker-ssl}:/opt/pentagentx/docker/ssl
     user: root:root # while using docker.sock
     # pin LLM API domain to the healthy backend IP (local DNS sometimes returns a dead node)
     extra_hosts:
@@ -202,8 +202,8 @@ services:
     expose:
       - 8091/tcp
     environment:
-      - PENTAGI_INTERNAL_BASE_URL=${PENTAGI_INTERNAL_BASE_URL:-https://pentagentx:8443/api/v1/internal/orchestrator}
-      - PENTAGI_INTERNAL_VERIFY_SSL=${PENTAGI_INTERNAL_VERIFY_SSL:-false}
+      - PENTAGENTX_INTERNAL_BASE_URL=${PENTAGENTX_INTERNAL_BASE_URL:-https://pentagentx:8443/api/v1/internal/orchestrator}
+      - PENTAGENTX_INTERNAL_VERIFY_SSL=${PENTAGENTX_INTERNAL_VERIFY_SSL:-false}
       - LANGGRAPH_INTERNAL_TOKEN=${LANGGRAPH_INTERNAL_TOKEN:-pentagentx-internal-dev-token}
       - LANGGRAPH_CHECKPOINT_PATH=${LANGGRAPH_CHECKPOINT_PATH:-/var/lib/pentagentx-langgraph/langgraph-checkpoints.sqlite}
       - LANGGRAPH_HOST=${LANGGRAPH_HOST:-0.0.0.0}
@@ -214,7 +214,7 @@ services:
         max-size: 50m
         max-file: "7"
     volumes:
-      - ${PENTAGI_LANGGRAPH_DATA_DIR:-pentagi-langgraph-data}:/var/lib/pentagentx-langgraph
+      - ${PENTAGENTX_LANGGRAPH_DATA_DIR:-pentagentx-langgraph-data}:/var/lib/pentagentx-langgraph
     networks:
       - pentagentx-network
 
@@ -228,21 +228,21 @@ services:
     ports:
       - ${PGVECTOR_LISTEN_IP:-127.0.0.1}:${PGVECTOR_LISTEN_PORT:-5432}:5432
     environment:
-      POSTGRES_USER: ${PENTAGI_POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${PENTAGI_POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${PENTAGI_POSTGRES_DB:-pentagidb}
+      POSTGRES_USER: ${PENTAGENTX_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${PENTAGENTX_POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${PENTAGENTX_POSTGRES_DB:-pentagentxdb}
     logging:
       options:
         max-size: 50m
         max-file: "7"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${PENTAGI_POSTGRES_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U $${PENTAGENTX_POSTGRES_USER:-postgres}"]
       interval: 3s
       timeout: 3s
       retries: 10
       start_period: 5s
     volumes:
-      - pentagi-postgres-data:/var/lib/postgresql/data
+      - pentagentx-postgres-data:/var/lib/postgresql/data
     networks:
       - pentagentx-network
 
@@ -259,7 +259,7 @@ services:
     ports:
       - ${POSTGRES_EXPORTER_LISTEN_IP:-127.0.0.1}:${POSTGRES_EXPORTER_LISTEN_PORT:-9187}:9187
     environment:
-      - DATA_SOURCE_NAME=postgresql://${PENTAGI_POSTGRES_USER:-postgres}:${PENTAGI_POSTGRES_PASSWORD:-postgres}@pgvector:5432/${PENTAGI_POSTGRES_DB:-pentagidb}?sslmode=disable
+      - DATA_SOURCE_NAME=postgresql://${PENTAGENTX_POSTGRES_USER:-postgres}:${PENTAGENTX_POSTGRES_PASSWORD:-postgres}@pgvector:5432/${PENTAGENTX_POSTGRES_DB:-pentagentxdb}?sslmode=disable
     logging:
       options:
         max-size: 50m

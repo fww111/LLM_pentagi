@@ -24,7 +24,7 @@ export PACKAGE_REV
 
 # Print version information
 echo "======================================"
-echo "PentAGI Build Version"
+echo "PentAgentX Build Version"
 echo "======================================"
 echo "PACKAGE_VER: $PACKAGE_VER"
 if [ -n "$PACKAGE_REV" ]; then

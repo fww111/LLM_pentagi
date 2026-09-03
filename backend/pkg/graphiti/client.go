@@ -38,7 +38,7 @@ type (
 	TimeWindow      = graphiti.TimeWindow
 )
 
-// Client wraps the Graphiti client with Pentagi-specific functionality
+// Client wraps the Graphiti client with PentAgentX-specific functionality
 type Client struct {
 	client  *graphiti.Client
 	enabled bool

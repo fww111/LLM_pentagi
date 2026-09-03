@@ -265,7 +265,7 @@ Code generation is performed using Docker to ensure consistency:
 
 ```bash
 docker run --rm -v "$(pwd):/src" --network pentagentx-network \
-  -e DATABASE_URL='postgres://postgres:postgres@pgvector:5432/pentagidb?sslmode=disable' \
+  -e DATABASE_URL='postgres://postgres:postgres@pgvector:5432/pentagentxdb?sslmode=disable' \
   -w /src sqlc/sqlc:1.27.0 generate -f sqlc/sqlc.yml
 ```
 

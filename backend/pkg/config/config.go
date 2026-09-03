@@ -17,7 +17,7 @@ import (
 
 type Config struct {
 	// === Core System Configuration ===
-	DatabaseURL string `env:"DATABASE_URL" envDefault:"postgres://pentagiuser:pentagipass@pgvector:5432/pentagidb?sslmode=disable"`
+	DatabaseURL string `env:"DATABASE_URL" envDefault:"postgres://pentagentxuser:pentagentxpass@pgvector:5432/pentagentxdb?sslmode=disable"`
 	Debug       bool   `env:"DEBUG" envDefault:"false"`
 	DataDir     string `env:"DATA_DIR" envDefault:"./data"`
 	AskUser     bool   `env:"ASK_USER" envDefault:"false"`

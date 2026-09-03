@@ -11,7 +11,7 @@
                 "CORS_ORIGINS": "http://localhost:*,https://localhost:*",
                 "SERVER_PORT": "8080",
                 "SERVER_USE_SSL": "false",
-                "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/pentagidb?sslmode=disable",
+                "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/pentagentxdb?sslmode=disable",
                 "PUBLIC_URL": "http://localhost:8080",
                 "STATIC_URL": "http://localhost:8000",
                 // Choose it instead of STATIC_URL to serve static files from a directory:
@@ -131,7 +131,7 @@
             "envFile": "${workspaceFolder}/.env",
             "env": {
                 "LLM_SERVER_CONFIG_PATH": "${workspaceFolder}/examples/configs/openrouter.provider.yml",
-                "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/pentagidb?sslmode=disable",
+                "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/pentagentxdb?sslmode=disable",
                 // Langfuse (optional) uncomment to enable
                 "LANGFUSE_BASE_URL": "http://localhost:4000",
                 // Observability (optional) uncomment to enable
@@ -152,7 +152,7 @@
             "program": "${workspaceFolder}/backend/cmd/etester/",
             "envFile": "${workspaceFolder}/.env",
             "env": {
-                "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/pentagidb?sslmode=disable",
+                "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/pentagentxdb?sslmode=disable",
             },
             "args": [
                 "info", "-verbose",

@@ -119,16 +119,16 @@ jobs:
             PACKAGE_REV=""
           fi
           
-          LDFLAGS="-X pentagi/pkg/version.PackageName=pentagi -X pentagi/pkg/version.PackageVer=${PACKAGE_VER} -X pentagi/pkg/version.PackageRev=${PACKAGE_REV}"
+          LDFLAGS="-X pentagentx/pkg/version.PackageName=pentagentx -X pentagentx/pkg/version.PackageVer=${PACKAGE_VER} -X pentagentx/pkg/version.PackageRev=${PACKAGE_REV}"
           
           echo "Building with version: ${PACKAGE_VER}${PACKAGE_REV:+-$PACKAGE_REV}"
           
           # Build for AMD64
-          GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "$LDFLAGS" -o /tmp/pentagi-amd64 ./cmd/pentagi
+          GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "$LDFLAGS" -o /tmp/pentagentx-amd64 ./cmd/pentagentx
           echo "✓ Successfully built for linux/amd64"
 
           # Build for ARM64
-          GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "$LDFLAGS" -o /tmp/pentagi-arm64 ./cmd/pentagi
+          GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "$LDFLAGS" -o /tmp/pentagentx-arm64 ./cmd/pentagentx
           echo "✓ Successfully built for linux/arm64"
         continue-on-error: true
 
@@ -191,7 +191,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: vxcontrol/pentagi
+          images: ghcr.io/fww111/pentagentx
           tags: |
             # For main branch - latest tag
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}

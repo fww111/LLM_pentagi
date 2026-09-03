@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**PentAgentX** is an automated security testing platform powered by AI agents. It runs autonomous penetration testing workflows using a multi-agent system (Researcher, Developer, Executor agents) that coordinates LLM providers, Docker-sandboxed tool execution, and a persistent vector memory store.
+**PentAgentX** is an automated security testing platform powered by AI agents. It runs autonomous penetration testing workflows using a LangGraph-orchestrated multi-agent topology: a Designer (scope contract), a Planner (todo plan), and a Supervisor delegating to specialist agents (builder, generator, integrator, tester, pentester, reviewer, reporter, researcher). It coordinates LLM providers, Docker-sandboxed tool execution, and a persistent vector memory store.
 
 The application is a monorepo with:
 - **`backend/`** — Go REST + GraphQL API server
@@ -109,7 +109,7 @@ State is managed primarily through Apollo Client (GraphQL) with real-time update
 
 1. User creates a "flow" (penetration test) via the UI or REST API.
 2. The backend queues the flow and spawns agent goroutines.
-3. The Researcher agent gathers information; the Developer plans attack strategies; the Executor runs tools in isolated Docker containers.
+3. The Planner produces the todo plan; the Supervisor delegates each todo to a specialist agent, which runs tools in isolated Docker containers and reports evidence back to the Supervisor.
 4. Results, tool outputs, and LLM reasoning are stored in PostgreSQL (with pgvector for semantic search/memory).
 5. Real-time progress is pushed to the frontend via GraphQL subscriptions.
 

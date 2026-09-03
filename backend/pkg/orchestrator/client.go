@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	internalTokenHeader = "X-Pentagi-Internal-Token"
+	internalTokenHeader = "X-Pentagentx-Internal-Token"
 	contentTypeJSON     = "application/json"
 )
 

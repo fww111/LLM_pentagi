@@ -107,7 +107,7 @@ These settings control basic application behavior and are foundational for the s
 
 | Option         | Environment Variable | Default Value                                                                | Description                                                              |
 | -------------- | -------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| DatabaseURL    | `DATABASE_URL`       | `postgres://pentagentxuser:pentagentxpass@pgvector:5432/pentagidb?sslmode=disable` | Connection string for the PostgreSQL database with pgvector extension    |
+| DatabaseURL    | `DATABASE_URL`       | `postgres://pentagentxuser:pentagentxpass@pgvector:5432/pentagentxdb?sslmode=disable` | Connection string for the PostgreSQL database with pgvector extension    |
 | Debug          | `DEBUG`              | `false`                                                                      | Enables debug mode with additional logging                               |
 | DataDir        | `DATA_DIR`           | `./data`                                                                     | Directory for storing persistent data                                    |
 | AskUser        | `ASK_USER`           | `false`                                                                      | When enabled, requires explicit user confirmation for certain operations |

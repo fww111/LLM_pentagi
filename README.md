@@ -200,7 +200,6 @@ npm run graphql:generate  # 根据 .graphql 文件生成类型
 - `backend/cmd/ctester/` — 容器执行测试
 - `backend/cmd/ftester/` — LLM 函数调用测试
 - `backend/cmd/etester/` — 向量嵌入测试
-- `backend/cmd/installer/` — 交互式部署向导
 
 ## 致谢与许可证
 

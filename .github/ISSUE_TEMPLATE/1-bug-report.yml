@@ -1,5 +1,5 @@
 name: "\U0001F41B Bug report"
-description: "Report a bug in PentAGI"
+description: "Report a bug in PentAgentX"
 title: "[Bug]: "
 labels: ["bug"]
 assignees:
@@ -13,7 +13,7 @@ body:
     id: component
     attributes:
       label: Affected Component
-      description: Which component of PentAGI is affected by this bug?
+      description: Which component of PentAgentX is affected by this bug?
       multiple: true
       options:
         - Core Services (Frontend UI/Backend API)
@@ -48,7 +48,7 @@ body:
       label: Steps to Reproduce
       description: Please provide detailed steps to reproduce the bug.
       placeholder: |
-        1. Access PentAGI Web UI at [relative URL]
+        1. Access PentAgentX Web UI at [relative URL]
         2. Start a new flow with parameters [...] or prompt [...]
         3. Configure target system as [...]
         4. Observe AI agent behavior in [...] or log from Langfuse
@@ -60,7 +60,7 @@ body:
       label: System Configuration
       description: Please provide details about your setup
       placeholder: |
-        PentAGI Version: [e.g., latest from Docker Hub]
+        PentAgentX Version: [e.g., latest from Docker Hub]
         Deployment Type:
         - [ ] Docker Compose
         - [ ] Custom Deployment
@@ -89,7 +89,7 @@ body:
       label: Logs and Artifacts
       description: |
         Please provide relevant logs and artifacts. You can find logs using:
-        - Docker logs: `docker logs pentagi`
+        - Docker logs: `docker logs pentagentx`
         - Grafana dashboards (if enabled)
         - Langfuse traces (if enabled)
         - Browser console logs (for UI issues)
@@ -121,6 +121,6 @@ body:
         - label: I have checked that this issue hasn't been already reported
         - label: I have provided all relevant configuration files (with sensitive data removed)
         - label: I have included relevant logs and error messages
-        - label: I am running the latest version of PentAGI
+        - label: I am running the latest version of PentAgentX
     validations:
       required: true
