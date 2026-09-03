@@ -358,36 +358,12 @@ type orchestratorAgentExecuteRequest struct {
 	Payload   any    `json:"payload"`
 }
 
-type orchestratorStoreArtifactRequest struct {
-	FlowID       int64  `json:"flow_id" binding:"required,min=1"`
-	ArtifactID   string `json:"artifact_id" binding:"required"`
-	Name         string `json:"name" binding:"required"`
-	ArtifactType string `json:"artifact_type" binding:"required"`
-	Content      string `json:"content"`
-}
-
 type orchestratorAuthRequest struct {
 	FlowID        int64  `json:"flow_id" binding:"required,min=1"`
 	TodoID        string `json:"todo_id"`
 	Action        string `json:"action" binding:"required"`
 	RiskLevel     string `json:"risk_level" binding:"required"`
 	Justification string `json:"justification" binding:"required"`
-}
-
-type orchestratorResolveAuthRequest struct {
-	FlowID   int64  `json:"flow_id" binding:"required,min=1"`
-	Status   string `json:"status" binding:"required"`
-	Response string `json:"response"`
-}
-
-type orchestratorStoreFindingRequest struct {
-	FlowID      int64  `json:"flow_id" binding:"required,min=1"`
-	TodoID      string `json:"todo_id"`
-	FindingType string `json:"finding_type"`
-	Severity    string `json:"severity"`
-	Title       string `json:"title" binding:"required"`
-	Description string `json:"description"`
-	RawOutput   string `json:"raw_output"`
 }
 
 type orchestratorRejectTaskRequest struct {
@@ -460,44 +436,6 @@ func (s *OrchestratorService) SupervisorStep(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"decision": decision})
 }
 
-func (s *OrchestratorService) GenerateTodoPlan(c *gin.Context) {
-	var req orchestratorFlowTaskRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	task, ok := s.getTask(c, req.FlowID)
-	if !ok {
-		return
-	}
-	todos, err := task.GenerateTodoPlan(c)
-	if err != nil {
-		logger.FromContext(c).WithError(err).Error("error generating todo plan")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"decision": gin.H{"result": gin.H{"todos": todos}}})
-}
-
-func (s *OrchestratorService) RefineTodoPlan(c *gin.Context) {
-	var req orchestratorFlowTaskRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	task, ok := s.getTask(c, req.FlowID)
-	if !ok {
-		return
-	}
-	todos, err := task.RefineTodoPlan(c)
-	if err != nil {
-		logger.FromContext(c).WithError(err).Error("error refining todo plan")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"decision": gin.H{"result": gin.H{"todos": todos}}})
-}
-
 func (s *OrchestratorService) AgentExecute(c *gin.Context) {
 	var req orchestratorAgentExecuteRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -522,24 +460,6 @@ func (s *OrchestratorService) AgentExecute(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }
 
-func (s *OrchestratorService) StoreArtifact(c *gin.Context) {
-	var req orchestratorStoreArtifactRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	task, ok := s.getTask(c, req.FlowID)
-	if !ok {
-		return
-	}
-	if err := task.StoreArtifact(c, req.ArtifactID, req.Name, req.ArtifactType, req.Content); err != nil {
-		logger.FromContext(c).WithError(err).Error("error storing artifact")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
-}
-
 func (s *OrchestratorService) StoreAuthRequest(c *gin.Context) {
 	var req orchestratorAuthRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -552,42 +472,6 @@ func (s *OrchestratorService) StoreAuthRequest(c *gin.Context) {
 	}
 	if err := task.StoreAuthRequest(c, req.TodoID, req.Action, req.RiskLevel, req.Justification); err != nil {
 		logger.FromContext(c).WithError(err).Error("error storing auth request")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
-}
-
-func (s *OrchestratorService) ResolveAuthRequest(c *gin.Context) {
-	var req orchestratorResolveAuthRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	task, ok := s.getTask(c, req.FlowID)
-	if !ok {
-		return
-	}
-	if err := task.ResolveAuthRequest(c, c.Param("authID"), req.Status, req.Response); err != nil {
-		logger.FromContext(c).WithError(err).Error("error resolving auth request")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
-}
-
-func (s *OrchestratorService) StoreFinding(c *gin.Context) {
-	var req orchestratorStoreFindingRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	task, ok := s.getTask(c, req.FlowID)
-	if !ok {
-		return
-	}
-	if err := task.StoreFinding(c, req.TodoID, req.FindingType, req.Severity, req.Title, req.Description, req.RawOutput); err != nil {
-		logger.FromContext(c).WithError(err).Error("error storing finding")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -54,3 +54,6 @@ pentagentx-langgraph-data/
 # Python bytecode cache
 __pycache__/
 
+
+# Local tool workspace
+.zcode/

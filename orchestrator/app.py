@@ -130,8 +130,6 @@ AGENT_ROLES = [
     "pentester", "reviewer", "reporter", "researcher",
 ]
 
-TEAM_C_AGENT_ROLES = {"builder", "generator", "integrator", "tester", "pentester"}
-
 
 class MultiAgentState(TypedDict, total=False):
     flow_id: int
@@ -485,18 +483,9 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
     def _node(state: MultiAgentState) -> Dict[str, Any]:
         todo_id = state.get("active_todo_id") or ""
 
-        # Map new agent roles to legacy Go handler names
-        go_agent_type = agent_role
-        if agent_role == "builder":
-            go_agent_type = "installer"
-        elif agent_role == "generator":
-            go_agent_type = "coder"
-        elif agent_role == "researcher":
-            go_agent_type = "searcher"
-
         try:
             response = _go_post(
-                f"tasks/{state['task_id']}/execute-agent",
+                f"tasks/{state['task_id']}/agent-execute",
                 {
                     "flow_id": state["flow_id"],
                     "agent_role": agent_role,
@@ -542,26 +531,6 @@ def _multi_agent_execute(agent_role: str) -> Callable[[MultiAgentState], Dict[st
         }
 
     return _node
-
-
-def builder_node(state: MultiAgentState) -> Dict[str, Any]:
-    return _multi_agent_execute("builder")(state)
-
-
-def generator_node(state: MultiAgentState) -> Dict[str, Any]:
-    return _multi_agent_execute("generator")(state)
-
-
-def integrator_node(state: MultiAgentState) -> Dict[str, Any]:
-    return _multi_agent_execute("integrator")(state)
-
-
-def tester_node(state: MultiAgentState) -> Dict[str, Any]:
-    return _multi_agent_execute("tester")(state)
-
-
-def pentester_node(state: MultiAgentState) -> Dict[str, Any]:
-    return _multi_agent_execute("pentester")(state)
 
 
 def auth_required(state: MultiAgentState) -> Dict[str, Any]:
@@ -672,16 +641,9 @@ def _build_graph() -> StateGraph:
     builder.add_node("planner", planner)
     builder.add_node("supervisor", supervisor)
 
-    # Agent execution nodes owned by Team C are explicit for easier extension.
-    builder.add_node("builder", builder_node)
-    builder.add_node("generator", generator_node)
-    builder.add_node("integrator", integrator_node)
-    builder.add_node("tester", tester_node)
-    builder.add_node("pentester", pentester_node)
-
+    # Agent execution nodes (registered uniformly from the factory)
     for role in AGENT_ROLES:
-        if role not in TEAM_C_AGENT_ROLES:
-            builder.add_node(role, _multi_agent_execute(role))
+        builder.add_node(role, _multi_agent_execute(role))
 
     # Terminal / interrupt nodes
     builder.add_node("auth_required", auth_required)

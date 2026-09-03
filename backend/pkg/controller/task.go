@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -47,13 +46,8 @@ type TaskWorker interface {
 	DesignerStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error)
 	PlannerStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error)
 	SupervisorStep(ctx context.Context, msgChainID int64) (*orchestrator.SupervisorDecision, error)
-	GenerateTodoPlan(ctx context.Context) ([]database.Todo, error)
-	RefineTodoPlan(ctx context.Context) ([]database.Todo, error)
 	AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error)
-	StoreArtifact(ctx context.Context, artifactID, name, artifactType, content string) error
 	StoreAuthRequest(ctx context.Context, todoID, action, riskLevel, justification string) error
-	ResolveAuthRequest(ctx context.Context, authID, status, response string) error
-	StoreFinding(ctx context.Context, todoID, findingType, severity, title, description, rawOutput string) error
 	RejectTask(ctx context.Context, result string) error
 	CompleteTask(ctx context.Context) error
 	UpdateSharedState(ctx context.Context, activeNode, activeTodoID string, statusCode *int, updates map[string]interface{}) error
@@ -580,24 +574,6 @@ func (tw *taskWorker) SupervisorStep(ctx context.Context, msgChainID int64) (*or
 	return decision, nil
 }
 
-func (tw *taskWorker) GenerateTodoPlan(ctx context.Context) ([]database.Todo, error) {
-	plan, err := tw.taskCtx.Provider.GenerateTodoPlan(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate todo plan: %w", err)
-	}
-
-	return tw.replaceTodoPlan(ctx, plan)
-}
-
-func (tw *taskWorker) RefineTodoPlan(ctx context.Context) ([]database.Todo, error) {
-	plan, err := tw.taskCtx.Provider.RefineTodoPlan(ctx, tw.taskCtx.TaskID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to refine todo plan: %w", err)
-	}
-
-	return tw.replaceTodoPlan(ctx, plan)
-}
-
 func (tw *taskWorker) AgentExecute(ctx context.Context, agentRole, todoID string, payload json.RawMessage) (*orchestrator.AgentExecutionResult, error) {
 	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
 	resolvedTodoID, resolvedTodo, err := tw.resolveAgentTodo(ctx, ma, agentRole, todoID, payload)
@@ -736,17 +712,6 @@ func (tw *taskWorker) persistAgentExecutionResult(
 	return nil
 }
 
-func (tw *taskWorker) StoreArtifact(ctx context.Context, artifactID, name, artifactType, content string) error {
-	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
-	return ma.UpsertArtifact(ctx, &database.Artifact{
-		TaskID:       tw.taskCtx.TaskID,
-		ArtifactID:   artifactID,
-		Name:         name,
-		ArtifactType: artifactType,
-		Text:         sqlPtrString(content),
-	})
-}
-
 func (tw *taskWorker) StoreAuthRequest(ctx context.Context, todoID, action, riskLevel, justification string) error {
 	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
 	return ma.InsertAuthRequest(ctx, &database.AuthRequest{
@@ -756,29 +721,6 @@ func (tw *taskWorker) StoreAuthRequest(ctx context.Context, todoID, action, risk
 		RiskLevel:     riskLevel,
 		Justification: justification,
 		Status:        "pending",
-	})
-}
-
-func (tw *taskWorker) ResolveAuthRequest(ctx context.Context, authID, status, response string) error {
-	authIDInt, err := strconv.ParseInt(authID, 10, 64)
-	if err != nil {
-		return fmt.Errorf("invalid auth ID %q: %w", authID, err)
-	}
-	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
-	return ma.ResolveAuthRequest(ctx, authIDInt, status, response)
-}
-
-func (tw *taskWorker) StoreFinding(ctx context.Context, todoID, findingType, severity, title, description, rawOutput string) error {
-	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
-	return ma.InsertFinding(ctx, &database.Finding{
-		TaskID:      tw.taskCtx.TaskID,
-		TodoID:      sqlPtrString(todoID),
-		FindingType: sqlPtrString(findingType),
-		Severity:    sqlPtrString(severity),
-		Title:       title,
-		Description: sqlPtrString(description),
-		Evidence:    json.RawMessage(`[]`),
-		RawOutput:   sqlPtrString(rawOutput),
 	})
 }
 

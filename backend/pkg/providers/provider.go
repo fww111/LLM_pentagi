@@ -92,8 +92,6 @@ type FlowProvider interface {
 	GetTaskTitle(ctx context.Context, input string) (string, error)
 	GenerateSubtasks(ctx context.Context, taskID int64) ([]tools.SubtaskInfo, error)
 	RefineSubtasks(ctx context.Context, taskID int64) ([]tools.SubtaskInfo, error)
-	GenerateTodoPlan(ctx context.Context, taskID int64) ([]tools.TodoItem, error)
-	RefineTodoPlan(ctx context.Context, taskID int64) ([]tools.TodoItem, error)
 	GetTaskResult(ctx context.Context, taskID int64) (*tools.TaskResult, error)
 
 	PrepareAgentChain(ctx context.Context, taskID, subtaskID int64) (int64, error)
