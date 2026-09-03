@@ -549,6 +549,9 @@ const (
 	AgentConfigTypeCoder        AgentConfigType = "coder"
 	AgentConfigTypeInstaller    AgentConfigType = "installer"
 	AgentConfigTypePentester    AgentConfigType = "pentester"
+	AgentConfigTypeDesigner     AgentConfigType = "designer"
+	AgentConfigTypePlanner      AgentConfigType = "planner"
+	AgentConfigTypeSupervisor   AgentConfigType = "supervisor"
 )
 
 var AllAgentConfigType = []AgentConfigType{
@@ -565,11 +568,14 @@ var AllAgentConfigType = []AgentConfigType{
 	AgentConfigTypeCoder,
 	AgentConfigTypeInstaller,
 	AgentConfigTypePentester,
+	AgentConfigTypeDesigner,
+	AgentConfigTypePlanner,
+	AgentConfigTypeSupervisor,
 }
 
 func (e AgentConfigType) IsValid() bool {
 	switch e {
-	case AgentConfigTypeSimple, AgentConfigTypeSimpleJSON, AgentConfigTypePrimaryAgent, AgentConfigTypeAssistant, AgentConfigTypeGenerator, AgentConfigTypeRefiner, AgentConfigTypeAdviser, AgentConfigTypeReflector, AgentConfigTypeSearcher, AgentConfigTypeEnricher, AgentConfigTypeCoder, AgentConfigTypeInstaller, AgentConfigTypePentester:
+	case AgentConfigTypeSimple, AgentConfigTypeSimpleJSON, AgentConfigTypePrimaryAgent, AgentConfigTypeAssistant, AgentConfigTypeGenerator, AgentConfigTypeRefiner, AgentConfigTypeAdviser, AgentConfigTypeReflector, AgentConfigTypeSearcher, AgentConfigTypeEnricher, AgentConfigTypeCoder, AgentConfigTypeInstaller, AgentConfigTypePentester, AgentConfigTypeDesigner, AgentConfigTypePlanner, AgentConfigTypeSupervisor:
 		return true
 	}
 	return false
@@ -614,6 +620,14 @@ const (
 	AgentTypeSummarizer    AgentType = "summarizer"
 	AgentTypeToolCallFixer AgentType = "tool_call_fixer"
 	AgentTypeAssistant     AgentType = "assistant"
+	AgentTypeDesigner      AgentType = "designer"
+	AgentTypePlanner       AgentType = "planner"
+	AgentTypeSupervisor    AgentType = "supervisor"
+	AgentTypeBuilder       AgentType = "builder"
+	AgentTypeIntegrator    AgentType = "integrator"
+	AgentTypeTester        AgentType = "tester"
+	AgentTypeReviewer      AgentType = "reviewer"
+	AgentTypeResearcher    AgentType = "researcher"
 )
 
 var AllAgentType = []AgentType{
@@ -632,11 +646,19 @@ var AllAgentType = []AgentType{
 	AgentTypeSummarizer,
 	AgentTypeToolCallFixer,
 	AgentTypeAssistant,
+	AgentTypeDesigner,
+	AgentTypePlanner,
+	AgentTypeSupervisor,
+	AgentTypeBuilder,
+	AgentTypeIntegrator,
+	AgentTypeTester,
+	AgentTypeReviewer,
+	AgentTypeResearcher,
 }
 
 func (e AgentType) IsValid() bool {
 	switch e {
-	case AgentTypePrimaryAgent, AgentTypeReporter, AgentTypeGenerator, AgentTypeRefiner, AgentTypeReflector, AgentTypeEnricher, AgentTypeAdviser, AgentTypeCoder, AgentTypeMemorist, AgentTypeSearcher, AgentTypeInstaller, AgentTypePentester, AgentTypeSummarizer, AgentTypeToolCallFixer, AgentTypeAssistant:
+	case AgentTypePrimaryAgent, AgentTypeReporter, AgentTypeGenerator, AgentTypeRefiner, AgentTypeReflector, AgentTypeEnricher, AgentTypeAdviser, AgentTypeCoder, AgentTypeMemorist, AgentTypeSearcher, AgentTypeInstaller, AgentTypePentester, AgentTypeSummarizer, AgentTypeToolCallFixer, AgentTypeAssistant, AgentTypeDesigner, AgentTypePlanner, AgentTypeSupervisor, AgentTypeBuilder, AgentTypeIntegrator, AgentTypeTester, AgentTypeReviewer, AgentTypeResearcher:
 		return true
 	}
 	return false

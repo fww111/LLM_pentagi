@@ -161,3 +161,44 @@ pentester:
     output: 15.0
     cache_read: 0.3
     cache_write: 3.75
+
+# Multi-agent pipeline roles (mirror primary_agent settings)
+designer:
+  model: claude-sonnet-4-5
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  reasoning:
+    max_tokens: 1024
+  price:
+    input: 3.0
+    output: 15.0
+    cache_read: 0.3
+    cache_write: 3.75
+
+planner:
+  model: claude-sonnet-4-5
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  reasoning:
+    max_tokens: 1024
+  price:
+    input: 3.0
+    output: 15.0
+    cache_read: 0.3
+    cache_write: 3.75
+
+supervisor:
+  model: claude-sonnet-4-5
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  reasoning:
+    max_tokens: 1024
+  price:
+    input: 3.0
+    output: 15.0
+    cache_read: 0.3
+    cache_write: 3.75
+

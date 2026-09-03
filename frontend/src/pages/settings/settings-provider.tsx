@@ -795,16 +795,19 @@ const agentTypesMap: Record<string, AgentConfigType> = {
     adviser: AgentConfigType.Adviser,
     assistant: AgentConfigType.Assistant,
     coder: AgentConfigType.Coder,
+    designer: AgentConfigType.Designer,
     enricher: AgentConfigType.Enricher,
     generator: AgentConfigType.Generator,
     installer: AgentConfigType.Installer,
     pentester: AgentConfigType.Pentester,
+    planner: AgentConfigType.Planner,
     primaryAgent: AgentConfigType.PrimaryAgent,
     refiner: AgentConfigType.Refiner,
     reflector: AgentConfigType.Reflector,
     searcher: AgentConfigType.Searcher,
     simple: AgentConfigType.Simple,
     simpleJson: AgentConfigType.SimpleJson,
+    supervisor: AgentConfigType.Supervisor,
 };
 
 // Helper function to extract agent types from agents object

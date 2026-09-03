@@ -24,6 +24,13 @@ const (
 	MsgchainTypeSummarizer    MsgchainType = "summarizer"
 	MsgchainTypeToolCallFixer MsgchainType = "tool_call_fixer"
 	MsgchainTypeAssistant     MsgchainType = "assistant"
+	// Multi-agent topology roles
+	MsgchainTypeDesigner    MsgchainType = "designer"
+	MsgchainTypeSupervisor  MsgchainType = "supervisor"
+	MsgchainTypePlanner     MsgchainType = "planner"
+	MsgchainTypeIntegrator  MsgchainType = "integrator"
+	MsgchainTypeTester      MsgchainType = "tester"
+	MsgchainTypeReviewer    MsgchainType = "reviewer"
 )
 
 func (e *MsgchainType) Scan(src interface{}) error {
@@ -52,7 +59,10 @@ func (ml MsgchainType) Valid() error {
 		MsgchainTypeMemorist, MsgchainTypeSearcher,
 		MsgchainTypeInstaller, MsgchainTypePentester,
 		MsgchainTypeSummarizer, MsgchainTypeToolCallFixer,
-		MsgchainTypeAssistant:
+		MsgchainTypeAssistant,
+		MsgchainTypeDesigner, MsgchainTypeSupervisor,
+		MsgchainTypePlanner, MsgchainTypeIntegrator,
+		MsgchainTypeTester, MsgchainTypeReviewer:
 		return nil
 	default:
 		return fmt.Errorf("invalid MsgchainType: %s", ml)

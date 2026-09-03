@@ -60,6 +60,12 @@ func CreateDummyTemplateData() map[string]any {
 		"ReportResultToolName":      tools.ReportResultToolName,
 		"TodoListToolName":          tools.TodoListToolName,
 		"TodoPatchToolName":         tools.TodoPatchToolName,
+		"IntegratorToolName":        tools.IntegratorToolName,
+		"TesterToolName":            tools.TesterToolName,
+		"IntegrationResultToolName": tools.IntegrationResultToolName,
+		"TestResultToolName":        tools.TestResultToolName,
+		"ReviewResultToolName":      tools.ReviewResultToolName,
+		"Plan":                      "test plan",
 		"AskUserToolName":           tools.AskUserToolName,
 		"AskUserEnabled":            true,
 

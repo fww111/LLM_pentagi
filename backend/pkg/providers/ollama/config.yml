@@ -76,3 +76,23 @@ pentester:
   top_p: 0.95
   n: 1
   max_tokens: 8192
+
+# Multi-agent pipeline roles (mirror primary_agent settings)
+designer:
+  temperature: 1.0
+  top_p: 0.9
+  n: 1
+  max_tokens: 16384
+
+planner:
+  temperature: 1.0
+  top_p: 0.9
+  n: 1
+  max_tokens: 16384
+
+supervisor:
+  temperature: 1.0
+  top_p: 0.9
+  n: 1
+  max_tokens: 16384
+

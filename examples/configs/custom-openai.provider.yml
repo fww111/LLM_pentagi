@@ -128,3 +128,35 @@ pentester:
   price:
     input: 1.1
     output: 4.4
+
+# Multi-agent pipeline roles (mirror primary_agent settings)
+designer:
+  model: "o3-mini" # o4-mini
+  n: 1
+  max_tokens: 4000
+  reasoning:
+    effort: low
+  price:
+    input: 1.1
+    output: 4.4
+
+planner:
+  model: "o3-mini" # o4-mini
+  n: 1
+  max_tokens: 4000
+  reasoning:
+    effort: low
+  price:
+    input: 1.1
+    output: 4.4
+
+supervisor:
+  model: "o3-mini" # o4-mini
+  n: 1
+  max_tokens: 4000
+  reasoning:
+    effort: low
+  price:
+    input: 1.1
+    output: 4.4
+

@@ -157,3 +157,44 @@ pentester:
     input: 2.0
     output: 12.0
     cache_read: 0.2
+
+# Multi-agent pipeline roles (mirror primary_agent settings)
+designer:
+  model: gemini-3.1-pro-preview
+  temperature: 1.0
+  top_p: 0.95
+  n: 1
+  max_tokens: 16384
+  reasoning:
+    effort: medium
+  price:
+    input: 2.0
+    output: 12.0
+    cache_read: 0.2
+
+planner:
+  model: gemini-3.1-pro-preview
+  temperature: 1.0
+  top_p: 0.95
+  n: 1
+  max_tokens: 16384
+  reasoning:
+    effort: medium
+  price:
+    input: 2.0
+    output: 12.0
+    cache_read: 0.2
+
+supervisor:
+  model: gemini-3.1-pro-preview
+  temperature: 1.0
+  top_p: 0.95
+  n: 1
+  max_tokens: 16384
+  reasoning:
+    effort: medium
+  price:
+    input: 2.0
+    output: 12.0
+    cache_read: 0.2
+

@@ -128,3 +128,35 @@ pentester:
     input: 0.4
     output: 2.4
     cache_read: 0.08
+
+# Multi-agent pipeline roles (mirror primary_agent settings)
+designer:
+  model: "qwen3.5-plus"
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  price:
+    input: 0.4
+    output: 2.4
+    cache_read: 0.08
+
+planner:
+  model: "qwen3.5-plus"
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  price:
+    input: 0.4
+    output: 2.4
+    cache_read: 0.08
+
+supervisor:
+  model: "qwen3.5-plus"
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  price:
+    input: 0.4
+    output: 2.4
+    cache_read: 0.08
+

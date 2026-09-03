@@ -137,3 +137,38 @@ pentester:
   price:
     input: 1.15
     output: 8.0
+
+# Multi-agent pipeline roles (mirror primary_agent settings)
+designer:
+  model: "kimi-k2.5"
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  extra_body:
+    tool_choice: "auto"
+  price:
+    input: 0.6
+    output: 3.0
+
+planner:
+  model: "kimi-k2.5"
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  extra_body:
+    tool_choice: "auto"
+  price:
+    input: 0.6
+    output: 3.0
+
+supervisor:
+  model: "kimi-k2.5"
+  temperature: 1.0
+  n: 1
+  max_tokens: 16384
+  extra_body:
+    tool_choice: "auto"
+  price:
+    input: 0.6
+    output: 3.0
+

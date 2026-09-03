@@ -90,6 +90,14 @@ enum AgentType {
   summarizer
   tool_call_fixer
   assistant
+  designer
+  planner
+  supervisor
+  builder
+  integrator
+  tester
+  reviewer
+  researcher
 }
 
 # AI agent type for provider configuration
@@ -107,6 +115,9 @@ enum AgentConfigType {
   coder
   installer
   pentester
+  designer
+  planner
+  supervisor
 }
 
 # Terminal output stream types

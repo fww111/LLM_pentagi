@@ -125,3 +125,32 @@ pentester:
     input: 0.28
     output: 0.42
     cache_read: 0.028
+
+# Multi-agent pipeline roles (mirror primary_agent settings)
+designer:
+  model: deepseek-reasoner
+  n: 1
+  max_tokens: 16384
+  price:
+    input: 0.28
+    output: 0.42
+    cache_read: 0.028
+
+planner:
+  model: deepseek-reasoner
+  n: 1
+  max_tokens: 16384
+  price:
+    input: 0.28
+    output: 0.42
+    cache_read: 0.028
+
+supervisor:
+  model: deepseek-reasoner
+  n: 1
+  max_tokens: 16384
+  price:
+    input: 0.28
+    output: 0.42
+    cache_read: 0.028
+
