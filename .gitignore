@@ -55,3 +55,6 @@ pentagentx-langgraph-data/
 
 # Python bytecode cache
 __pycache__/
+
+# Local demo automation scripts (contain no secrets, kept out of repo by policy)
+scripts/demo/
