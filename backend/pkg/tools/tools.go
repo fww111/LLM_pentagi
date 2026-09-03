@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
-	"pentagi/pkg/docker"
-	"pentagi/pkg/graphiti"
-	"pentagi/pkg/providers/embeddings"
-	"pentagi/pkg/schema"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/docker"
+	"pentagentx/pkg/graphiti"
+	"pentagentx/pkg/providers/embeddings"
+	"pentagentx/pkg/schema"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/sirupsen/logrus"

@@ -1,6 +1,6 @@
-# PentAGI LangGraph Orchestrator
+# PentAgentX LangGraph Orchestrator
 
-This service provides the phase-1 Python LangGraph orchestration layer for PentAGI.
+This service provides the phase-1 Python LangGraph orchestration layer for PentAgentX.
 
 ## Environment
 
@@ -21,5 +21,5 @@ python app.py
 ## Docker
 
 ```bash
-docker build -t pentagi-langgraph-orchestrator ./orchestrator
+docker build -t pentagentx-langgraph-orchestrator ./orchestrator
 ```

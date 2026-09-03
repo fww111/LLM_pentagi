@@ -5,9 +5,9 @@ import (
 	"sort"
 	"testing"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
 
 	"github.com/invopop/jsonschema"
 	"github.com/vxcontrol/langchaingo/llms"

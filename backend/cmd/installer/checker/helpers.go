@@ -20,7 +20,7 @@ import (
 	"syscall"
 	"time"
 
-	"pentagi/cmd/installer/state"
+	"pentagentx/cmd/installer/state"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/image"

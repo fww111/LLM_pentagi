@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"pentagi/pkg/terminal"
+	"pentagentx/pkg/terminal"
 
 	"github.com/vxcontrol/langchaingo/vectorstores"
 	"github.com/vxcontrol/langchaingo/vectorstores/pgvector"

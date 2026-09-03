@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/server/auth"
-	"pentagi/pkg/server/models"
+	"pentagentx/pkg/server/auth"
+	"pentagentx/pkg/server/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

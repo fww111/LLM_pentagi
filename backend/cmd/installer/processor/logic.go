@@ -10,9 +10,9 @@ import (
 	"runtime"
 	"sync"
 
-	"pentagi/cmd/installer/checker"
-	"pentagi/cmd/installer/files"
-	"pentagi/cmd/installer/wizard/logger"
+	"pentagentx/cmd/installer/checker"
+	"pentagentx/cmd/installer/files"
+	"pentagentx/cmd/installer/wizard/logger"
 )
 
 const (
@@ -37,7 +37,7 @@ func (p *processor) validateOperation(stack ProductStack, operation ProcessorOpe
 
 	case ProcessorOperationResetPassword:
 		if stack != ProductStackPentagi {
-			return fmt.Errorf("operation %s only applicable for PentAGI stack", operation)
+			return fmt.Errorf("operation %s only applicable for PentAgentX stack", operation)
 		}
 	}
 
@@ -191,7 +191,7 @@ func (p *processor) applyChanges(ctx context.Context, state *operationState) (er
 		return fmt.Errorf("failed to apply graphiti changes: %w", err)
 	}
 
-	// phase 4: PentAGI Stack Management (always embedded, always required)
+	// phase 4: PentAgentX Stack Management (always embedded, always required)
 	if err := p.applyPentagiChanges(ctx, state); err != nil {
 		return fmt.Errorf("failed to apply pentagi changes: %w", err)
 	}
@@ -311,7 +311,7 @@ func (p *processor) applyGraphitiChanges(ctx context.Context, state *operationSt
 }
 
 func (p *processor) applyPentagiChanges(ctx context.Context, state *operationState) error {
-	// PentAGI is always embedded, always required
+	// PentAgentX is always embedded, always required
 	if !p.checker.PentagiExtracted {
 		// fresh installation - extract compose file
 		if err := p.fsOps.ensureStackIntegrity(ctx, ProductStackPentagi, state); err != nil {
@@ -481,7 +481,7 @@ func (p *processor) install(ctx context.Context, state *operationState) (err err
 		}
 	}
 
-	// phase 4: PentAGI Stack Management (always embedded, always required)
+	// phase 4: PentAgentX Stack Management (always embedded, always required)
 	if !p.checker.PentagiInstalled {
 		if err := p.applyPentagiChanges(ctx, state); err != nil {
 			return fmt.Errorf("failed to apply pentagi changes: %w", err)
@@ -876,11 +876,11 @@ func (p *processor) resetPassword(ctx context.Context, stack ProductStack, state
 	}
 
 	if stack != ProductStackPentagi {
-		return fmt.Errorf("reset password operation only supported for PentAGI stack")
+		return fmt.Errorf("reset password operation only supported for PentAgentX stack")
 	}
 
 	if !p.checker.PentagiRunning {
-		return fmt.Errorf("PentAGI must be running to reset password")
+		return fmt.Errorf("PentAgentX must be running to reset password")
 	}
 
 	if state.passwordValue == "" {

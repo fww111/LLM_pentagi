@@ -8,10 +8,10 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"pentagi/pkg/cast"
-	"pentagi/pkg/database"
-	"pentagi/pkg/orchestrator"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/cast"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/orchestrator"
+	"pentagentx/pkg/tools"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/vxcontrol/langchaingo/llms"

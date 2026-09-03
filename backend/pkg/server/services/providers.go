@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"slices"
 
-	"pentagi/pkg/providers"
-	"pentagi/pkg/server/logger"
-	"pentagi/pkg/server/models"
-	"pentagi/pkg/server/response"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/server/logger"
+	"pentagentx/pkg/server/models"
+	"pentagentx/pkg/server/response"
 
 	"github.com/gin-gonic/gin"
 )

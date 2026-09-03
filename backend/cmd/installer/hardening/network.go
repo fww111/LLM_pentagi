@@ -3,8 +3,8 @@ package hardening
 import (
 	"os"
 
-	"pentagi/cmd/installer/state"
-	"pentagi/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/state"
+	"pentagentx/cmd/installer/wizard/controller"
 )
 
 func DoSyncNetworkSettings(s state.State) error {

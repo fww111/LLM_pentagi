@@ -2,7 +2,7 @@ package tools
 
 import (
 	"maps"
-	"pentagi/pkg/database"
+	"pentagentx/pkg/database"
 
 	"github.com/invopop/jsonschema"
 	"github.com/vxcontrol/langchaingo/llms"

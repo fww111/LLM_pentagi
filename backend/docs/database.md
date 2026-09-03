@@ -2,9 +2,9 @@
 
 ## Overview
 
-The `database` package is a core component of PentAGI that provides a robust, type-safe interface for interacting with PostgreSQL database operations. Built on top of [sqlc](https://sqlc.dev/), this package automatically generates Go code from SQL queries, ensuring compile-time safety and eliminating the need for manual ORM mapping.
+The `database` package is a core component of PentAgentX that provides a robust, type-safe interface for interacting with PostgreSQL database operations. Built on top of [sqlc](https://sqlc.dev/), this package automatically generates Go code from SQL queries, ensuring compile-time safety and eliminating the need for manual ORM mapping.
 
-PentAGI uses PostgreSQL with the [pgvector](https://github.com/pgvector/pgvector) extension to support vector embeddings for AI-powered semantic search and memory storage capabilities.
+PentAgentX uses PostgreSQL with the [pgvector](https://github.com/pgvector/pgvector) extension to support vector embeddings for AI-powered semantic search and memory storage capabilities.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ PentAGI uses PostgreSQL with the [pgvector](https://github.com/pgvector/pgvector
 
 ### Entity Relationship Model
 
-The database follows PentAGI's hierarchical data model for penetration testing workflows:
+The database follows PentAgentX's hierarchical data model for penetration testing workflows:
 
 ```
 Flow (Top-level workflow)
@@ -264,14 +264,14 @@ sql:
 Code generation is performed using Docker to ensure consistency:
 
 ```bash
-docker run --rm -v "$(pwd):/src" --network pentagi-network \
+docker run --rm -v "$(pwd):/src" --network pentagentx-network \
   -e DATABASE_URL='postgres://postgres:postgres@pgvector:5432/pentagidb?sslmode=disable' \
   -w /src sqlc/sqlc:1.27.0 generate -f sqlc/sqlc.yml
 ```
 
 This command:
 1. Mounts the current directory into the container
-2. Connects to the PentAGI database network
+2. Connects to the PentAgentX database network
 3. Uses the PostgreSQL database URL for schema introspection
 4. Generates type-safe Go code from SQL queries
 
@@ -945,11 +945,11 @@ flow, err := db.GetUserFlow(ctx, database.GetUserFlowParams{
 })
 ```
 
-## Integration with PentAGI
+## Integration with PentAgentX
 
 ### GraphQL API Integration
 
-The database package integrates with PentAGI's GraphQL API through the converter package:
+The database package integrates with PentAgentX's GraphQL API through the converter package:
 
 ```go
 // In GraphQL resolvers
@@ -1236,7 +1236,7 @@ db.LogMode(true)
 
 **Log Output Example**:
 ```
-INFO[0000] SELECT * FROM flows WHERE user_id = '1' AND deleted_at IS NULL  component=pentagi-gorm duration=2.5ms rows_returned=3
+INFO[0000] SELECT * FROM flows WHERE user_id = '1' AND deleted_at IS NULL  component=pentagentx-gorm duration=2.5ms rows_returned=3
 ```
 
 ### Common Issues and Solutions
@@ -1415,7 +1415,7 @@ _, err = db.CreateAgentLog(ctx, database.CreateAgentLogParams{
 
 ## Conclusion
 
-The database package provides a robust, secure, and performant foundation for PentAGI's data layer. By leveraging sqlc for code generation, implementing consistent security patterns, and maintaining comprehensive audit trails, it ensures reliable operation of the autonomous penetration testing system.
+The database package provides a robust, secure, and performant foundation for PentAgentX's data layer. By leveraging sqlc for code generation, implementing consistent security patterns, and maintaining comprehensive audit trails, it ensures reliable operation of the autonomous penetration testing system.
 
 Key benefits:
 - **Type Safety**: Compile-time verification of SQL queries
@@ -1424,6 +1424,6 @@ Key benefits:
 - **Observability**: Comprehensive logging and tracing
 - **Maintainability**: Consistent patterns and generated code
 
-For developers working with this package, follow the established patterns for security, performance, and maintainability to ensure smooth integration with the broader PentAGI ecosystem.
+For developers working with this package, follow the established patterns for security, performance, and maintainability to ensure smooth integration with the broader PentAgentX ecosystem.
 
-This documentation provides a comprehensive overview of the database package's architecture, functionality, and integration within the PentAGI system.
+This documentation provides a comprehensive overview of the database package's architecture, functionality, and integration within the PentAgentX system.

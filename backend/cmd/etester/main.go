@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/providers/embeddings"
-	"pentagi/pkg/terminal"
-	"pentagi/pkg/version"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/providers/embeddings"
+	"pentagentx/pkg/terminal"
+	"pentagentx/pkg/version"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -31,7 +31,7 @@ func main() {
 	help := flag.Bool("help", false, "Show help information")
 	flag.Parse()
 
-	logrus.Infof("Starting PentAGI Embedding Tester %s", version.GetBinaryVersion())
+	logrus.Infof("Starting PentAgentX Embedding Tester %s", version.GetBinaryVersion())
 
 	// Extract command from first non-flag argument
 	args := flag.Args()

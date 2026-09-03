@@ -12,11 +12,11 @@ import (
 	"text/template"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/system"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/system"
 
 	"github.com/sirupsen/logrus"
 )

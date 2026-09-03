@@ -4,10 +4,10 @@ import (
 	"context"
 	"sync"
 
-	"pentagi/cmd/installer/checker"
-	"pentagi/cmd/installer/files"
-	"pentagi/cmd/installer/state"
-	"pentagi/cmd/installer/wizard/terminal"
+	"pentagentx/cmd/installer/checker"
+	"pentagentx/cmd/installer/files"
+	"pentagentx/cmd/installer/state"
+	"pentagentx/cmd/installer/wizard/terminal"
 )
 
 type ProductStack string

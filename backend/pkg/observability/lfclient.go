@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/system"
-	"pentagi/pkg/version"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/system"
+	"pentagentx/pkg/version"
 )
 
 const (

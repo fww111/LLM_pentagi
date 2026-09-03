@@ -61,7 +61,7 @@ func TestGetBinaryName_Default(t *testing.T) {
 	PackageName = ""
 
 	result := GetBinaryName()
-	assert.Equal(t, "pentagi", result)
+	assert.Equal(t, "pentagentx", result)
 }
 
 func TestGetBinaryName_Custom(t *testing.T) {

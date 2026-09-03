@@ -6,13 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"pentagi/pkg/cast"
-	"pentagi/pkg/csum"
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/templates"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/cast"
+	"pentagentx/pkg/csum"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/templates"
+	"pentagentx/pkg/tools"
 
 	"github.com/sirupsen/logrus"
 )

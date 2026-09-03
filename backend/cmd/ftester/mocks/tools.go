@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"pentagi/pkg/terminal"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/terminal"
+	"pentagentx/pkg/tools"
 )
 
 // MockResponse generates a mock response for a function

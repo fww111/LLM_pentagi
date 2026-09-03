@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/terminal"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/terminal"
+	"pentagentx/pkg/tools"
 )
 
 type ProxyProviders interface {

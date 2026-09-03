@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/config"
+	"pentagentx/pkg/config"
 )
 
 const (

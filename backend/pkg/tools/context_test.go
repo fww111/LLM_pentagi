@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"pentagi/pkg/database"
+	"pentagentx/pkg/database"
 )
 
 func TestGetAgentContextEmpty(t *testing.T) {

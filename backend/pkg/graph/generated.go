@@ -9,7 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"pentagi/pkg/graph/model"
+	"pentagentx/pkg/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -4330,7 +4330,7 @@ func (ec *executionContext) field_Mutation_createAPIToken_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNCreateAPITokenInput2pentagiᚋpkgᚋgraphᚋmodelᚐCreateAPITokenInput(ctx, tmp)
+		return ec.unmarshalNCreateAPITokenInput2pentagentxᚋpkgᚋgraphᚋmodelᚐCreateAPITokenInput(ctx, tmp)
 	}
 
 	var zeroVal model.CreateAPITokenInput
@@ -4475,7 +4475,7 @@ func (ec *executionContext) field_Mutation_createFlowTemplate_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNCreateFlowTemplateInput2pentagiᚋpkgᚋgraphᚋmodelᚐCreateFlowTemplateInput(ctx, tmp)
+		return ec.unmarshalNCreateFlowTemplateInput2pentagentxᚋpkgᚋgraphᚋmodelᚐCreateFlowTemplateInput(ctx, tmp)
 	}
 
 	var zeroVal model.CreateFlowTemplateInput
@@ -4571,7 +4571,7 @@ func (ec *executionContext) field_Mutation_createPrompt_argsType(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
 	if tmp, ok := rawArgs["type"]; ok {
-		return ec.unmarshalNPromptType2pentagiᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, tmp)
+		return ec.unmarshalNPromptType2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, tmp)
 	}
 
 	var zeroVal model.PromptType
@@ -4657,7 +4657,7 @@ func (ec *executionContext) field_Mutation_createProvider_argsType(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
 	if tmp, ok := rawArgs["type"]; ok {
-		return ec.unmarshalNProviderType2pentagiᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, tmp)
+		return ec.unmarshalNProviderType2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, tmp)
 	}
 
 	var zeroVal model.ProviderType
@@ -4679,7 +4679,7 @@ func (ec *executionContext) field_Mutation_createProvider_argsAgents(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("agents"))
 	if tmp, ok := rawArgs["agents"]; ok {
-		return ec.unmarshalNAgentsConfigInput2pentagiᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, tmp)
+		return ec.unmarshalNAgentsConfigInput2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, tmp)
 	}
 
 	var zeroVal model.AgentsConfig
@@ -5240,7 +5240,7 @@ func (ec *executionContext) field_Mutation_testAgent_argsType(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
 	if tmp, ok := rawArgs["type"]; ok {
-		return ec.unmarshalNProviderType2pentagiᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, tmp)
+		return ec.unmarshalNProviderType2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, tmp)
 	}
 
 	var zeroVal model.ProviderType
@@ -5262,7 +5262,7 @@ func (ec *executionContext) field_Mutation_testAgent_argsAgentType(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("agentType"))
 	if tmp, ok := rawArgs["agentType"]; ok {
-		return ec.unmarshalNAgentConfigType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentConfigType(ctx, tmp)
+		return ec.unmarshalNAgentConfigType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfigType(ctx, tmp)
 	}
 
 	var zeroVal model.AgentConfigType
@@ -5284,7 +5284,7 @@ func (ec *executionContext) field_Mutation_testAgent_argsAgent(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("agent"))
 	if tmp, ok := rawArgs["agent"]; ok {
-		return ec.unmarshalNAgentConfigInput2pentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, tmp)
+		return ec.unmarshalNAgentConfigInput2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, tmp)
 	}
 
 	var zeroVal model.AgentConfig
@@ -5321,7 +5321,7 @@ func (ec *executionContext) field_Mutation_testProvider_argsType(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
 	if tmp, ok := rawArgs["type"]; ok {
-		return ec.unmarshalNProviderType2pentagiᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, tmp)
+		return ec.unmarshalNProviderType2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, tmp)
 	}
 
 	var zeroVal model.ProviderType
@@ -5343,7 +5343,7 @@ func (ec *executionContext) field_Mutation_testProvider_argsAgents(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("agents"))
 	if tmp, ok := rawArgs["agents"]; ok {
-		return ec.unmarshalNAgentsConfigInput2pentagiᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, tmp)
+		return ec.unmarshalNAgentsConfigInput2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, tmp)
 	}
 
 	var zeroVal model.AgentsConfig
@@ -5402,7 +5402,7 @@ func (ec *executionContext) field_Mutation_updateAPIToken_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNUpdateAPITokenInput2pentagiᚋpkgᚋgraphᚋmodelᚐUpdateAPITokenInput(ctx, tmp)
+		return ec.unmarshalNUpdateAPITokenInput2pentagentxᚋpkgᚋgraphᚋmodelᚐUpdateAPITokenInput(ctx, tmp)
 	}
 
 	var zeroVal model.UpdateAPITokenInput
@@ -5461,7 +5461,7 @@ func (ec *executionContext) field_Mutation_updateFlowTemplate_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNUpdateFlowTemplateInput2pentagiᚋpkgᚋgraphᚋmodelᚐUpdateFlowTemplateInput(ctx, tmp)
+		return ec.unmarshalNUpdateFlowTemplateInput2pentagentxᚋpkgᚋgraphᚋmodelᚐUpdateFlowTemplateInput(ctx, tmp)
 	}
 
 	var zeroVal model.UpdateFlowTemplateInput
@@ -5606,7 +5606,7 @@ func (ec *executionContext) field_Mutation_updateProvider_argsAgents(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("agents"))
 	if tmp, ok := rawArgs["agents"]; ok {
-		return ec.unmarshalNAgentsConfigInput2pentagiᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, tmp)
+		return ec.unmarshalNAgentsConfigInput2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, tmp)
 	}
 
 	var zeroVal model.AgentsConfig
@@ -5643,7 +5643,7 @@ func (ec *executionContext) field_Mutation_validatePrompt_argsType(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
 	if tmp, ok := rawArgs["type"]; ok {
-		return ec.unmarshalNPromptType2pentagiᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, tmp)
+		return ec.unmarshalNPromptType2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, tmp)
 	}
 
 	var zeroVal model.PromptType
@@ -5980,7 +5980,7 @@ func (ec *executionContext) field_Query_flowsExecutionStatsByPeriod_argsPeriod(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("period"))
 	if tmp, ok := rawArgs["period"]; ok {
-		return ec.unmarshalNUsageStatsPeriod2pentagiᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
+		return ec.unmarshalNUsageStatsPeriod2pentagentxᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
 	}
 
 	var zeroVal model.UsageStatsPeriod
@@ -6012,7 +6012,7 @@ func (ec *executionContext) field_Query_flowsStatsByPeriod_argsPeriod(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("period"))
 	if tmp, ok := rawArgs["period"]; ok {
-		return ec.unmarshalNUsageStatsPeriod2pentagiᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
+		return ec.unmarshalNUsageStatsPeriod2pentagentxᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
 	}
 
 	var zeroVal model.UsageStatsPeriod
@@ -6268,7 +6268,7 @@ func (ec *executionContext) field_Query_toolcallsStatsByPeriod_argsPeriod(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("period"))
 	if tmp, ok := rawArgs["period"]; ok {
-		return ec.unmarshalNUsageStatsPeriod2pentagiᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
+		return ec.unmarshalNUsageStatsPeriod2pentagentxᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
 	}
 
 	var zeroVal model.UsageStatsPeriod
@@ -6364,7 +6364,7 @@ func (ec *executionContext) field_Query_usageStatsByPeriod_argsPeriod(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("period"))
 	if tmp, ok := rawArgs["period"]; ok {
-		return ec.unmarshalNUsageStatsPeriod2pentagiᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
+		return ec.unmarshalNUsageStatsPeriod2pentagentxᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx, tmp)
 	}
 
 	var zeroVal model.UsageStatsPeriod
@@ -7212,7 +7212,7 @@ func (ec *executionContext) _APIToken_status(ctx context.Context, field graphql.
 	}
 	res := resTmp.(model.TokenStatus)
 	fc.Result = res
-	return ec.marshalNTokenStatus2pentagiᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx, field.Selections, res)
+	return ec.marshalNTokenStatus2pentagentxᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_APIToken_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7605,7 +7605,7 @@ func (ec *executionContext) _APITokenWithSecret_status(ctx context.Context, fiel
 	}
 	res := resTmp.(model.TokenStatus)
 	fc.Result = res
-	return ec.marshalNTokenStatus2pentagiᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx, field.Selections, res)
+	return ec.marshalNTokenStatus2pentagentxᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_APITokenWithSecret_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8191,7 +8191,7 @@ func (ec *executionContext) _AgentConfig_reasoning(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.ReasoningConfig)
 	fc.Result = res
-	return ec.marshalOReasoningConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx, field.Selections, res)
+	return ec.marshalOReasoningConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentConfig_reasoning(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8238,7 +8238,7 @@ func (ec *executionContext) _AgentConfig_price(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.ModelPrice)
 	fc.Result = res
-	return ec.marshalOModelPrice2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx, field.Selections, res)
+	return ec.marshalOModelPrice2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentConfig_price(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8336,7 +8336,7 @@ func (ec *executionContext) _AgentLog_initiator(ctx context.Context, field graph
 	}
 	res := resTmp.(model.AgentType)
 	fc.Result = res
-	return ec.marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
+	return ec.marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentLog_initiator(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8380,7 +8380,7 @@ func (ec *executionContext) _AgentLog_executor(ctx context.Context, field graphq
 	}
 	res := resTmp.(model.AgentType)
 	fc.Result = res
-	return ec.marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
+	return ec.marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentLog_executor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8682,7 +8682,7 @@ func (ec *executionContext) _AgentPrompt_system(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentPrompt_system(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8734,7 +8734,7 @@ func (ec *executionContext) _AgentPrompts_system(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentPrompts_system(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8786,7 +8786,7 @@ func (ec *executionContext) _AgentPrompts_human(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentPrompts_human(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8838,7 +8838,7 @@ func (ec *executionContext) _AgentTestResult_tests(ctx context.Context, field gr
 	}
 	res := resTmp.([]*model.TestResult)
 	fc.Result = res
-	return ec.marshalNTestResult2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTestResultᚄ(ctx, field.Selections, res)
+	return ec.marshalNTestResult2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTestResultᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentTestResult_tests(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8898,7 +8898,7 @@ func (ec *executionContext) _AgentTypeUsageStats_agentType(ctx context.Context, 
 	}
 	res := resTmp.(model.AgentType)
 	fc.Result = res
-	return ec.marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
+	return ec.marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentTypeUsageStats_agentType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8942,7 +8942,7 @@ func (ec *executionContext) _AgentTypeUsageStats_stats(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.UsageStats)
 	fc.Result = res
-	return ec.marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
+	return ec.marshalNUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentTypeUsageStats_stats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9000,7 +9000,7 @@ func (ec *executionContext) _AgentsConfig_simple(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_simple(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9070,7 +9070,7 @@ func (ec *executionContext) _AgentsConfig_simpleJson(ctx context.Context, field 
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_simpleJson(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9140,7 +9140,7 @@ func (ec *executionContext) _AgentsConfig_primaryAgent(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_primaryAgent(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9210,7 +9210,7 @@ func (ec *executionContext) _AgentsConfig_assistant(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_assistant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9280,7 +9280,7 @@ func (ec *executionContext) _AgentsConfig_generator(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_generator(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9350,7 +9350,7 @@ func (ec *executionContext) _AgentsConfig_refiner(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_refiner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9420,7 +9420,7 @@ func (ec *executionContext) _AgentsConfig_adviser(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_adviser(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9490,7 +9490,7 @@ func (ec *executionContext) _AgentsConfig_reflector(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_reflector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9560,7 +9560,7 @@ func (ec *executionContext) _AgentsConfig_searcher(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_searcher(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9630,7 +9630,7 @@ func (ec *executionContext) _AgentsConfig_enricher(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_enricher(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9700,7 +9700,7 @@ func (ec *executionContext) _AgentsConfig_coder(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_coder(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9770,7 +9770,7 @@ func (ec *executionContext) _AgentsConfig_installer(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_installer(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9840,7 +9840,7 @@ func (ec *executionContext) _AgentsConfig_pentester(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentConfig)
 	fc.Result = res
-	return ec.marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsConfig_pentester(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9910,7 +9910,7 @@ func (ec *executionContext) _AgentsPrompts_primaryAgent(ctx context.Context, fie
 	}
 	res := resTmp.(*model.AgentPrompt)
 	fc.Result = res
-	return ec.marshalNAgentPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_primaryAgent(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9958,7 +9958,7 @@ func (ec *executionContext) _AgentsPrompts_assistant(ctx context.Context, field 
 	}
 	res := resTmp.(*model.AgentPrompt)
 	fc.Result = res
-	return ec.marshalNAgentPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_assistant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10006,7 +10006,7 @@ func (ec *executionContext) _AgentsPrompts_pentester(ctx context.Context, field 
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_pentester(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10056,7 +10056,7 @@ func (ec *executionContext) _AgentsPrompts_coder(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_coder(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10106,7 +10106,7 @@ func (ec *executionContext) _AgentsPrompts_installer(ctx context.Context, field 
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_installer(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10156,7 +10156,7 @@ func (ec *executionContext) _AgentsPrompts_searcher(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_searcher(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10206,7 +10206,7 @@ func (ec *executionContext) _AgentsPrompts_memorist(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_memorist(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10256,7 +10256,7 @@ func (ec *executionContext) _AgentsPrompts_adviser(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_adviser(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10306,7 +10306,7 @@ func (ec *executionContext) _AgentsPrompts_generator(ctx context.Context, field 
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_generator(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10356,7 +10356,7 @@ func (ec *executionContext) _AgentsPrompts_refiner(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_refiner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10406,7 +10406,7 @@ func (ec *executionContext) _AgentsPrompts_reporter(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_reporter(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10456,7 +10456,7 @@ func (ec *executionContext) _AgentsPrompts_reflector(ctx context.Context, field 
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_reflector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10506,7 +10506,7 @@ func (ec *executionContext) _AgentsPrompts_enricher(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_enricher(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10556,7 +10556,7 @@ func (ec *executionContext) _AgentsPrompts_toolCallFixer(ctx context.Context, fi
 	}
 	res := resTmp.(*model.AgentPrompts)
 	fc.Result = res
-	return ec.marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_toolCallFixer(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10606,7 +10606,7 @@ func (ec *executionContext) _AgentsPrompts_summarizer(ctx context.Context, field
 	}
 	res := resTmp.(*model.AgentPrompt)
 	fc.Result = res
-	return ec.marshalNAgentPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx, field.Selections, res)
+	return ec.marshalNAgentPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AgentsPrompts_summarizer(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10742,7 +10742,7 @@ func (ec *executionContext) _Assistant_status(ctx context.Context, field graphql
 	}
 	res := resTmp.(model.StatusType)
 	fc.Result = res
-	return ec.marshalNStatusType2pentagiᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
+	return ec.marshalNStatusType2pentagentxᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Assistant_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10786,7 +10786,7 @@ func (ec *executionContext) _Assistant_provider(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.Provider)
 	fc.Result = res
-	return ec.marshalNProvider2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvider(ctx, field.Selections, res)
+	return ec.marshalNProvider2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvider(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Assistant_provider(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11056,7 +11056,7 @@ func (ec *executionContext) _AssistantLog_type(ctx context.Context, field graphq
 	}
 	res := resTmp.(model.MessageLogType)
 	fc.Result = res
-	return ec.marshalNMessageLogType2pentagiᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx, field.Selections, res)
+	return ec.marshalNMessageLogType2pentagentxᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AssistantLog_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11229,7 +11229,7 @@ func (ec *executionContext) _AssistantLog_resultFormat(ctx context.Context, fiel
 	}
 	res := resTmp.(model.ResultFormat)
 	fc.Result = res
-	return ec.marshalNResultFormat2pentagiᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx, field.Selections, res)
+	return ec.marshalNResultFormat2pentagentxᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AssistantLog_resultFormat(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11493,7 +11493,7 @@ func (ec *executionContext) _DailyFlowsStats_stats(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.FlowsStats)
 	fc.Result = res
-	return ec.marshalNFlowsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx, field.Selections, res)
+	return ec.marshalNFlowsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DailyFlowsStats_stats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11591,7 +11591,7 @@ func (ec *executionContext) _DailyToolcallsStats_stats(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.ToolcallsStats)
 	fc.Result = res
-	return ec.marshalNToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx, field.Selections, res)
+	return ec.marshalNToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DailyToolcallsStats_stats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11685,7 +11685,7 @@ func (ec *executionContext) _DailyUsageStats_stats(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.UsageStats)
 	fc.Result = res
-	return ec.marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
+	return ec.marshalNUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DailyUsageStats_stats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11743,7 +11743,7 @@ func (ec *executionContext) _DefaultPrompt_type(ctx context.Context, field graph
 	}
 	res := resTmp.(model.PromptType)
 	fc.Result = res
-	return ec.marshalNPromptType2pentagiᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, field.Selections, res)
+	return ec.marshalNPromptType2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultPrompt_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11875,7 +11875,7 @@ func (ec *executionContext) _DefaultPrompts_agents(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.AgentsPrompts)
 	fc.Result = res
-	return ec.marshalNAgentsPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentsPrompts(ctx, field.Selections, res)
+	return ec.marshalNAgentsPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentsPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultPrompts_agents(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11951,7 +11951,7 @@ func (ec *executionContext) _DefaultPrompts_tools(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.ToolsPrompts)
 	fc.Result = res
-	return ec.marshalNToolsPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐToolsPrompts(ctx, field.Selections, res)
+	return ec.marshalNToolsPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐToolsPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultPrompts_tools(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12021,7 +12021,7 @@ func (ec *executionContext) _DefaultProvidersConfig_openai(ctx context.Context, 
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_openai(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12079,7 +12079,7 @@ func (ec *executionContext) _DefaultProvidersConfig_anthropic(ctx context.Contex
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_anthropic(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12134,7 +12134,7 @@ func (ec *executionContext) _DefaultProvidersConfig_gemini(ctx context.Context, 
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_gemini(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12189,7 +12189,7 @@ func (ec *executionContext) _DefaultProvidersConfig_bedrock(ctx context.Context,
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_bedrock(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12244,7 +12244,7 @@ func (ec *executionContext) _DefaultProvidersConfig_ollama(ctx context.Context, 
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_ollama(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12299,7 +12299,7 @@ func (ec *executionContext) _DefaultProvidersConfig_custom(ctx context.Context, 
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_custom(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12354,7 +12354,7 @@ func (ec *executionContext) _DefaultProvidersConfig_deepseek(ctx context.Context
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_deepseek(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12409,7 +12409,7 @@ func (ec *executionContext) _DefaultProvidersConfig_glm(ctx context.Context, fie
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_glm(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12464,7 +12464,7 @@ func (ec *executionContext) _DefaultProvidersConfig_kimi(ctx context.Context, fi
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_kimi(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12519,7 +12519,7 @@ func (ec *executionContext) _DefaultProvidersConfig_qwen(ctx context.Context, fi
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DefaultProvidersConfig_qwen(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12665,7 +12665,7 @@ func (ec *executionContext) _Flow_status(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(model.StatusType)
 	fc.Result = res
-	return ec.marshalNStatusType2pentagiᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
+	return ec.marshalNStatusType2pentagentxᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Flow_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12706,7 +12706,7 @@ func (ec *executionContext) _Flow_terminals(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*model.Terminal)
 	fc.Result = res
-	return ec.marshalOTerminal2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminalᚄ(ctx, field.Selections, res)
+	return ec.marshalOTerminal2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminalᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Flow_terminals(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12764,7 +12764,7 @@ func (ec *executionContext) _Flow_provider(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Provider)
 	fc.Result = res
-	return ec.marshalNProvider2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvider(ctx, field.Selections, res)
+	return ec.marshalNProvider2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvider(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Flow_provider(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12902,7 +12902,7 @@ func (ec *executionContext) _FlowAssistant_flow(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.Flow)
 	fc.Result = res
-	return ec.marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res)
+	return ec.marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FlowAssistant_flow(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12962,7 +12962,7 @@ func (ec *executionContext) _FlowAssistant_assistant(ctx context.Context, field 
 	}
 	res := resTmp.(*model.Assistant)
 	fc.Result = res
-	return ec.marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res)
+	return ec.marshalNAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FlowAssistant_assistant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13244,7 +13244,7 @@ func (ec *executionContext) _FlowExecutionStats_tasks(ctx context.Context, field
 	}
 	res := resTmp.([]*model.TaskExecutionStats)
 	fc.Result = res
-	return ec.marshalNTaskExecutionStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTaskExecutionStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNTaskExecutionStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTaskExecutionStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FlowExecutionStats_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14136,7 +14136,7 @@ func (ec *executionContext) _MessageLog_type(ctx context.Context, field graphql.
 	}
 	res := resTmp.(model.MessageLogType)
 	fc.Result = res
-	return ec.marshalNMessageLogType2pentagiᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx, field.Selections, res)
+	return ec.marshalNMessageLogType2pentagentxᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageLog_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14309,7 +14309,7 @@ func (ec *executionContext) _MessageLog_resultFormat(ctx context.Context, field 
 	}
 	res := resTmp.(model.ResultFormat)
 	fc.Result = res
-	return ec.marshalNResultFormat2pentagiᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx, field.Selections, res)
+	return ec.marshalNResultFormat2pentagentxᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageLog_resultFormat(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14687,7 +14687,7 @@ func (ec *executionContext) _ModelConfig_price(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.ModelPrice)
 	fc.Result = res
-	return ec.marshalOModelPrice2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx, field.Selections, res)
+	return ec.marshalOModelPrice2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ModelConfig_price(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15005,7 +15005,7 @@ func (ec *executionContext) _ModelUsageStats_stats(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.UsageStats)
 	fc.Result = res
-	return ec.marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
+	return ec.marshalNUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ModelUsageStats_stats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15063,7 +15063,7 @@ func (ec *executionContext) _Mutation_createFlow(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.Flow)
 	fc.Result = res
-	return ec.marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res)
+	return ec.marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15134,7 +15134,7 @@ func (ec *executionContext) _Mutation_putUserInput(ctx context.Context, field gr
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_putUserInput(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15189,7 +15189,7 @@ func (ec *executionContext) _Mutation_stopFlow(ctx context.Context, field graphq
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_stopFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15244,7 +15244,7 @@ func (ec *executionContext) _Mutation_finishFlow(ctx context.Context, field grap
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_finishFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15299,7 +15299,7 @@ func (ec *executionContext) _Mutation_deleteFlow(ctx context.Context, field grap
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15354,7 +15354,7 @@ func (ec *executionContext) _Mutation_renameFlow(ctx context.Context, field grap
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_renameFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15409,7 +15409,7 @@ func (ec *executionContext) _Mutation_createAssistant(ctx context.Context, field
 	}
 	res := resTmp.(*model.FlowAssistant)
 	fc.Result = res
-	return ec.marshalNFlowAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowAssistant(ctx, field.Selections, res)
+	return ec.marshalNFlowAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowAssistant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createAssistant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15470,7 +15470,7 @@ func (ec *executionContext) _Mutation_callAssistant(ctx context.Context, field g
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_callAssistant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15525,7 +15525,7 @@ func (ec *executionContext) _Mutation_stopAssistant(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Assistant)
 	fc.Result = res
-	return ec.marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res)
+	return ec.marshalNAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_stopAssistant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15598,7 +15598,7 @@ func (ec *executionContext) _Mutation_deleteAssistant(ctx context.Context, field
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteAssistant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15653,7 +15653,7 @@ func (ec *executionContext) _Mutation_testAgent(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_testAgent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15712,7 +15712,7 @@ func (ec *executionContext) _Mutation_testProvider(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.ProviderTestResult)
 	fc.Result = res
-	return ec.marshalNProviderTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderTestResult(ctx, field.Selections, res)
+	return ec.marshalNProviderTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_testProvider(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15795,7 +15795,7 @@ func (ec *executionContext) _Mutation_createProvider(ctx context.Context, field 
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createProvider(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15864,7 +15864,7 @@ func (ec *executionContext) _Mutation_updateProvider(ctx context.Context, field 
 	}
 	res := resTmp.(*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
+	return ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateProvider(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15933,7 +15933,7 @@ func (ec *executionContext) _Mutation_deleteProvider(ctx context.Context, field 
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteProvider(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15988,7 +15988,7 @@ func (ec *executionContext) _Mutation_validatePrompt(ctx context.Context, field 
 	}
 	res := resTmp.(*model.PromptValidationResult)
 	fc.Result = res
-	return ec.marshalNPromptValidationResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐPromptValidationResult(ctx, field.Selections, res)
+	return ec.marshalNPromptValidationResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐPromptValidationResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_validatePrompt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16055,7 +16055,7 @@ func (ec *executionContext) _Mutation_createPrompt(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.UserPrompt)
 	fc.Result = res
-	return ec.marshalNUserPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx, field.Selections, res)
+	return ec.marshalNUserPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createPrompt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16122,7 +16122,7 @@ func (ec *executionContext) _Mutation_updatePrompt(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.UserPrompt)
 	fc.Result = res
-	return ec.marshalNUserPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx, field.Selections, res)
+	return ec.marshalNUserPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updatePrompt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16189,7 +16189,7 @@ func (ec *executionContext) _Mutation_deletePrompt(ctx context.Context, field gr
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deletePrompt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16244,7 +16244,7 @@ func (ec *executionContext) _Mutation_createAPIToken(ctx context.Context, field 
 	}
 	res := resTmp.(*model.APITokenWithSecret)
 	fc.Result = res
-	return ec.marshalNAPITokenWithSecret2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPITokenWithSecret(ctx, field.Selections, res)
+	return ec.marshalNAPITokenWithSecret2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPITokenWithSecret(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createAPIToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16321,7 +16321,7 @@ func (ec *executionContext) _Mutation_updateAPIToken(ctx context.Context, field 
 	}
 	res := resTmp.(*model.APIToken)
 	fc.Result = res
-	return ec.marshalNAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res)
+	return ec.marshalNAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateAPIToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16451,7 +16451,7 @@ func (ec *executionContext) _Mutation_addFavoriteFlow(ctx context.Context, field
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_addFavoriteFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16506,7 +16506,7 @@ func (ec *executionContext) _Mutation_deleteFavoriteFlow(ctx context.Context, fi
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteFavoriteFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16561,7 +16561,7 @@ func (ec *executionContext) _Mutation_createFlowTemplate(ctx context.Context, fi
 	}
 	res := resTmp.(*model.FlowTemplate)
 	fc.Result = res
-	return ec.marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res)
+	return ec.marshalNFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createFlowTemplate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16630,7 +16630,7 @@ func (ec *executionContext) _Mutation_updateFlowTemplate(ctx context.Context, fi
 	}
 	res := resTmp.(*model.FlowTemplate)
 	fc.Result = res
-	return ec.marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res)
+	return ec.marshalNFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateFlowTemplate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16699,7 +16699,7 @@ func (ec *executionContext) _Mutation_deleteFlowTemplate(ctx context.Context, fi
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteFlowTemplate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16754,7 +16754,7 @@ func (ec *executionContext) _PromptValidationResult_result(ctx context.Context, 
 	}
 	res := resTmp.(model.ResultType)
 	fc.Result = res
-	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+	return ec.marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PromptValidationResult_result(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16795,7 +16795,7 @@ func (ec *executionContext) _PromptValidationResult_errorType(ctx context.Contex
 	}
 	res := resTmp.(*model.PromptValidationErrorType)
 	fc.Result = res
-	return ec.marshalOPromptValidationErrorType2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐPromptValidationErrorType(ctx, field.Selections, res)
+	return ec.marshalOPromptValidationErrorType2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐPromptValidationErrorType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PromptValidationResult_errorType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16962,7 +16962,7 @@ func (ec *executionContext) _PromptsConfig_default(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.DefaultPrompts)
 	fc.Result = res
-	return ec.marshalNDefaultPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompts(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PromptsConfig_default(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17009,7 +17009,7 @@ func (ec *executionContext) _PromptsConfig_userDefined(ctx context.Context, fiel
 	}
 	res := resTmp.([]*model.UserPrompt)
 	fc.Result = res
-	return ec.marshalOUserPrompt2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPromptᚄ(ctx, field.Selections, res)
+	return ec.marshalOUserPrompt2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPromptᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PromptsConfig_userDefined(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17109,7 +17109,7 @@ func (ec *executionContext) _Provider_type(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(model.ProviderType)
 	fc.Result = res
-	return ec.marshalNProviderType2pentagiᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, field.Selections, res)
+	return ec.marshalNProviderType2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Provider_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17241,7 +17241,7 @@ func (ec *executionContext) _ProviderConfig_type(ctx context.Context, field grap
 	}
 	res := resTmp.(model.ProviderType)
 	fc.Result = res
-	return ec.marshalNProviderType2pentagiᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, field.Selections, res)
+	return ec.marshalNProviderType2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderConfig_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17285,7 +17285,7 @@ func (ec *executionContext) _ProviderConfig_agents(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.AgentsConfig)
 	fc.Result = res
-	return ec.marshalNAgentsConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, field.Selections, res)
+	return ec.marshalNAgentsConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderConfig_agents(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17445,7 +17445,7 @@ func (ec *executionContext) _ProviderTestResult_simple(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_simple(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17493,7 +17493,7 @@ func (ec *executionContext) _ProviderTestResult_simpleJson(ctx context.Context, 
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_simpleJson(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17541,7 +17541,7 @@ func (ec *executionContext) _ProviderTestResult_primaryAgent(ctx context.Context
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_primaryAgent(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17589,7 +17589,7 @@ func (ec *executionContext) _ProviderTestResult_assistant(ctx context.Context, f
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_assistant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17637,7 +17637,7 @@ func (ec *executionContext) _ProviderTestResult_generator(ctx context.Context, f
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_generator(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17685,7 +17685,7 @@ func (ec *executionContext) _ProviderTestResult_refiner(ctx context.Context, fie
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_refiner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17733,7 +17733,7 @@ func (ec *executionContext) _ProviderTestResult_adviser(ctx context.Context, fie
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_adviser(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17781,7 +17781,7 @@ func (ec *executionContext) _ProviderTestResult_reflector(ctx context.Context, f
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_reflector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17829,7 +17829,7 @@ func (ec *executionContext) _ProviderTestResult_searcher(ctx context.Context, fi
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_searcher(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17877,7 +17877,7 @@ func (ec *executionContext) _ProviderTestResult_enricher(ctx context.Context, fi
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_enricher(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17925,7 +17925,7 @@ func (ec *executionContext) _ProviderTestResult_coder(ctx context.Context, field
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_coder(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17973,7 +17973,7 @@ func (ec *executionContext) _ProviderTestResult_installer(ctx context.Context, f
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_installer(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18021,7 +18021,7 @@ func (ec *executionContext) _ProviderTestResult_pentester(ctx context.Context, f
 	}
 	res := resTmp.(*model.AgentTestResult)
 	fc.Result = res
-	return ec.marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
+	return ec.marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderTestResult_pentester(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18113,7 +18113,7 @@ func (ec *executionContext) _ProviderUsageStats_stats(ctx context.Context, field
 	}
 	res := resTmp.(*model.UsageStats)
 	fc.Result = res
-	return ec.marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
+	return ec.marshalNUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProviderUsageStats_stats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18171,7 +18171,7 @@ func (ec *executionContext) _ProvidersConfig_enabled(ctx context.Context, field 
 	}
 	res := resTmp.(*model.ProvidersReadinessStatus)
 	fc.Result = res
-	return ec.marshalNProvidersReadinessStatus2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvidersReadinessStatus(ctx, field.Selections, res)
+	return ec.marshalNProvidersReadinessStatus2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvidersReadinessStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersConfig_enabled(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18237,7 +18237,7 @@ func (ec *executionContext) _ProvidersConfig_default(ctx context.Context, field 
 	}
 	res := resTmp.(*model.DefaultProvidersConfig)
 	fc.Result = res
-	return ec.marshalNDefaultProvidersConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultProvidersConfig(ctx, field.Selections, res)
+	return ec.marshalNDefaultProvidersConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultProvidersConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersConfig_default(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18300,7 +18300,7 @@ func (ec *executionContext) _ProvidersConfig_userDefined(ctx context.Context, fi
 	}
 	res := resTmp.([]*model.ProviderConfig)
 	fc.Result = res
-	return ec.marshalOProviderConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOProviderConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersConfig_userDefined(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18358,7 +18358,7 @@ func (ec *executionContext) _ProvidersConfig_models(ctx context.Context, field g
 	}
 	res := resTmp.(*model.ProvidersModelsList)
 	fc.Result = res
-	return ec.marshalNProvidersModelsList2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvidersModelsList(ctx, field.Selections, res)
+	return ec.marshalNProvidersModelsList2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvidersModelsList(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersConfig_models(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18424,7 +18424,7 @@ func (ec *executionContext) _ProvidersModelsList_openai(ctx context.Context, fie
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalNModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalNModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_openai(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18480,7 +18480,7 @@ func (ec *executionContext) _ProvidersModelsList_anthropic(ctx context.Context, 
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalNModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalNModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_anthropic(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18536,7 +18536,7 @@ func (ec *executionContext) _ProvidersModelsList_gemini(ctx context.Context, fie
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalNModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalNModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_gemini(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18589,7 +18589,7 @@ func (ec *executionContext) _ProvidersModelsList_bedrock(ctx context.Context, fi
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_bedrock(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18642,7 +18642,7 @@ func (ec *executionContext) _ProvidersModelsList_ollama(ctx context.Context, fie
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_ollama(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18695,7 +18695,7 @@ func (ec *executionContext) _ProvidersModelsList_custom(ctx context.Context, fie
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_custom(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18748,7 +18748,7 @@ func (ec *executionContext) _ProvidersModelsList_deepseek(ctx context.Context, f
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_deepseek(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18801,7 +18801,7 @@ func (ec *executionContext) _ProvidersModelsList_glm(ctx context.Context, field 
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_glm(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18854,7 +18854,7 @@ func (ec *executionContext) _ProvidersModelsList_kimi(ctx context.Context, field
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_kimi(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18907,7 +18907,7 @@ func (ec *executionContext) _ProvidersModelsList_qwen(ctx context.Context, field
 	}
 	res := resTmp.([]*model.ModelConfig)
 	fc.Result = res
-	return ec.marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProvidersModelsList_qwen(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19403,7 +19403,7 @@ func (ec *executionContext) _Query_providers(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.Provider)
 	fc.Result = res
-	return ec.marshalNProvider2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderᚄ(ctx, field.Selections, res)
+	return ec.marshalNProvider2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_providers(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19450,7 +19450,7 @@ func (ec *executionContext) _Query_assistants(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.Assistant)
 	fc.Result = res
-	return ec.marshalOAssistant2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantᚄ(ctx, field.Selections, res)
+	return ec.marshalOAssistant2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_assistants(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19520,7 +19520,7 @@ func (ec *executionContext) _Query_flows(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.Flow)
 	fc.Result = res
-	return ec.marshalOFlow2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowᚄ(ctx, field.Selections, res)
+	return ec.marshalOFlow2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flows(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19580,7 +19580,7 @@ func (ec *executionContext) _Query_flow(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.Flow)
 	fc.Result = res
-	return ec.marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res)
+	return ec.marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19648,7 +19648,7 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.Task)
 	fc.Result = res
-	return ec.marshalOTask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTaskᚄ(ctx, field.Selections, res)
+	return ec.marshalOTask2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTaskᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_tasks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19720,7 +19720,7 @@ func (ec *executionContext) _Query_screenshots(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*model.Screenshot)
 	fc.Result = res
-	return ec.marshalOScreenshot2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐScreenshotᚄ(ctx, field.Selections, res)
+	return ec.marshalOScreenshot2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐScreenshotᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_screenshots(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19788,7 +19788,7 @@ func (ec *executionContext) _Query_terminalLogs(ctx context.Context, field graph
 	}
 	res := resTmp.([]*model.TerminalLog)
 	fc.Result = res
-	return ec.marshalOTerminalLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminalLogᚄ(ctx, field.Selections, res)
+	return ec.marshalOTerminalLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLogᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_terminalLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19858,7 +19858,7 @@ func (ec *executionContext) _Query_messageLogs(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*model.MessageLog)
 	fc.Result = res
-	return ec.marshalOMessageLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐMessageLogᚄ(ctx, field.Selections, res)
+	return ec.marshalOMessageLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐMessageLogᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_messageLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19932,7 +19932,7 @@ func (ec *executionContext) _Query_agentLogs(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.AgentLog)
 	fc.Result = res
-	return ec.marshalOAgentLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentLogᚄ(ctx, field.Selections, res)
+	return ec.marshalOAgentLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentLogᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_agentLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20004,7 +20004,7 @@ func (ec *executionContext) _Query_searchLogs(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.SearchLog)
 	fc.Result = res
-	return ec.marshalOSearchLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐSearchLogᚄ(ctx, field.Selections, res)
+	return ec.marshalOSearchLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSearchLogᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_searchLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20078,7 +20078,7 @@ func (ec *executionContext) _Query_vectorStoreLogs(ctx context.Context, field gr
 	}
 	res := resTmp.([]*model.VectorStoreLog)
 	fc.Result = res
-	return ec.marshalOVectorStoreLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreLogᚄ(ctx, field.Selections, res)
+	return ec.marshalOVectorStoreLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreLogᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_vectorStoreLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20154,7 +20154,7 @@ func (ec *executionContext) _Query_assistantLogs(ctx context.Context, field grap
 	}
 	res := resTmp.([]*model.AssistantLog)
 	fc.Result = res
-	return ec.marshalOAssistantLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantLogᚄ(ctx, field.Selections, res)
+	return ec.marshalOAssistantLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantLogᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_assistantLogs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20231,7 +20231,7 @@ func (ec *executionContext) _Query_usageStatsTotal(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.UsageStats)
 	fc.Result = res
-	return ec.marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
+	return ec.marshalNUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usageStatsTotal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20289,7 +20289,7 @@ func (ec *executionContext) _Query_usageStatsByPeriod(ctx context.Context, field
 	}
 	res := resTmp.([]*model.DailyUsageStats)
 	fc.Result = res
-	return ec.marshalNDailyUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyUsageStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNDailyUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyUsageStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usageStatsByPeriod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20350,7 +20350,7 @@ func (ec *executionContext) _Query_usageStatsByProvider(ctx context.Context, fie
 	}
 	res := resTmp.([]*model.ProviderUsageStats)
 	fc.Result = res
-	return ec.marshalNProviderUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderUsageStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNProviderUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderUsageStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usageStatsByProvider(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20400,7 +20400,7 @@ func (ec *executionContext) _Query_usageStatsByModel(ctx context.Context, field 
 	}
 	res := resTmp.([]*model.ModelUsageStats)
 	fc.Result = res
-	return ec.marshalNModelUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelUsageStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNModelUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelUsageStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usageStatsByModel(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20452,7 +20452,7 @@ func (ec *executionContext) _Query_usageStatsByAgentType(ctx context.Context, fi
 	}
 	res := resTmp.([]*model.AgentTypeUsageStats)
 	fc.Result = res
-	return ec.marshalNAgentTypeUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNAgentTypeUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usageStatsByAgentType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20502,7 +20502,7 @@ func (ec *executionContext) _Query_usageStatsByFlow(ctx context.Context, field g
 	}
 	res := resTmp.(*model.UsageStats)
 	fc.Result = res
-	return ec.marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
+	return ec.marshalNUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usageStatsByFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20571,7 +20571,7 @@ func (ec *executionContext) _Query_usageStatsByAgentTypeForFlow(ctx context.Cont
 	}
 	res := resTmp.([]*model.AgentTypeUsageStats)
 	fc.Result = res
-	return ec.marshalNAgentTypeUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNAgentTypeUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usageStatsByAgentTypeForFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20632,7 +20632,7 @@ func (ec *executionContext) _Query_toolcallsStatsTotal(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.ToolcallsStats)
 	fc.Result = res
-	return ec.marshalNToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx, field.Selections, res)
+	return ec.marshalNToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_toolcallsStatsTotal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20682,7 +20682,7 @@ func (ec *executionContext) _Query_toolcallsStatsByPeriod(ctx context.Context, f
 	}
 	res := resTmp.([]*model.DailyToolcallsStats)
 	fc.Result = res
-	return ec.marshalNDailyToolcallsStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNDailyToolcallsStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_toolcallsStatsByPeriod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20743,7 +20743,7 @@ func (ec *executionContext) _Query_toolcallsStatsByFunction(ctx context.Context,
 	}
 	res := resTmp.([]*model.FunctionToolcallsStats)
 	fc.Result = res
-	return ec.marshalNFunctionToolcallsStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNFunctionToolcallsStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_toolcallsStatsByFunction(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20799,7 +20799,7 @@ func (ec *executionContext) _Query_toolcallsStatsByFlow(ctx context.Context, fie
 	}
 	res := resTmp.(*model.ToolcallsStats)
 	fc.Result = res
-	return ec.marshalNToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx, field.Selections, res)
+	return ec.marshalNToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_toolcallsStatsByFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20860,7 +20860,7 @@ func (ec *executionContext) _Query_toolcallsStatsByFunctionForFlow(ctx context.C
 	}
 	res := resTmp.([]*model.FunctionToolcallsStats)
 	fc.Result = res
-	return ec.marshalNFunctionToolcallsStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNFunctionToolcallsStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_toolcallsStatsByFunctionForFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20927,7 +20927,7 @@ func (ec *executionContext) _Query_flowsStatsTotal(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.FlowsStats)
 	fc.Result = res
-	return ec.marshalNFlowsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx, field.Selections, res)
+	return ec.marshalNFlowsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flowsStatsTotal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20981,7 +20981,7 @@ func (ec *executionContext) _Query_flowsStatsByPeriod(ctx context.Context, field
 	}
 	res := resTmp.([]*model.DailyFlowsStats)
 	fc.Result = res
-	return ec.marshalNDailyFlowsStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyFlowsStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNDailyFlowsStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyFlowsStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flowsStatsByPeriod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21042,7 +21042,7 @@ func (ec *executionContext) _Query_flowStatsByFlow(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.FlowStats)
 	fc.Result = res
-	return ec.marshalNFlowStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowStats(ctx, field.Selections, res)
+	return ec.marshalNFlowStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flowStatsByFlow(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21105,7 +21105,7 @@ func (ec *executionContext) _Query_flowsExecutionStatsByPeriod(ctx context.Conte
 	}
 	res := resTmp.([]*model.FlowExecutionStats)
 	fc.Result = res
-	return ec.marshalNFlowExecutionStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowExecutionStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNFlowExecutionStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowExecutionStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flowsExecutionStatsByPeriod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21174,7 +21174,7 @@ func (ec *executionContext) _Query_settings(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.Settings)
 	fc.Result = res
-	return ec.marshalNSettings2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSettings(ctx, field.Selections, res)
+	return ec.marshalNSettings2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSettings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_settings(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21228,7 +21228,7 @@ func (ec *executionContext) _Query_settingsProviders(ctx context.Context, field 
 	}
 	res := resTmp.(*model.ProvidersConfig)
 	fc.Result = res
-	return ec.marshalNProvidersConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvidersConfig(ctx, field.Selections, res)
+	return ec.marshalNProvidersConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvidersConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_settingsProviders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21282,7 +21282,7 @@ func (ec *executionContext) _Query_settingsPrompts(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.PromptsConfig)
 	fc.Result = res
-	return ec.marshalNPromptsConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐPromptsConfig(ctx, field.Selections, res)
+	return ec.marshalNPromptsConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐPromptsConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_settingsPrompts(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21332,7 +21332,7 @@ func (ec *executionContext) _Query_settingsUser(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.UserPreferences)
 	fc.Result = res
-	return ec.marshalNUserPreferences2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx, field.Selections, res)
+	return ec.marshalNUserPreferences2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_settingsUser(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21379,7 +21379,7 @@ func (ec *executionContext) _Query_apiToken(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.APIToken)
 	fc.Result = res
-	return ec.marshalOAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res)
+	return ec.marshalOAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_apiToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21454,7 +21454,7 @@ func (ec *executionContext) _Query_apiTokens(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.APIToken)
 	fc.Result = res
-	return ec.marshalNAPIToken2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPITokenᚄ(ctx, field.Selections, res)
+	return ec.marshalNAPIToken2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPITokenᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_apiTokens(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21515,7 +21515,7 @@ func (ec *executionContext) _Query_flowTemplate(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.FlowTemplate)
 	fc.Result = res
-	return ec.marshalOFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res)
+	return ec.marshalOFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flowTemplate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21584,7 +21584,7 @@ func (ec *executionContext) _Query_flowTemplates(ctx context.Context, field grap
 	}
 	res := resTmp.([]*model.FlowTemplate)
 	fc.Result = res
-	return ec.marshalNFlowTemplate2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplateᚄ(ctx, field.Selections, res)
+	return ec.marshalNFlowTemplate2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplateᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_flowTemplates(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21768,7 +21768,7 @@ func (ec *executionContext) _ReasoningConfig_effort(ctx context.Context, field g
 	}
 	res := resTmp.(*model.ReasoningEffort)
 	fc.Result = res
-	return ec.marshalOReasoningEffort2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx, field.Selections, res)
+	return ec.marshalOReasoningEffort2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ReasoningConfig_effort(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22199,7 +22199,7 @@ func (ec *executionContext) _SearchLog_initiator(ctx context.Context, field grap
 	}
 	res := resTmp.(model.AgentType)
 	fc.Result = res
-	return ec.marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
+	return ec.marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SearchLog_initiator(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22243,7 +22243,7 @@ func (ec *executionContext) _SearchLog_executor(ctx context.Context, field graph
 	}
 	res := resTmp.(model.AgentType)
 	fc.Result = res
-	return ec.marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
+	return ec.marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SearchLog_executor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22773,7 +22773,7 @@ func (ec *executionContext) _Subscription_flowCreated(ctx context.Context, field
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -22847,7 +22847,7 @@ func (ec *executionContext) _Subscription_flowDeleted(ctx context.Context, field
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -22921,7 +22921,7 @@ func (ec *executionContext) _Subscription_flowUpdated(ctx context.Context, field
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -22995,7 +22995,7 @@ func (ec *executionContext) _Subscription_taskCreated(ctx context.Context, field
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNTask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTask(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNTask2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTask(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23084,7 +23084,7 @@ func (ec *executionContext) _Subscription_taskUpdated(ctx context.Context, field
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNTask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTask(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNTask2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTask(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23173,7 +23173,7 @@ func (ec *executionContext) _Subscription_assistantCreated(ctx context.Context, 
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23260,7 +23260,7 @@ func (ec *executionContext) _Subscription_assistantUpdated(ctx context.Context, 
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23347,7 +23347,7 @@ func (ec *executionContext) _Subscription_assistantDeleted(ctx context.Context, 
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23434,7 +23434,7 @@ func (ec *executionContext) _Subscription_screenshotAdded(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNScreenshot2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNScreenshot2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23519,7 +23519,7 @@ func (ec *executionContext) _Subscription_terminalLogAdded(ctx context.Context, 
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNTerminalLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNTerminalLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23606,7 +23606,7 @@ func (ec *executionContext) _Subscription_messageLogAdded(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNMessageLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNMessageLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23697,7 +23697,7 @@ func (ec *executionContext) _Subscription_messageLogUpdated(ctx context.Context,
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNMessageLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNMessageLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23788,7 +23788,7 @@ func (ec *executionContext) _Subscription_agentLogAdded(ctx context.Context, fie
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAgentLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAgentLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23877,7 +23877,7 @@ func (ec *executionContext) _Subscription_searchLogAdded(ctx context.Context, fi
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNSearchLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNSearchLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -23968,7 +23968,7 @@ func (ec *executionContext) _Subscription_vectorStoreLogAdded(ctx context.Contex
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNVectorStoreLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNVectorStoreLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24061,7 +24061,7 @@ func (ec *executionContext) _Subscription_assistantLogAdded(ctx context.Context,
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAssistantLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAssistantLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24152,7 +24152,7 @@ func (ec *executionContext) _Subscription_assistantLogUpdated(ctx context.Contex
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAssistantLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAssistantLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24243,7 +24243,7 @@ func (ec *executionContext) _Subscription_providerCreated(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24315,7 +24315,7 @@ func (ec *executionContext) _Subscription_providerUpdated(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24387,7 +24387,7 @@ func (ec *executionContext) _Subscription_providerDeleted(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24459,7 +24459,7 @@ func (ec *executionContext) _Subscription_apiTokenCreated(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24537,7 +24537,7 @@ func (ec *executionContext) _Subscription_apiTokenUpdated(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24615,7 +24615,7 @@ func (ec *executionContext) _Subscription_apiTokenDeleted(ctx context.Context, f
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24693,7 +24693,7 @@ func (ec *executionContext) _Subscription_settingsUserUpdated(ctx context.Contex
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNUserPreferences2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNUserPreferences2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24757,7 +24757,7 @@ func (ec *executionContext) _Subscription_flowTemplateCreated(ctx context.Contex
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24829,7 +24829,7 @@ func (ec *executionContext) _Subscription_flowTemplateUpdated(ctx context.Contex
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -24901,7 +24901,7 @@ func (ec *executionContext) _Subscription_flowTemplateDeleted(ctx context.Contex
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -25009,7 +25009,7 @@ func (ec *executionContext) _Subtask_status(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(model.StatusType)
 	fc.Result = res
-	return ec.marshalNStatusType2pentagiᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
+	return ec.marshalNStatusType2pentagentxᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Subtask_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25581,7 +25581,7 @@ func (ec *executionContext) _Task_status(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(model.StatusType)
 	fc.Result = res
-	return ec.marshalNStatusType2pentagiᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
+	return ec.marshalNStatusType2pentagentxᚋpkgᚋgraphᚋmodelᚐStatusType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Task_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25754,7 +25754,7 @@ func (ec *executionContext) _Task_subtasks(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.Subtask)
 	fc.Result = res
-	return ec.marshalOSubtask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtaskᚄ(ctx, field.Selections, res)
+	return ec.marshalOSubtask2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtaskᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Task_subtasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26080,7 +26080,7 @@ func (ec *executionContext) _TaskExecutionStats_subtasks(ctx context.Context, fi
 	}
 	res := resTmp.([]*model.SubtaskExecutionStats)
 	fc.Result = res
-	return ec.marshalNSubtaskExecutionStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNSubtaskExecutionStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TaskExecutionStats_subtasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26178,7 +26178,7 @@ func (ec *executionContext) _Terminal_type(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(model.TerminalType)
 	fc.Result = res
-	return ec.marshalNTerminalType2pentagiᚋpkgᚋgraphᚋmodelᚐTerminalType(ctx, field.Selections, res)
+	return ec.marshalNTerminalType2pentagentxᚋpkgᚋgraphᚋmodelᚐTerminalType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Terminal_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26568,7 +26568,7 @@ func (ec *executionContext) _TerminalLog_type(ctx context.Context, field graphql
 	}
 	res := resTmp.(model.TerminalLogType)
 	fc.Result = res
-	return ec.marshalNTerminalLogType2pentagiᚋpkgᚋgraphᚋmodelᚐTerminalLogType(ctx, field.Selections, res)
+	return ec.marshalNTerminalLogType2pentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLogType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TerminalLog_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27134,7 +27134,7 @@ func (ec *executionContext) _ToolsPrompts_getFlowDescription(ctx context.Context
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_getFlowDescription(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27186,7 +27186,7 @@ func (ec *executionContext) _ToolsPrompts_getTaskDescription(ctx context.Context
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_getTaskDescription(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27238,7 +27238,7 @@ func (ec *executionContext) _ToolsPrompts_getExecutionLogs(ctx context.Context, 
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_getExecutionLogs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27290,7 +27290,7 @@ func (ec *executionContext) _ToolsPrompts_getFullExecutionContext(ctx context.Co
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_getFullExecutionContext(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27342,7 +27342,7 @@ func (ec *executionContext) _ToolsPrompts_getShortExecutionContext(ctx context.C
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_getShortExecutionContext(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27394,7 +27394,7 @@ func (ec *executionContext) _ToolsPrompts_chooseDockerImage(ctx context.Context,
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_chooseDockerImage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27446,7 +27446,7 @@ func (ec *executionContext) _ToolsPrompts_chooseUserLanguage(ctx context.Context
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_chooseUserLanguage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27498,7 +27498,7 @@ func (ec *executionContext) _ToolsPrompts_collectToolCallId(ctx context.Context,
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_collectToolCallId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27550,7 +27550,7 @@ func (ec *executionContext) _ToolsPrompts_detectToolCallIdPattern(ctx context.Co
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_detectToolCallIdPattern(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27602,7 +27602,7 @@ func (ec *executionContext) _ToolsPrompts_monitorAgentExecution(ctx context.Cont
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_monitorAgentExecution(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27654,7 +27654,7 @@ func (ec *executionContext) _ToolsPrompts_planAgentTask(ctx context.Context, fie
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_planAgentTask(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27706,7 +27706,7 @@ func (ec *executionContext) _ToolsPrompts_wrapAgentTask(ctx context.Context, fie
 	}
 	res := resTmp.(*model.DefaultPrompt)
 	fc.Result = res
-	return ec.marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
+	return ec.marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ToolsPrompts_wrapAgentTask(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28154,7 +28154,7 @@ func (ec *executionContext) _UserPrompt_type(ctx context.Context, field graphql.
 	}
 	res := resTmp.(model.PromptType)
 	fc.Result = res
-	return ec.marshalNPromptType2pentagiᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, field.Selections, res)
+	return ec.marshalNPromptType2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserPrompt_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28374,7 +28374,7 @@ func (ec *executionContext) _VectorStoreLog_initiator(ctx context.Context, field
 	}
 	res := resTmp.(model.AgentType)
 	fc.Result = res
-	return ec.marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
+	return ec.marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_VectorStoreLog_initiator(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28418,7 +28418,7 @@ func (ec *executionContext) _VectorStoreLog_executor(ctx context.Context, field 
 	}
 	res := resTmp.(model.AgentType)
 	fc.Result = res
-	return ec.marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
+	return ec.marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_VectorStoreLog_executor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28550,7 +28550,7 @@ func (ec *executionContext) _VectorStoreLog_action(ctx context.Context, field gr
 	}
 	res := resTmp.(model.VectorStoreAction)
 	fc.Result = res
-	return ec.marshalNVectorStoreAction2pentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreAction(ctx, field.Selections, res)
+	return ec.marshalNVectorStoreAction2pentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreAction(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_VectorStoreLog_action(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30639,14 +30639,14 @@ func (ec *executionContext) unmarshalInputAgentConfigInput(ctx context.Context, 
 			it.PresencePenalty = data
 		case "reasoning":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasoning"))
-			data, err := ec.unmarshalOReasoningConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx, v)
+			data, err := ec.unmarshalOReasoningConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Reasoning = data
 		case "price":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("price"))
-			data, err := ec.unmarshalOModelPriceInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx, v)
+			data, err := ec.unmarshalOModelPriceInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -30673,91 +30673,91 @@ func (ec *executionContext) unmarshalInputAgentsConfigInput(ctx context.Context,
 		switch k {
 		case "simple":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("simple"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Simple = data
 		case "simpleJson":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("simpleJson"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SimpleJSON = data
 		case "primaryAgent":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("primaryAgent"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PrimaryAgent = data
 		case "assistant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("assistant"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Assistant = data
 		case "generator":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("generator"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Generator = data
 		case "refiner":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refiner"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Refiner = data
 		case "adviser":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("adviser"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Adviser = data
 		case "reflector":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reflector"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Reflector = data
 		case "searcher":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("searcher"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Searcher = data
 		case "enricher":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("enricher"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Enricher = data
 		case "coder":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("coder"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Coder = data
 		case "installer":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("installer"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Installer = data
 		case "pentester":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pentester"))
-			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
+			data, err := ec.unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -30900,7 +30900,7 @@ func (ec *executionContext) unmarshalInputReasoningConfigInput(ctx context.Conte
 		switch k {
 		case "effort":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("effort"))
-			data, err := ec.unmarshalOReasoningEffort2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx, v)
+			data, err := ec.unmarshalOReasoningEffort2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -30941,7 +30941,7 @@ func (ec *executionContext) unmarshalInputUpdateAPITokenInput(ctx context.Contex
 			it.Name = data
 		case "status":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			data, err := ec.unmarshalOTokenStatus2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx, v)
+			data, err := ec.unmarshalOTokenStatus2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35775,11 +35775,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAPIToken2pentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v model.APIToken) graphql.Marshaler {
+func (ec *executionContext) marshalNAPIToken2pentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v model.APIToken) graphql.Marshaler {
 	return ec._APIToken(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAPIToken2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPITokenᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.APIToken) graphql.Marshaler {
+func (ec *executionContext) marshalNAPIToken2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPITokenᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.APIToken) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -35803,7 +35803,7 @@ func (ec *executionContext) marshalNAPIToken2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, sel, v[i])
+			ret[i] = ec.marshalNAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -35823,7 +35823,7 @@ func (ec *executionContext) marshalNAPIToken2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ret
 }
 
-func (ec *executionContext) marshalNAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v *model.APIToken) graphql.Marshaler {
+func (ec *executionContext) marshalNAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v *model.APIToken) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35833,11 +35833,11 @@ func (ec *executionContext) marshalNAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐ
 	return ec._APIToken(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAPITokenWithSecret2pentagiᚋpkgᚋgraphᚋmodelᚐAPITokenWithSecret(ctx context.Context, sel ast.SelectionSet, v model.APITokenWithSecret) graphql.Marshaler {
+func (ec *executionContext) marshalNAPITokenWithSecret2pentagentxᚋpkgᚋgraphᚋmodelᚐAPITokenWithSecret(ctx context.Context, sel ast.SelectionSet, v model.APITokenWithSecret) graphql.Marshaler {
 	return ec._APITokenWithSecret(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAPITokenWithSecret2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPITokenWithSecret(ctx context.Context, sel ast.SelectionSet, v *model.APITokenWithSecret) graphql.Marshaler {
+func (ec *executionContext) marshalNAPITokenWithSecret2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPITokenWithSecret(ctx context.Context, sel ast.SelectionSet, v *model.APITokenWithSecret) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35847,7 +35847,7 @@ func (ec *executionContext) marshalNAPITokenWithSecret2ᚖpentagiᚋpkgᚋgraph�
 	return ec._APITokenWithSecret(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx context.Context, sel ast.SelectionSet, v *model.AgentConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx context.Context, sel ast.SelectionSet, v *model.AgentConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35857,31 +35857,31 @@ func (ec *executionContext) marshalNAgentConfig2ᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ec._AgentConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAgentConfigInput2pentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx context.Context, v interface{}) (model.AgentConfig, error) {
+func (ec *executionContext) unmarshalNAgentConfigInput2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx context.Context, v interface{}) (model.AgentConfig, error) {
 	res, err := ec.unmarshalInputAgentConfigInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNAgentConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx context.Context, v interface{}) (*model.AgentConfig, error) {
+func (ec *executionContext) unmarshalNAgentConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfig(ctx context.Context, v interface{}) (*model.AgentConfig, error) {
 	res, err := ec.unmarshalInputAgentConfigInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNAgentConfigType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentConfigType(ctx context.Context, v interface{}) (model.AgentConfigType, error) {
+func (ec *executionContext) unmarshalNAgentConfigType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfigType(ctx context.Context, v interface{}) (model.AgentConfigType, error) {
 	var res model.AgentConfigType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAgentConfigType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentConfigType(ctx context.Context, sel ast.SelectionSet, v model.AgentConfigType) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentConfigType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentConfigType(ctx context.Context, sel ast.SelectionSet, v model.AgentConfigType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNAgentLog2pentagiᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx context.Context, sel ast.SelectionSet, v model.AgentLog) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentLog2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx context.Context, sel ast.SelectionSet, v model.AgentLog) graphql.Marshaler {
 	return ec._AgentLog(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAgentLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx context.Context, sel ast.SelectionSet, v *model.AgentLog) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx context.Context, sel ast.SelectionSet, v *model.AgentLog) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35891,7 +35891,7 @@ func (ec *executionContext) marshalNAgentLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐ
 	return ec._AgentLog(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAgentPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx context.Context, sel ast.SelectionSet, v *model.AgentPrompt) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompt(ctx context.Context, sel ast.SelectionSet, v *model.AgentPrompt) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35901,7 +35901,7 @@ func (ec *executionContext) marshalNAgentPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ec._AgentPrompt(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx context.Context, sel ast.SelectionSet, v *model.AgentPrompts) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentPrompts(ctx context.Context, sel ast.SelectionSet, v *model.AgentPrompts) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35911,11 +35911,11 @@ func (ec *executionContext) marshalNAgentPrompts2ᚖpentagiᚋpkgᚋgraphᚋmode
 	return ec._AgentPrompts(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAgentTestResult2pentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx context.Context, sel ast.SelectionSet, v model.AgentTestResult) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentTestResult2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx context.Context, sel ast.SelectionSet, v model.AgentTestResult) graphql.Marshaler {
 	return ec._AgentTestResult(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx context.Context, sel ast.SelectionSet, v *model.AgentTestResult) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTestResult(ctx context.Context, sel ast.SelectionSet, v *model.AgentTestResult) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35925,17 +35925,17 @@ func (ec *executionContext) marshalNAgentTestResult2ᚖpentagiᚋpkgᚋgraphᚋm
 	return ec._AgentTestResult(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx context.Context, v interface{}) (model.AgentType, error) {
+func (ec *executionContext) unmarshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx context.Context, v interface{}) (model.AgentType, error) {
 	var res model.AgentType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAgentType2pentagiᚋpkgᚋgraphᚋmodelᚐAgentType(ctx context.Context, sel ast.SelectionSet, v model.AgentType) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentType2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentType(ctx context.Context, sel ast.SelectionSet, v model.AgentType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNAgentTypeUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AgentTypeUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentTypeUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AgentTypeUsageStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -35959,7 +35959,7 @@ func (ec *executionContext) marshalNAgentTypeUsageStats2ᚕᚖpentagiᚋpkgᚋgr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAgentTypeUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNAgentTypeUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -35979,7 +35979,7 @@ func (ec *executionContext) marshalNAgentTypeUsageStats2ᚕᚖpentagiᚋpkgᚋgr
 	return ret
 }
 
-func (ec *executionContext) marshalNAgentTypeUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.AgentTypeUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentTypeUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentTypeUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.AgentTypeUsageStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35989,7 +35989,7 @@ func (ec *executionContext) marshalNAgentTypeUsageStats2ᚖpentagiᚋpkgᚋgraph
 	return ec._AgentTypeUsageStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAgentsConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx context.Context, sel ast.SelectionSet, v *model.AgentsConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentsConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx context.Context, sel ast.SelectionSet, v *model.AgentsConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -35999,12 +35999,12 @@ func (ec *executionContext) marshalNAgentsConfig2ᚖpentagiᚋpkgᚋgraphᚋmode
 	return ec._AgentsConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAgentsConfigInput2pentagiᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx context.Context, v interface{}) (model.AgentsConfig, error) {
+func (ec *executionContext) unmarshalNAgentsConfigInput2pentagentxᚋpkgᚋgraphᚋmodelᚐAgentsConfig(ctx context.Context, v interface{}) (model.AgentsConfig, error) {
 	res, err := ec.unmarshalInputAgentsConfigInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAgentsPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentsPrompts(ctx context.Context, sel ast.SelectionSet, v *model.AgentsPrompts) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentsPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentsPrompts(ctx context.Context, sel ast.SelectionSet, v *model.AgentsPrompts) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36014,11 +36014,11 @@ func (ec *executionContext) marshalNAgentsPrompts2ᚖpentagiᚋpkgᚋgraphᚋmod
 	return ec._AgentsPrompts(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAssistant2pentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx context.Context, sel ast.SelectionSet, v model.Assistant) graphql.Marshaler {
+func (ec *executionContext) marshalNAssistant2pentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx context.Context, sel ast.SelectionSet, v model.Assistant) graphql.Marshaler {
 	return ec._Assistant(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx context.Context, sel ast.SelectionSet, v *model.Assistant) graphql.Marshaler {
+func (ec *executionContext) marshalNAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx context.Context, sel ast.SelectionSet, v *model.Assistant) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36028,11 +36028,11 @@ func (ec *executionContext) marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._Assistant(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAssistantLog2pentagiᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx context.Context, sel ast.SelectionSet, v model.AssistantLog) graphql.Marshaler {
+func (ec *executionContext) marshalNAssistantLog2pentagentxᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx context.Context, sel ast.SelectionSet, v model.AssistantLog) graphql.Marshaler {
 	return ec._AssistantLog(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAssistantLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx context.Context, sel ast.SelectionSet, v *model.AssistantLog) graphql.Marshaler {
+func (ec *executionContext) marshalNAssistantLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx context.Context, sel ast.SelectionSet, v *model.AssistantLog) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36057,17 +36057,17 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNCreateAPITokenInput2pentagiᚋpkgᚋgraphᚋmodelᚐCreateAPITokenInput(ctx context.Context, v interface{}) (model.CreateAPITokenInput, error) {
+func (ec *executionContext) unmarshalNCreateAPITokenInput2pentagentxᚋpkgᚋgraphᚋmodelᚐCreateAPITokenInput(ctx context.Context, v interface{}) (model.CreateAPITokenInput, error) {
 	res, err := ec.unmarshalInputCreateAPITokenInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreateFlowTemplateInput2pentagiᚋpkgᚋgraphᚋmodelᚐCreateFlowTemplateInput(ctx context.Context, v interface{}) (model.CreateFlowTemplateInput, error) {
+func (ec *executionContext) unmarshalNCreateFlowTemplateInput2pentagentxᚋpkgᚋgraphᚋmodelᚐCreateFlowTemplateInput(ctx context.Context, v interface{}) (model.CreateFlowTemplateInput, error) {
 	res, err := ec.unmarshalInputCreateFlowTemplateInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNDailyFlowsStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyFlowsStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.DailyFlowsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNDailyFlowsStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyFlowsStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.DailyFlowsStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36091,7 +36091,7 @@ func (ec *executionContext) marshalNDailyFlowsStats2ᚕᚖpentagiᚋpkgᚋgraph�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNDailyFlowsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyFlowsStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNDailyFlowsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyFlowsStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36111,7 +36111,7 @@ func (ec *executionContext) marshalNDailyFlowsStats2ᚕᚖpentagiᚋpkgᚋgraph�
 	return ret
 }
 
-func (ec *executionContext) marshalNDailyFlowsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyFlowsStats(ctx context.Context, sel ast.SelectionSet, v *model.DailyFlowsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNDailyFlowsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyFlowsStats(ctx context.Context, sel ast.SelectionSet, v *model.DailyFlowsStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36121,7 +36121,7 @@ func (ec *executionContext) marshalNDailyFlowsStats2ᚖpentagiᚋpkgᚋgraphᚋm
 	return ec._DailyFlowsStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNDailyToolcallsStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.DailyToolcallsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNDailyToolcallsStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.DailyToolcallsStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36145,7 +36145,7 @@ func (ec *executionContext) marshalNDailyToolcallsStats2ᚕᚖpentagiᚋpkgᚋgr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNDailyToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNDailyToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36165,7 +36165,7 @@ func (ec *executionContext) marshalNDailyToolcallsStats2ᚕᚖpentagiᚋpkgᚋgr
 	return ret
 }
 
-func (ec *executionContext) marshalNDailyToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStats(ctx context.Context, sel ast.SelectionSet, v *model.DailyToolcallsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNDailyToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyToolcallsStats(ctx context.Context, sel ast.SelectionSet, v *model.DailyToolcallsStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36175,7 +36175,7 @@ func (ec *executionContext) marshalNDailyToolcallsStats2ᚖpentagiᚋpkgᚋgraph
 	return ec._DailyToolcallsStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNDailyUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.DailyUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNDailyUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.DailyUsageStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36199,7 +36199,7 @@ func (ec *executionContext) marshalNDailyUsageStats2ᚕᚖpentagiᚋpkgᚋgraph�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNDailyUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyUsageStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNDailyUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyUsageStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36219,7 +36219,7 @@ func (ec *executionContext) marshalNDailyUsageStats2ᚕᚖpentagiᚋpkgᚋgraph�
 	return ret
 }
 
-func (ec *executionContext) marshalNDailyUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDailyUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.DailyUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNDailyUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDailyUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.DailyUsageStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36229,7 +36229,7 @@ func (ec *executionContext) marshalNDailyUsageStats2ᚖpentagiᚋpkgᚋgraphᚋm
 	return ec._DailyUsageStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx context.Context, sel ast.SelectionSet, v *model.DefaultPrompt) graphql.Marshaler {
+func (ec *executionContext) marshalNDefaultPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompt(ctx context.Context, sel ast.SelectionSet, v *model.DefaultPrompt) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36239,7 +36239,7 @@ func (ec *executionContext) marshalNDefaultPrompt2ᚖpentagiᚋpkgᚋgraphᚋmod
 	return ec._DefaultPrompt(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNDefaultPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultPrompts(ctx context.Context, sel ast.SelectionSet, v *model.DefaultPrompts) graphql.Marshaler {
+func (ec *executionContext) marshalNDefaultPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultPrompts(ctx context.Context, sel ast.SelectionSet, v *model.DefaultPrompts) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36249,7 +36249,7 @@ func (ec *executionContext) marshalNDefaultPrompts2ᚖpentagiᚋpkgᚋgraphᚋmo
 	return ec._DefaultPrompts(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNDefaultProvidersConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐDefaultProvidersConfig(ctx context.Context, sel ast.SelectionSet, v *model.DefaultProvidersConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNDefaultProvidersConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐDefaultProvidersConfig(ctx context.Context, sel ast.SelectionSet, v *model.DefaultProvidersConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36274,11 +36274,11 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) marshalNFlow2pentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx context.Context, sel ast.SelectionSet, v model.Flow) graphql.Marshaler {
+func (ec *executionContext) marshalNFlow2pentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx context.Context, sel ast.SelectionSet, v model.Flow) graphql.Marshaler {
 	return ec._Flow(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx context.Context, sel ast.SelectionSet, v *model.Flow) graphql.Marshaler {
+func (ec *executionContext) marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx context.Context, sel ast.SelectionSet, v *model.Flow) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36288,11 +36288,11 @@ func (ec *executionContext) marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow
 	return ec._Flow(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlowAssistant2pentagiᚋpkgᚋgraphᚋmodelᚐFlowAssistant(ctx context.Context, sel ast.SelectionSet, v model.FlowAssistant) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowAssistant2pentagentxᚋpkgᚋgraphᚋmodelᚐFlowAssistant(ctx context.Context, sel ast.SelectionSet, v model.FlowAssistant) graphql.Marshaler {
 	return ec._FlowAssistant(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlowAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowAssistant(ctx context.Context, sel ast.SelectionSet, v *model.FlowAssistant) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowAssistant(ctx context.Context, sel ast.SelectionSet, v *model.FlowAssistant) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36302,7 +36302,7 @@ func (ec *executionContext) marshalNFlowAssistant2ᚖpentagiᚋpkgᚋgraphᚋmod
 	return ec._FlowAssistant(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlowExecutionStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowExecutionStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.FlowExecutionStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowExecutionStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowExecutionStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.FlowExecutionStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36326,7 +36326,7 @@ func (ec *executionContext) marshalNFlowExecutionStats2ᚕᚖpentagiᚋpkgᚋgra
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFlowExecutionStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowExecutionStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNFlowExecutionStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowExecutionStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36346,7 +36346,7 @@ func (ec *executionContext) marshalNFlowExecutionStats2ᚕᚖpentagiᚋpkgᚋgra
 	return ret
 }
 
-func (ec *executionContext) marshalNFlowExecutionStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowExecutionStats(ctx context.Context, sel ast.SelectionSet, v *model.FlowExecutionStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowExecutionStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowExecutionStats(ctx context.Context, sel ast.SelectionSet, v *model.FlowExecutionStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36356,11 +36356,11 @@ func (ec *executionContext) marshalNFlowExecutionStats2ᚖpentagiᚋpkgᚋgraph�
 	return ec._FlowExecutionStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlowStats2pentagiᚋpkgᚋgraphᚋmodelᚐFlowStats(ctx context.Context, sel ast.SelectionSet, v model.FlowStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowStats2pentagentxᚋpkgᚋgraphᚋmodelᚐFlowStats(ctx context.Context, sel ast.SelectionSet, v model.FlowStats) graphql.Marshaler {
 	return ec._FlowStats(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlowStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowStats(ctx context.Context, sel ast.SelectionSet, v *model.FlowStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowStats(ctx context.Context, sel ast.SelectionSet, v *model.FlowStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36370,11 +36370,11 @@ func (ec *executionContext) marshalNFlowStats2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._FlowStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlowTemplate2pentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx context.Context, sel ast.SelectionSet, v model.FlowTemplate) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowTemplate2pentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx context.Context, sel ast.SelectionSet, v model.FlowTemplate) graphql.Marshaler {
 	return ec._FlowTemplate(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlowTemplate2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplateᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.FlowTemplate) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowTemplate2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplateᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.FlowTemplate) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36398,7 +36398,7 @@ func (ec *executionContext) marshalNFlowTemplate2ᚕᚖpentagiᚋpkgᚋgraphᚋm
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, sel, v[i])
+			ret[i] = ec.marshalNFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36418,7 +36418,7 @@ func (ec *executionContext) marshalNFlowTemplate2ᚕᚖpentagiᚋpkgᚋgraphᚋm
 	return ret
 }
 
-func (ec *executionContext) marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx context.Context, sel ast.SelectionSet, v *model.FlowTemplate) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx context.Context, sel ast.SelectionSet, v *model.FlowTemplate) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36428,11 +36428,11 @@ func (ec *executionContext) marshalNFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmode
 	return ec._FlowTemplate(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFlowsStats2pentagiᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx context.Context, sel ast.SelectionSet, v model.FlowsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowsStats2pentagentxᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx context.Context, sel ast.SelectionSet, v model.FlowsStats) graphql.Marshaler {
 	return ec._FlowsStats(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFlowsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx context.Context, sel ast.SelectionSet, v *model.FlowsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFlowsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowsStats(ctx context.Context, sel ast.SelectionSet, v *model.FlowsStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36442,7 +36442,7 @@ func (ec *executionContext) marshalNFlowsStats2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._FlowsStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNFunctionToolcallsStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.FunctionToolcallsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFunctionToolcallsStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.FunctionToolcallsStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36466,7 +36466,7 @@ func (ec *executionContext) marshalNFunctionToolcallsStats2ᚕᚖpentagiᚋpkg�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFunctionToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNFunctionToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36486,7 +36486,7 @@ func (ec *executionContext) marshalNFunctionToolcallsStats2ᚕᚖpentagiᚋpkg�
 	return ret
 }
 
-func (ec *executionContext) marshalNFunctionToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStats(ctx context.Context, sel ast.SelectionSet, v *model.FunctionToolcallsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNFunctionToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFunctionToolcallsStats(ctx context.Context, sel ast.SelectionSet, v *model.FunctionToolcallsStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36558,11 +36558,11 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) marshalNMessageLog2pentagiᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx context.Context, sel ast.SelectionSet, v model.MessageLog) graphql.Marshaler {
+func (ec *executionContext) marshalNMessageLog2pentagentxᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx context.Context, sel ast.SelectionSet, v model.MessageLog) graphql.Marshaler {
 	return ec._MessageLog(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMessageLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx context.Context, sel ast.SelectionSet, v *model.MessageLog) graphql.Marshaler {
+func (ec *executionContext) marshalNMessageLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx context.Context, sel ast.SelectionSet, v *model.MessageLog) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36572,17 +36572,17 @@ func (ec *executionContext) marshalNMessageLog2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._MessageLog(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMessageLogType2pentagiᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx context.Context, v interface{}) (model.MessageLogType, error) {
+func (ec *executionContext) unmarshalNMessageLogType2pentagentxᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx context.Context, v interface{}) (model.MessageLogType, error) {
 	var res model.MessageLogType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNMessageLogType2pentagiᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx context.Context, sel ast.SelectionSet, v model.MessageLogType) graphql.Marshaler {
+func (ec *executionContext) marshalNMessageLogType2pentagentxᚋpkgᚋgraphᚋmodelᚐMessageLogType(ctx context.Context, sel ast.SelectionSet, v model.MessageLogType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ModelConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ModelConfig) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36606,7 +36606,7 @@ func (ec *executionContext) marshalNModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmo
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNModelConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfig(ctx, sel, v[i])
+			ret[i] = ec.marshalNModelConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfig(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36626,7 +36626,7 @@ func (ec *executionContext) marshalNModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmo
 	return ret
 }
 
-func (ec *executionContext) marshalNModelConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfig(ctx context.Context, sel ast.SelectionSet, v *model.ModelConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNModelConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfig(ctx context.Context, sel ast.SelectionSet, v *model.ModelConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36636,7 +36636,7 @@ func (ec *executionContext) marshalNModelConfig2ᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ec._ModelConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNModelUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ModelUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNModelUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ModelUsageStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36660,7 +36660,7 @@ func (ec *executionContext) marshalNModelUsageStats2ᚕᚖpentagiᚋpkgᚋgraph�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNModelUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelUsageStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNModelUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelUsageStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36680,7 +36680,7 @@ func (ec *executionContext) marshalNModelUsageStats2ᚕᚖpentagiᚋpkgᚋgraph�
 	return ret
 }
 
-func (ec *executionContext) marshalNModelUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.ModelUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNModelUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.ModelUsageStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36690,21 +36690,21 @@ func (ec *executionContext) marshalNModelUsageStats2ᚖpentagiᚋpkgᚋgraphᚋm
 	return ec._ModelUsageStats(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNPromptType2pentagiᚋpkgᚋgraphᚋmodelᚐPromptType(ctx context.Context, v interface{}) (model.PromptType, error) {
+func (ec *executionContext) unmarshalNPromptType2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptType(ctx context.Context, v interface{}) (model.PromptType, error) {
 	var res model.PromptType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPromptType2pentagiᚋpkgᚋgraphᚋmodelᚐPromptType(ctx context.Context, sel ast.SelectionSet, v model.PromptType) graphql.Marshaler {
+func (ec *executionContext) marshalNPromptType2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptType(ctx context.Context, sel ast.SelectionSet, v model.PromptType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNPromptValidationResult2pentagiᚋpkgᚋgraphᚋmodelᚐPromptValidationResult(ctx context.Context, sel ast.SelectionSet, v model.PromptValidationResult) graphql.Marshaler {
+func (ec *executionContext) marshalNPromptValidationResult2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptValidationResult(ctx context.Context, sel ast.SelectionSet, v model.PromptValidationResult) graphql.Marshaler {
 	return ec._PromptValidationResult(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPromptValidationResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐPromptValidationResult(ctx context.Context, sel ast.SelectionSet, v *model.PromptValidationResult) graphql.Marshaler {
+func (ec *executionContext) marshalNPromptValidationResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐPromptValidationResult(ctx context.Context, sel ast.SelectionSet, v *model.PromptValidationResult) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36714,11 +36714,11 @@ func (ec *executionContext) marshalNPromptValidationResult2ᚖpentagiᚋpkgᚋgr
 	return ec._PromptValidationResult(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPromptsConfig2pentagiᚋpkgᚋgraphᚋmodelᚐPromptsConfig(ctx context.Context, sel ast.SelectionSet, v model.PromptsConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNPromptsConfig2pentagentxᚋpkgᚋgraphᚋmodelᚐPromptsConfig(ctx context.Context, sel ast.SelectionSet, v model.PromptsConfig) graphql.Marshaler {
 	return ec._PromptsConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPromptsConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐPromptsConfig(ctx context.Context, sel ast.SelectionSet, v *model.PromptsConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNPromptsConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐPromptsConfig(ctx context.Context, sel ast.SelectionSet, v *model.PromptsConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36728,7 +36728,7 @@ func (ec *executionContext) marshalNPromptsConfig2ᚖpentagiᚋpkgᚋgraphᚋmod
 	return ec._PromptsConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProvider2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Provider) graphql.Marshaler {
+func (ec *executionContext) marshalNProvider2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Provider) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36752,7 +36752,7 @@ func (ec *executionContext) marshalNProvider2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNProvider2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvider(ctx, sel, v[i])
+			ret[i] = ec.marshalNProvider2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvider(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36772,7 +36772,7 @@ func (ec *executionContext) marshalNProvider2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ret
 }
 
-func (ec *executionContext) marshalNProvider2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvider(ctx context.Context, sel ast.SelectionSet, v *model.Provider) graphql.Marshaler {
+func (ec *executionContext) marshalNProvider2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvider(ctx context.Context, sel ast.SelectionSet, v *model.Provider) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36782,11 +36782,11 @@ func (ec *executionContext) marshalNProvider2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐ
 	return ec._Provider(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProviderConfig2pentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx context.Context, sel ast.SelectionSet, v model.ProviderConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNProviderConfig2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx context.Context, sel ast.SelectionSet, v model.ProviderConfig) graphql.Marshaler {
 	return ec._ProviderConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx context.Context, sel ast.SelectionSet, v *model.ProviderConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx context.Context, sel ast.SelectionSet, v *model.ProviderConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36796,11 +36796,11 @@ func (ec *executionContext) marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmo
 	return ec._ProviderConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProviderTestResult2pentagiᚋpkgᚋgraphᚋmodelᚐProviderTestResult(ctx context.Context, sel ast.SelectionSet, v model.ProviderTestResult) graphql.Marshaler {
+func (ec *executionContext) marshalNProviderTestResult2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderTestResult(ctx context.Context, sel ast.SelectionSet, v model.ProviderTestResult) graphql.Marshaler {
 	return ec._ProviderTestResult(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProviderTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderTestResult(ctx context.Context, sel ast.SelectionSet, v *model.ProviderTestResult) graphql.Marshaler {
+func (ec *executionContext) marshalNProviderTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderTestResult(ctx context.Context, sel ast.SelectionSet, v *model.ProviderTestResult) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36810,17 +36810,17 @@ func (ec *executionContext) marshalNProviderTestResult2ᚖpentagiᚋpkgᚋgraph�
 	return ec._ProviderTestResult(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNProviderType2pentagiᚋpkgᚋgraphᚋmodelᚐProviderType(ctx context.Context, v interface{}) (model.ProviderType, error) {
+func (ec *executionContext) unmarshalNProviderType2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderType(ctx context.Context, v interface{}) (model.ProviderType, error) {
 	var res model.ProviderType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNProviderType2pentagiᚋpkgᚋgraphᚋmodelᚐProviderType(ctx context.Context, sel ast.SelectionSet, v model.ProviderType) graphql.Marshaler {
+func (ec *executionContext) marshalNProviderType2pentagentxᚋpkgᚋgraphᚋmodelᚐProviderType(ctx context.Context, sel ast.SelectionSet, v model.ProviderType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNProviderUsageStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ProviderUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNProviderUsageStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderUsageStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ProviderUsageStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -36844,7 +36844,7 @@ func (ec *executionContext) marshalNProviderUsageStats2ᚕᚖpentagiᚋpkgᚋgra
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNProviderUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderUsageStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNProviderUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderUsageStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -36864,7 +36864,7 @@ func (ec *executionContext) marshalNProviderUsageStats2ᚕᚖpentagiᚋpkgᚋgra
 	return ret
 }
 
-func (ec *executionContext) marshalNProviderUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.ProviderUsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNProviderUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.ProviderUsageStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36874,11 +36874,11 @@ func (ec *executionContext) marshalNProviderUsageStats2ᚖpentagiᚋpkgᚋgraph�
 	return ec._ProviderUsageStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProvidersConfig2pentagiᚋpkgᚋgraphᚋmodelᚐProvidersConfig(ctx context.Context, sel ast.SelectionSet, v model.ProvidersConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNProvidersConfig2pentagentxᚋpkgᚋgraphᚋmodelᚐProvidersConfig(ctx context.Context, sel ast.SelectionSet, v model.ProvidersConfig) graphql.Marshaler {
 	return ec._ProvidersConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProvidersConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvidersConfig(ctx context.Context, sel ast.SelectionSet, v *model.ProvidersConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNProvidersConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvidersConfig(ctx context.Context, sel ast.SelectionSet, v *model.ProvidersConfig) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36888,7 +36888,7 @@ func (ec *executionContext) marshalNProvidersConfig2ᚖpentagiᚋpkgᚋgraphᚋm
 	return ec._ProvidersConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProvidersModelsList2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvidersModelsList(ctx context.Context, sel ast.SelectionSet, v *model.ProvidersModelsList) graphql.Marshaler {
+func (ec *executionContext) marshalNProvidersModelsList2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvidersModelsList(ctx context.Context, sel ast.SelectionSet, v *model.ProvidersModelsList) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36898,7 +36898,7 @@ func (ec *executionContext) marshalNProvidersModelsList2ᚖpentagiᚋpkgᚋgraph
 	return ec._ProvidersModelsList(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProvidersReadinessStatus2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProvidersReadinessStatus(ctx context.Context, sel ast.SelectionSet, v *model.ProvidersReadinessStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNProvidersReadinessStatus2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProvidersReadinessStatus(ctx context.Context, sel ast.SelectionSet, v *model.ProvidersReadinessStatus) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36908,31 +36908,31 @@ func (ec *executionContext) marshalNProvidersReadinessStatus2ᚖpentagiᚋpkgᚋ
 	return ec._ProvidersReadinessStatus(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNResultFormat2pentagiᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx context.Context, v interface{}) (model.ResultFormat, error) {
+func (ec *executionContext) unmarshalNResultFormat2pentagentxᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx context.Context, v interface{}) (model.ResultFormat, error) {
 	var res model.ResultFormat
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNResultFormat2pentagiᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx context.Context, sel ast.SelectionSet, v model.ResultFormat) graphql.Marshaler {
+func (ec *executionContext) marshalNResultFormat2pentagentxᚋpkgᚋgraphᚋmodelᚐResultFormat(ctx context.Context, sel ast.SelectionSet, v model.ResultFormat) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx context.Context, v interface{}) (model.ResultType, error) {
+func (ec *executionContext) unmarshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx context.Context, v interface{}) (model.ResultType, error) {
 	var res model.ResultType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx context.Context, sel ast.SelectionSet, v model.ResultType) graphql.Marshaler {
+func (ec *executionContext) marshalNResultType2pentagentxᚋpkgᚋgraphᚋmodelᚐResultType(ctx context.Context, sel ast.SelectionSet, v model.ResultType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNScreenshot2pentagiᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx context.Context, sel ast.SelectionSet, v model.Screenshot) graphql.Marshaler {
+func (ec *executionContext) marshalNScreenshot2pentagentxᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx context.Context, sel ast.SelectionSet, v model.Screenshot) graphql.Marshaler {
 	return ec._Screenshot(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNScreenshot2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx context.Context, sel ast.SelectionSet, v *model.Screenshot) graphql.Marshaler {
+func (ec *executionContext) marshalNScreenshot2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx context.Context, sel ast.SelectionSet, v *model.Screenshot) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36942,11 +36942,11 @@ func (ec *executionContext) marshalNScreenshot2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._Screenshot(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSearchLog2pentagiᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx context.Context, sel ast.SelectionSet, v model.SearchLog) graphql.Marshaler {
+func (ec *executionContext) marshalNSearchLog2pentagentxᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx context.Context, sel ast.SelectionSet, v model.SearchLog) graphql.Marshaler {
 	return ec._SearchLog(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSearchLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx context.Context, sel ast.SelectionSet, v *model.SearchLog) graphql.Marshaler {
+func (ec *executionContext) marshalNSearchLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx context.Context, sel ast.SelectionSet, v *model.SearchLog) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36956,11 +36956,11 @@ func (ec *executionContext) marshalNSearchLog2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._SearchLog(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSettings2pentagiᚋpkgᚋgraphᚋmodelᚐSettings(ctx context.Context, sel ast.SelectionSet, v model.Settings) graphql.Marshaler {
+func (ec *executionContext) marshalNSettings2pentagentxᚋpkgᚋgraphᚋmodelᚐSettings(ctx context.Context, sel ast.SelectionSet, v model.Settings) graphql.Marshaler {
 	return ec._Settings(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSettings2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSettings(ctx context.Context, sel ast.SelectionSet, v *model.Settings) graphql.Marshaler {
+func (ec *executionContext) marshalNSettings2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSettings(ctx context.Context, sel ast.SelectionSet, v *model.Settings) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -36970,13 +36970,13 @@ func (ec *executionContext) marshalNSettings2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐ
 	return ec._Settings(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNStatusType2pentagiᚋpkgᚋgraphᚋmodelᚐStatusType(ctx context.Context, v interface{}) (model.StatusType, error) {
+func (ec *executionContext) unmarshalNStatusType2pentagentxᚋpkgᚋgraphᚋmodelᚐStatusType(ctx context.Context, v interface{}) (model.StatusType, error) {
 	var res model.StatusType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNStatusType2pentagiᚋpkgᚋgraphᚋmodelᚐStatusType(ctx context.Context, sel ast.SelectionSet, v model.StatusType) graphql.Marshaler {
+func (ec *executionContext) marshalNStatusType2pentagentxᚋpkgᚋgraphᚋmodelᚐStatusType(ctx context.Context, sel ast.SelectionSet, v model.StatusType) graphql.Marshaler {
 	return v
 }
 
@@ -37027,7 +37027,7 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) marshalNSubtask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtask(ctx context.Context, sel ast.SelectionSet, v *model.Subtask) graphql.Marshaler {
+func (ec *executionContext) marshalNSubtask2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtask(ctx context.Context, sel ast.SelectionSet, v *model.Subtask) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37037,7 +37037,7 @@ func (ec *executionContext) marshalNSubtask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐS
 	return ec._Subtask(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSubtaskExecutionStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SubtaskExecutionStats) graphql.Marshaler {
+func (ec *executionContext) marshalNSubtaskExecutionStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SubtaskExecutionStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -37061,7 +37061,7 @@ func (ec *executionContext) marshalNSubtaskExecutionStats2ᚕᚖpentagiᚋpkgᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNSubtaskExecutionStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNSubtaskExecutionStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37081,7 +37081,7 @@ func (ec *executionContext) marshalNSubtaskExecutionStats2ᚕᚖpentagiᚋpkgᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNSubtaskExecutionStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStats(ctx context.Context, sel ast.SelectionSet, v *model.SubtaskExecutionStats) graphql.Marshaler {
+func (ec *executionContext) marshalNSubtaskExecutionStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtaskExecutionStats(ctx context.Context, sel ast.SelectionSet, v *model.SubtaskExecutionStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37091,11 +37091,11 @@ func (ec *executionContext) marshalNSubtaskExecutionStats2ᚖpentagiᚋpkgᚋgra
 	return ec._SubtaskExecutionStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTask2pentagiᚋpkgᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2pentagentxᚋpkgᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
 	return ec._Task(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37105,7 +37105,7 @@ func (ec *executionContext) marshalNTask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTask
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTaskExecutionStats2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTaskExecutionStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskExecutionStats) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskExecutionStats2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTaskExecutionStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskExecutionStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -37129,7 +37129,7 @@ func (ec *executionContext) marshalNTaskExecutionStats2ᚕᚖpentagiᚋpkgᚋgra
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTaskExecutionStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTaskExecutionStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNTaskExecutionStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTaskExecutionStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37149,7 +37149,7 @@ func (ec *executionContext) marshalNTaskExecutionStats2ᚕᚖpentagiᚋpkgᚋgra
 	return ret
 }
 
-func (ec *executionContext) marshalNTaskExecutionStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTaskExecutionStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskExecutionStats) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskExecutionStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTaskExecutionStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskExecutionStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37159,7 +37159,7 @@ func (ec *executionContext) marshalNTaskExecutionStats2ᚖpentagiᚋpkgᚋgraph�
 	return ec._TaskExecutionStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTerminal2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminal(ctx context.Context, sel ast.SelectionSet, v *model.Terminal) graphql.Marshaler {
+func (ec *executionContext) marshalNTerminal2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminal(ctx context.Context, sel ast.SelectionSet, v *model.Terminal) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37169,11 +37169,11 @@ func (ec *executionContext) marshalNTerminal2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐ
 	return ec._Terminal(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTerminalLog2pentagiᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx context.Context, sel ast.SelectionSet, v model.TerminalLog) graphql.Marshaler {
+func (ec *executionContext) marshalNTerminalLog2pentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx context.Context, sel ast.SelectionSet, v model.TerminalLog) graphql.Marshaler {
 	return ec._TerminalLog(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTerminalLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx context.Context, sel ast.SelectionSet, v *model.TerminalLog) graphql.Marshaler {
+func (ec *executionContext) marshalNTerminalLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx context.Context, sel ast.SelectionSet, v *model.TerminalLog) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37183,27 +37183,27 @@ func (ec *executionContext) marshalNTerminalLog2ᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ec._TerminalLog(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTerminalLogType2pentagiᚋpkgᚋgraphᚋmodelᚐTerminalLogType(ctx context.Context, v interface{}) (model.TerminalLogType, error) {
+func (ec *executionContext) unmarshalNTerminalLogType2pentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLogType(ctx context.Context, v interface{}) (model.TerminalLogType, error) {
 	var res model.TerminalLogType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNTerminalLogType2pentagiᚋpkgᚋgraphᚋmodelᚐTerminalLogType(ctx context.Context, sel ast.SelectionSet, v model.TerminalLogType) graphql.Marshaler {
+func (ec *executionContext) marshalNTerminalLogType2pentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLogType(ctx context.Context, sel ast.SelectionSet, v model.TerminalLogType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNTerminalType2pentagiᚋpkgᚋgraphᚋmodelᚐTerminalType(ctx context.Context, v interface{}) (model.TerminalType, error) {
+func (ec *executionContext) unmarshalNTerminalType2pentagentxᚋpkgᚋgraphᚋmodelᚐTerminalType(ctx context.Context, v interface{}) (model.TerminalType, error) {
 	var res model.TerminalType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNTerminalType2pentagiᚋpkgᚋgraphᚋmodelᚐTerminalType(ctx context.Context, sel ast.SelectionSet, v model.TerminalType) graphql.Marshaler {
+func (ec *executionContext) marshalNTerminalType2pentagentxᚋpkgᚋgraphᚋmodelᚐTerminalType(ctx context.Context, sel ast.SelectionSet, v model.TerminalType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNTestResult2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTestResultᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TestResult) graphql.Marshaler {
+func (ec *executionContext) marshalNTestResult2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTestResultᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TestResult) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -37227,7 +37227,7 @@ func (ec *executionContext) marshalNTestResult2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTestResult(ctx, sel, v[i])
+			ret[i] = ec.marshalNTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTestResult(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37247,7 +37247,7 @@ func (ec *executionContext) marshalNTestResult2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 	return ret
 }
 
-func (ec *executionContext) marshalNTestResult2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTestResult(ctx context.Context, sel ast.SelectionSet, v *model.TestResult) graphql.Marshaler {
+func (ec *executionContext) marshalNTestResult2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTestResult(ctx context.Context, sel ast.SelectionSet, v *model.TestResult) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37272,21 +37272,21 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNTokenStatus2pentagiᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, v interface{}) (model.TokenStatus, error) {
+func (ec *executionContext) unmarshalNTokenStatus2pentagentxᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, v interface{}) (model.TokenStatus, error) {
 	var res model.TokenStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNTokenStatus2pentagiᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, sel ast.SelectionSet, v model.TokenStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNTokenStatus2pentagentxᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, sel ast.SelectionSet, v model.TokenStatus) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNToolcallsStats2pentagiᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx context.Context, sel ast.SelectionSet, v model.ToolcallsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNToolcallsStats2pentagentxᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx context.Context, sel ast.SelectionSet, v model.ToolcallsStats) graphql.Marshaler {
 	return ec._ToolcallsStats(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx context.Context, sel ast.SelectionSet, v *model.ToolcallsStats) graphql.Marshaler {
+func (ec *executionContext) marshalNToolcallsStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐToolcallsStats(ctx context.Context, sel ast.SelectionSet, v *model.ToolcallsStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37296,7 +37296,7 @@ func (ec *executionContext) marshalNToolcallsStats2ᚖpentagiᚋpkgᚋgraphᚋmo
 	return ec._ToolcallsStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNToolsPrompts2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐToolsPrompts(ctx context.Context, sel ast.SelectionSet, v *model.ToolsPrompts) graphql.Marshaler {
+func (ec *executionContext) marshalNToolsPrompts2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐToolsPrompts(ctx context.Context, sel ast.SelectionSet, v *model.ToolsPrompts) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37306,21 +37306,21 @@ func (ec *executionContext) marshalNToolsPrompts2ᚖpentagiᚋpkgᚋgraphᚋmode
 	return ec._ToolsPrompts(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUpdateAPITokenInput2pentagiᚋpkgᚋgraphᚋmodelᚐUpdateAPITokenInput(ctx context.Context, v interface{}) (model.UpdateAPITokenInput, error) {
+func (ec *executionContext) unmarshalNUpdateAPITokenInput2pentagentxᚋpkgᚋgraphᚋmodelᚐUpdateAPITokenInput(ctx context.Context, v interface{}) (model.UpdateAPITokenInput, error) {
 	res, err := ec.unmarshalInputUpdateAPITokenInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUpdateFlowTemplateInput2pentagiᚋpkgᚋgraphᚋmodelᚐUpdateFlowTemplateInput(ctx context.Context, v interface{}) (model.UpdateFlowTemplateInput, error) {
+func (ec *executionContext) unmarshalNUpdateFlowTemplateInput2pentagentxᚋpkgᚋgraphᚋmodelᚐUpdateFlowTemplateInput(ctx context.Context, v interface{}) (model.UpdateFlowTemplateInput, error) {
 	res, err := ec.unmarshalInputUpdateFlowTemplateInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUsageStats2pentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx context.Context, sel ast.SelectionSet, v model.UsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNUsageStats2pentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx context.Context, sel ast.SelectionSet, v model.UsageStats) graphql.Marshaler {
 	return ec._UsageStats(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.UsageStats) graphql.Marshaler {
+func (ec *executionContext) marshalNUsageStats2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUsageStats(ctx context.Context, sel ast.SelectionSet, v *model.UsageStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37330,21 +37330,21 @@ func (ec *executionContext) marshalNUsageStats2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._UsageStats(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUsageStatsPeriod2pentagiᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx context.Context, v interface{}) (model.UsageStatsPeriod, error) {
+func (ec *executionContext) unmarshalNUsageStatsPeriod2pentagentxᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx context.Context, v interface{}) (model.UsageStatsPeriod, error) {
 	var res model.UsageStatsPeriod
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUsageStatsPeriod2pentagiᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx context.Context, sel ast.SelectionSet, v model.UsageStatsPeriod) graphql.Marshaler {
+func (ec *executionContext) marshalNUsageStatsPeriod2pentagentxᚋpkgᚋgraphᚋmodelᚐUsageStatsPeriod(ctx context.Context, sel ast.SelectionSet, v model.UsageStatsPeriod) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNUserPreferences2pentagiᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx context.Context, sel ast.SelectionSet, v model.UserPreferences) graphql.Marshaler {
+func (ec *executionContext) marshalNUserPreferences2pentagentxᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx context.Context, sel ast.SelectionSet, v model.UserPreferences) graphql.Marshaler {
 	return ec._UserPreferences(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUserPreferences2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx context.Context, sel ast.SelectionSet, v *model.UserPreferences) graphql.Marshaler {
+func (ec *executionContext) marshalNUserPreferences2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPreferences(ctx context.Context, sel ast.SelectionSet, v *model.UserPreferences) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37354,11 +37354,11 @@ func (ec *executionContext) marshalNUserPreferences2ᚖpentagiᚋpkgᚋgraphᚋm
 	return ec._UserPreferences(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNUserPrompt2pentagiᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx context.Context, sel ast.SelectionSet, v model.UserPrompt) graphql.Marshaler {
+func (ec *executionContext) marshalNUserPrompt2pentagentxᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx context.Context, sel ast.SelectionSet, v model.UserPrompt) graphql.Marshaler {
 	return ec._UserPrompt(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUserPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx context.Context, sel ast.SelectionSet, v *model.UserPrompt) graphql.Marshaler {
+func (ec *executionContext) marshalNUserPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx context.Context, sel ast.SelectionSet, v *model.UserPrompt) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37368,21 +37368,21 @@ func (ec *executionContext) marshalNUserPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ec._UserPrompt(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNVectorStoreAction2pentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreAction(ctx context.Context, v interface{}) (model.VectorStoreAction, error) {
+func (ec *executionContext) unmarshalNVectorStoreAction2pentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreAction(ctx context.Context, v interface{}) (model.VectorStoreAction, error) {
 	var res model.VectorStoreAction
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNVectorStoreAction2pentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreAction(ctx context.Context, sel ast.SelectionSet, v model.VectorStoreAction) graphql.Marshaler {
+func (ec *executionContext) marshalNVectorStoreAction2pentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreAction(ctx context.Context, sel ast.SelectionSet, v model.VectorStoreAction) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNVectorStoreLog2pentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx context.Context, sel ast.SelectionSet, v model.VectorStoreLog) graphql.Marshaler {
+func (ec *executionContext) marshalNVectorStoreLog2pentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx context.Context, sel ast.SelectionSet, v model.VectorStoreLog) graphql.Marshaler {
 	return ec._VectorStoreLog(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNVectorStoreLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx context.Context, sel ast.SelectionSet, v *model.VectorStoreLog) graphql.Marshaler {
+func (ec *executionContext) marshalNVectorStoreLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx context.Context, sel ast.SelectionSet, v *model.VectorStoreLog) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -37645,14 +37645,14 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAPIToken2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v *model.APIToken) graphql.Marshaler {
+func (ec *executionContext) marshalOAPIToken2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAPIToken(ctx context.Context, sel ast.SelectionSet, v *model.APIToken) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._APIToken(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAgentLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AgentLog) graphql.Marshaler {
+func (ec *executionContext) marshalOAgentLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AgentLog) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37679,7 +37679,7 @@ func (ec *executionContext) marshalOAgentLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAgentLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx, sel, v[i])
+			ret[i] = ec.marshalNAgentLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAgentLog(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37699,7 +37699,7 @@ func (ec *executionContext) marshalOAgentLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ret
 }
 
-func (ec *executionContext) marshalOAssistant2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Assistant) graphql.Marshaler {
+func (ec *executionContext) marshalOAssistant2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Assistant) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37726,7 +37726,7 @@ func (ec *executionContext) marshalOAssistant2ᚕᚖpentagiᚋpkgᚋgraphᚋmode
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAssistant2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, sel, v[i])
+			ret[i] = ec.marshalNAssistant2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistant(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37746,7 +37746,7 @@ func (ec *executionContext) marshalOAssistant2ᚕᚖpentagiᚋpkgᚋgraphᚋmode
 	return ret
 }
 
-func (ec *executionContext) marshalOAssistantLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AssistantLog) graphql.Marshaler {
+func (ec *executionContext) marshalOAssistantLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AssistantLog) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37773,7 +37773,7 @@ func (ec *executionContext) marshalOAssistantLog2ᚕᚖpentagiᚋpkgᚋgraphᚋm
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAssistantLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx, sel, v[i])
+			ret[i] = ec.marshalNAssistantLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐAssistantLog(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37835,7 +37835,7 @@ func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel as
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) marshalOFlow2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Flow) graphql.Marshaler {
+func (ec *executionContext) marshalOFlow2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Flow) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37862,7 +37862,7 @@ func (ec *executionContext) marshalOFlow2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐF
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFlow2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlow(ctx, sel, v[i])
+			ret[i] = ec.marshalNFlow2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlow(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37882,7 +37882,7 @@ func (ec *executionContext) marshalOFlow2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐF
 	return ret
 }
 
-func (ec *executionContext) marshalOFlowTemplate2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx context.Context, sel ast.SelectionSet, v *model.FlowTemplate) graphql.Marshaler {
+func (ec *executionContext) marshalOFlowTemplate2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐFlowTemplate(ctx context.Context, sel ast.SelectionSet, v *model.FlowTemplate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37921,7 +37921,7 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) marshalOMessageLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐMessageLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MessageLog) graphql.Marshaler {
+func (ec *executionContext) marshalOMessageLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐMessageLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MessageLog) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37948,7 +37948,7 @@ func (ec *executionContext) marshalOMessageLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMessageLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx, sel, v[i])
+			ret[i] = ec.marshalNMessageLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐMessageLog(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -37968,7 +37968,7 @@ func (ec *executionContext) marshalOMessageLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 	return ret
 }
 
-func (ec *executionContext) marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ModelConfig) graphql.Marshaler {
+func (ec *executionContext) marshalOModelConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ModelConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -37995,7 +37995,7 @@ func (ec *executionContext) marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmo
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNModelConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelConfig(ctx, sel, v[i])
+			ret[i] = ec.marshalNModelConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelConfig(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38015,14 +38015,14 @@ func (ec *executionContext) marshalOModelConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmo
 	return ret
 }
 
-func (ec *executionContext) marshalOModelPrice2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx context.Context, sel ast.SelectionSet, v *model.ModelPrice) graphql.Marshaler {
+func (ec *executionContext) marshalOModelPrice2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx context.Context, sel ast.SelectionSet, v *model.ModelPrice) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ModelPrice(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOModelPriceInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx context.Context, v interface{}) (*model.ModelPrice, error) {
+func (ec *executionContext) unmarshalOModelPriceInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐModelPrice(ctx context.Context, v interface{}) (*model.ModelPrice, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -38030,7 +38030,7 @@ func (ec *executionContext) unmarshalOModelPriceInput2ᚖpentagiᚋpkgᚋgraph�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOPromptValidationErrorType2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐPromptValidationErrorType(ctx context.Context, v interface{}) (*model.PromptValidationErrorType, error) {
+func (ec *executionContext) unmarshalOPromptValidationErrorType2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐPromptValidationErrorType(ctx context.Context, v interface{}) (*model.PromptValidationErrorType, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -38039,14 +38039,14 @@ func (ec *executionContext) unmarshalOPromptValidationErrorType2ᚖpentagiᚋpkg
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPromptValidationErrorType2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐPromptValidationErrorType(ctx context.Context, sel ast.SelectionSet, v *model.PromptValidationErrorType) graphql.Marshaler {
+func (ec *executionContext) marshalOPromptValidationErrorType2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐPromptValidationErrorType(ctx context.Context, sel ast.SelectionSet, v *model.PromptValidationErrorType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalOProviderConfig2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ProviderConfig) graphql.Marshaler {
+func (ec *executionContext) marshalOProviderConfig2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ProviderConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38073,7 +38073,7 @@ func (ec *executionContext) marshalOProviderConfig2ᚕᚖpentagiᚋpkgᚋgraph�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, sel, v[i])
+			ret[i] = ec.marshalNProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38093,21 +38093,21 @@ func (ec *executionContext) marshalOProviderConfig2ᚕᚖpentagiᚋpkgᚋgraph�
 	return ret
 }
 
-func (ec *executionContext) marshalOProviderConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx context.Context, sel ast.SelectionSet, v *model.ProviderConfig) graphql.Marshaler {
+func (ec *executionContext) marshalOProviderConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐProviderConfig(ctx context.Context, sel ast.SelectionSet, v *model.ProviderConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ProviderConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOReasoningConfig2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx context.Context, sel ast.SelectionSet, v *model.ReasoningConfig) graphql.Marshaler {
+func (ec *executionContext) marshalOReasoningConfig2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx context.Context, sel ast.SelectionSet, v *model.ReasoningConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ReasoningConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOReasoningConfigInput2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx context.Context, v interface{}) (*model.ReasoningConfig, error) {
+func (ec *executionContext) unmarshalOReasoningConfigInput2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningConfig(ctx context.Context, v interface{}) (*model.ReasoningConfig, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -38115,7 +38115,7 @@ func (ec *executionContext) unmarshalOReasoningConfigInput2ᚖpentagiᚋpkgᚋgr
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOReasoningEffort2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx context.Context, v interface{}) (*model.ReasoningEffort, error) {
+func (ec *executionContext) unmarshalOReasoningEffort2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx context.Context, v interface{}) (*model.ReasoningEffort, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -38124,14 +38124,14 @@ func (ec *executionContext) unmarshalOReasoningEffort2ᚖpentagiᚋpkgᚋgraph�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOReasoningEffort2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx context.Context, sel ast.SelectionSet, v *model.ReasoningEffort) graphql.Marshaler {
+func (ec *executionContext) marshalOReasoningEffort2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐReasoningEffort(ctx context.Context, sel ast.SelectionSet, v *model.ReasoningEffort) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalOScreenshot2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐScreenshotᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Screenshot) graphql.Marshaler {
+func (ec *executionContext) marshalOScreenshot2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐScreenshotᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Screenshot) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38158,7 +38158,7 @@ func (ec *executionContext) marshalOScreenshot2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNScreenshot2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx, sel, v[i])
+			ret[i] = ec.marshalNScreenshot2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐScreenshot(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38178,7 +38178,7 @@ func (ec *executionContext) marshalOScreenshot2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 	return ret
 }
 
-func (ec *executionContext) marshalOSearchLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐSearchLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SearchLog) graphql.Marshaler {
+func (ec *executionContext) marshalOSearchLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSearchLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SearchLog) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38205,7 +38205,7 @@ func (ec *executionContext) marshalOSearchLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmode
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNSearchLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx, sel, v[i])
+			ret[i] = ec.marshalNSearchLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSearchLog(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38241,7 +38241,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalOSubtask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Subtask) graphql.Marshaler {
+func (ec *executionContext) marshalOSubtask2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Subtask) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38268,7 +38268,7 @@ func (ec *executionContext) marshalOSubtask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNSubtask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐSubtask(ctx, sel, v[i])
+			ret[i] = ec.marshalNSubtask2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐSubtask(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38288,7 +38288,7 @@ func (ec *executionContext) marshalOSubtask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel�
 	return ret
 }
 
-func (ec *executionContext) marshalOTask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalOTask2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38315,7 +38315,7 @@ func (ec *executionContext) marshalOTask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐT
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTask2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTask(ctx, sel, v[i])
+			ret[i] = ec.marshalNTask2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTask(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38335,7 +38335,7 @@ func (ec *executionContext) marshalOTask2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐT
 	return ret
 }
 
-func (ec *executionContext) marshalOTerminal2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminalᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Terminal) graphql.Marshaler {
+func (ec *executionContext) marshalOTerminal2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminalᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Terminal) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38362,7 +38362,7 @@ func (ec *executionContext) marshalOTerminal2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTerminal2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminal(ctx, sel, v[i])
+			ret[i] = ec.marshalNTerminal2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminal(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38382,7 +38382,7 @@ func (ec *executionContext) marshalOTerminal2ᚕᚖpentagiᚋpkgᚋgraphᚋmodel
 	return ret
 }
 
-func (ec *executionContext) marshalOTerminalLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminalLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TerminalLog) graphql.Marshaler {
+func (ec *executionContext) marshalOTerminalLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TerminalLog) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38409,7 +38409,7 @@ func (ec *executionContext) marshalOTerminalLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmo
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTerminalLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx, sel, v[i])
+			ret[i] = ec.marshalNTerminalLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTerminalLog(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38445,7 +38445,7 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	return res
 }
 
-func (ec *executionContext) unmarshalOTokenStatus2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, v interface{}) (*model.TokenStatus, error) {
+func (ec *executionContext) unmarshalOTokenStatus2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, v interface{}) (*model.TokenStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -38454,14 +38454,14 @@ func (ec *executionContext) unmarshalOTokenStatus2ᚖpentagiᚋpkgᚋgraphᚋmod
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOTokenStatus2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, sel ast.SelectionSet, v *model.TokenStatus) graphql.Marshaler {
+func (ec *executionContext) marshalOTokenStatus2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐTokenStatus(ctx context.Context, sel ast.SelectionSet, v *model.TokenStatus) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalOUserPrompt2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPromptᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.UserPrompt) graphql.Marshaler {
+func (ec *executionContext) marshalOUserPrompt2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPromptᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.UserPrompt) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38488,7 +38488,7 @@ func (ec *executionContext) marshalOUserPrompt2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUserPrompt2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx, sel, v[i])
+			ret[i] = ec.marshalNUserPrompt2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐUserPrompt(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -38508,7 +38508,7 @@ func (ec *executionContext) marshalOUserPrompt2ᚕᚖpentagiᚋpkgᚋgraphᚋmod
 	return ret
 }
 
-func (ec *executionContext) marshalOVectorStoreLog2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.VectorStoreLog) graphql.Marshaler {
+func (ec *executionContext) marshalOVectorStoreLog2ᚕᚖpentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreLogᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.VectorStoreLog) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -38535,7 +38535,7 @@ func (ec *executionContext) marshalOVectorStoreLog2ᚕᚖpentagiᚋpkgᚋgraph�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNVectorStoreLog2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx, sel, v[i])
+			ret[i] = ec.marshalNVectorStoreLog2ᚖpentagentxᚋpkgᚋgraphᚋmodelᚐVectorStoreLog(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)

@@ -1,13 +1,13 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Swagger API for Penetration Testing Advanced General Intelligence PentAGI.",
-        "title": "PentAGI Swagger API",
+        "description": "Swagger API for Penetration Testing Advanced General Intelligence PentAgentX.",
+        "title": "PentAgentX Swagger API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
-            "name": "PentAGI Development Team",
-            "url": "https://pentagi.com",
-            "email": "team@pentagi.com"
+            "name": "PentAgentX Development Team",
+            "url": "https://pentagentx.com",
+            "email": "team@pentagentx.com"
         },
         "license": {
             "name": "MIT",

@@ -2,12 +2,12 @@
 
 ## Core Concepts
 
-The processor package manages PentAGI stack lifecycle through state-oriented approach. Main idea: maintain consistency between desired user state (state.State) and actual system state (checker.CheckResult).
+The processor package manages PentAgentX stack lifecycle through state-oriented approach. Main idea: maintain consistency between desired user state (state.State) and actual system state (checker.CheckResult).
 
 ## Key Principles
 
 1. **State-Driven Operations**: All operations based on comparing current and target state
-2. **Stack Independence**: Each stack (observability, langfuse, pentagi) managed independently
+2. **Stack Independence**: Each stack (observability, langfuse, pentagentx) managed independently
 3. **Force Mode**: Aggressive state correction ignoring warnings
 4. **Idempotency**: Repeated operation calls do not cause side effects
 5. **User-Facing Automation**: Installer automates manual Docker/file operations with real-time feedback
@@ -87,15 +87,15 @@ p.checker.GatherLangfuseInfo(ctx)
 
 **Rationale**: Langfuse simpler than observability (single file only), but follows same logic. As a precondition for local start, configuration must be connected (see checker `LangfuseConnected`).
 
-#### Phase 3: PentAGI Stack Management
+#### Phase 3: PentAgentX Stack Management
 ```go
-// PentAGI always embedded, always required
+// PentAgentX always embedded, always required
 p.fsOps.ensureStackIntegrity(ctx, ProductStackPentagi, state)
 p.composeOps.updateStack(ctx, ProductStackPentagi, state)
 p.checker.GatherPentagiInfo(ctx)
 ```
 
-**Rationale**: PentAGI - main stack, always installed, only file integrity check.
+**Rationale**: PentAgentX - main stack, always installed, only file integrity check.
 
 ### Critical Implementation Details
 
@@ -111,7 +111,7 @@ p.checker.GatherPentagiInfo(ctx)
 - `removeStack`: executes `docker compose down` without removing volumes
 - `purgeStack`: executes `docker compose down -v`
 - `purgeImagesStack`: executes `docker compose down --rmi all -v`
-- dependency ordering: observability → langfuse → pentagi
+- dependency ordering: observability → langfuse → pentagentx
 - environment: `COMPOSE_IGNORE_ORPHANS=1`, `PYTHONUNBUFFERED=1`; ANSI disabled on narrow terminals via `COMPOSE_ANSI=never`
 
 #### State Consistency

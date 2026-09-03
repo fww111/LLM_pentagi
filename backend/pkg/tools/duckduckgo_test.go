@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
 )
 
 func testDuckDuckGoConfig() *config.Config {

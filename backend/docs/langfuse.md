@@ -1,10 +1,10 @@
-# Langfuse Integration for PentAGI
+# Langfuse Integration for PentAgentX
 
-This document provides a comprehensive guide to the Langfuse integration in PentAGI, covering architecture, setup, usage patterns, and best practices for developers.
+This document provides a comprehensive guide to the Langfuse integration in PentAgentX, covering architecture, setup, usage patterns, and best practices for developers.
 
 ## Table of Contents
 
-- [Langfuse Integration for PentAGI](#langfuse-integration-for-pentagi)
+- [Langfuse Integration for PentAgentX](#langfuse-integration-for-pentagentx)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Architecture](#architecture)
@@ -43,7 +43,7 @@ This document provides a comprehensive guide to the Langfuse integration in Pent
 
 ## Introduction
 
-Langfuse is an open-source observability platform specifically designed for LLM-powered applications. The PentAGI integration with Langfuse provides:
+Langfuse is an open-source observability platform specifically designed for LLM-powered applications. The PentAgentX integration with Langfuse provides:
 
 - **Comprehensive tracing** for AI agent flows and tasks
 - **Detailed telemetry** for LLM interactions and tool calls
@@ -61,11 +61,11 @@ This integration enables developers to:
 
 ### Component Overview
 
-The Langfuse integration in PentAGI is built around a layered architecture that provides both high-level abstractions for simple use cases and fine-grained control for complex scenarios.
+The Langfuse integration in PentAgentX is built around a layered architecture that provides both high-level abstractions for simple use cases and fine-grained control for complex scenarios.
 
 ```mermaid
 flowchart TD
-    Application[PentAGI Application] --> Observer[Observer]
+    Application[PentAgentX Application] --> Observer[Observer]
     Observer --> Client[Langfuse Client]
     Client --> API[Langfuse API]
 
@@ -110,7 +110,7 @@ The data flow through the Langfuse system follows a consistent pattern:
 
 ```mermaid
 sequenceDiagram
-    participant App as PentAGI Application
+    participant App as PentAgentX Application
     participant Obs as Observer
     participant Queue as Event Queue
     participant Client as Langfuse Client
@@ -252,7 +252,7 @@ The Langfuse integration can be configured through environment variables:
 | `LANGFUSE_PROJECT_ID` | Project ID in Langfuse | |
 | `LANGFUSE_PUBLIC_KEY` | Public API key | |
 | `LANGFUSE_SECRET_KEY` | Secret API key | |
-| `LANGFUSE_INIT_USER_EMAIL` | Admin user email | admin@pentagi.com |
+| `LANGFUSE_INIT_USER_EMAIL` | Admin user email | admin@pentagentx.com |
 | `LANGFUSE_INIT_USER_PASSWORD` | Admin user password | P3nTagIsD0d |
 
 For a complete list of configuration options, refer to the docker-compose-langfuse.yml file.
@@ -264,8 +264,8 @@ To initialize the Langfuse integration in your code:
 ```go
 // Import the necessary packages
 import (
-    "pentagi/pkg/observability/langfuse"
-    "pentagi/pkg/config"
+    "pentagentx/pkg/observability/langfuse"
+    "pentagentx/pkg/config"
 )
 
 // Create a Langfuse client
@@ -281,7 +281,7 @@ if err != nil {
 
 // Create an observer with the client
 observer := langfuse.NewObserver(client,
-    langfuse.WithProject("pentagi"),
+    langfuse.WithProject("pentagentx"),
     langfuse.WithSendInterval(10 * time.Second),
     langfuse.WithQueueSize(100),
 )
@@ -863,7 +863,7 @@ Converted to assistant message with content, tool_calls, and thinking fields as 
 
 ### Flow Controller Integration
 
-The main integration point in PentAGI is the Flow Controller, which handles the lifecycle of AI agent flows:
+The main integration point in PentAgentX is the Flow Controller, which handles the lifecycle of AI agent flows:
 
 ```go
 // In flow controller initialization

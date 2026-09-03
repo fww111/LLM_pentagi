@@ -1,13 +1,13 @@
 package graph
 
 import (
-	"pentagi/pkg/config"
-	"pentagi/pkg/controller"
-	"pentagi/pkg/database"
-	"pentagi/pkg/graph/subscriptions"
-	"pentagi/pkg/providers"
-	"pentagi/pkg/server/auth"
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/controller"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graph/subscriptions"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/server/auth"
+	"pentagentx/pkg/templates"
 
 	"github.com/sirupsen/logrus"
 )

@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/docker"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/docker"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -321,9 +321,9 @@ func TestPrimaryTerminalName(t *testing.T) {
 		flowID int64
 		want   string
 	}{
-		{1, "pentagi-terminal-1"},
-		{0, "pentagi-terminal-0"},
-		{12345, "pentagi-terminal-12345"},
+		{1, "pentagentx-terminal-1"},
+		{0, "pentagentx-terminal-0"},
+		{12345, "pentagentx-terminal-12345"},
 	}
 
 	for _, tt := range tests {

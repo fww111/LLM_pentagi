@@ -1,6 +1,6 @@
-# Flow Execution in PentAGI
+# Flow Execution in PentAgentX
 
-This document describes the internal architecture and execution workflow of Flow in PentAGI, an autonomous penetration testing system that leverages AI agents to perform complex security testing workflows.
+This document describes the internal architecture and execution workflow of Flow in PentAgentX, an autonomous penetration testing system that leverages AI agents to perform complex security testing workflows.
 
 ## 1. Core Concepts and Terminology
 
@@ -906,7 +906,7 @@ The browser tool provides advanced web interaction capabilities:
 
 ## Advanced Agent Supervision
 
-PentAGI implements a sophisticated multi-layered agent supervision system to ensure efficient task execution, prevent infinite loops, and provide intelligent recovery from stuck states.
+PentAgentX implements a sophisticated multi-layered agent supervision system to ensure efficient task execution, prevent infinite loops, and provide intelligent recovery from stuck states.
 
 ### Execution Monitoring System
 

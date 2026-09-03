@@ -12,11 +12,11 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/orchestrator"
-	"pentagi/pkg/providers"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/orchestrator"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/tools"
 )
 
 type FlowUpdater interface {
@@ -932,15 +932,27 @@ func (tw *taskWorker) todoPlanFromPlannerDecision(ctx context.Context, rawResult
 	if err := json.Unmarshal([]byte(rawResult), &patch); err != nil {
 		return nil, fmt.Errorf("planner result is neither todo_list nor todo_patch: %w", err)
 	}
-	if len(patch.Operations) == 0 {
-		return nil, fmt.Errorf("planner todo_patch contains no operations")
-	}
 
 	ma := database.NewMultiAgentQueries(tw.taskCtx.RawDB)
 	existing, err := ma.GetTodosByTaskID(ctx, tw.taskCtx.TaskID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get existing todos for planner patch: %w", err)
 	}
+
+	if len(patch.Operations) == 0 {
+		// An empty patch means the planner decided the current plan needs no
+		// changes; keep the existing todos instead of failing the whole task.
+		rawHead := rawResult
+		if len(rawHead) > 300 {
+			rawHead = rawHead[:300]
+		}
+		logrus.WithContext(ctx).WithFields(logrus.Fields{
+			"task_id":  tw.taskCtx.TaskID,
+			"raw_head": rawHead,
+		}).Warn("planner todo_patch has no operations, keeping current plan")
+		return dbTodosToToolItems(existing), nil
+	}
+
 	plan, err := providers.ApplyTodoOperations(dbTodosToToolItems(existing), patch, logrus.WithContext(ctx))
 	if err != nil {
 		return nil, err

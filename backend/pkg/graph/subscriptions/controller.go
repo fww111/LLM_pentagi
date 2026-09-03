@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/graph/model"
-	"pentagi/pkg/providers/pconfig"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graph/model"
+	"pentagentx/pkg/providers/pconfig"
 )
 
 const (

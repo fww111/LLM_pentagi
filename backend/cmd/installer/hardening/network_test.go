@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"pentagi/cmd/installer/loader"
-	"pentagi/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/loader"
+	"pentagentx/cmd/installer/wizard/controller"
 )
 
 var mockError = errors.New("mocked error")

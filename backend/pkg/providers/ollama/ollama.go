@@ -10,11 +10,11 @@ import (
 	"slices"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
-	"pentagi/pkg/system"
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
+	"pentagentx/pkg/system"
+	"pentagentx/pkg/templates"
 
 	"github.com/ollama/ollama/api"
 	"github.com/vxcontrol/langchaingo/llms"

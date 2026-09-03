@@ -5,11 +5,11 @@ import (
 	"embed"
 	"fmt"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
-	"pentagi/pkg/system"
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
+	"pentagentx/pkg/system"
+	"pentagentx/pkg/templates"
 
 	"github.com/vxcontrol/langchaingo/llms"
 	"github.com/vxcontrol/langchaingo/llms/openai"
@@ -19,7 +19,7 @@ import (
 //go:embed config.yml models.yml
 var configFS embed.FS
 
-const GLMAgentModel = "glm-4.5-air"
+const GLMAgentModel = "glm-5.3-flash"
 
 const GLMToolCallIDTemplate = "call_-{r:19:d}"
 

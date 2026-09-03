@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/tools"
 )
 
 func TestExtractTodoIDFromPayload(t *testing.T) {

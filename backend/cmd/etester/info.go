@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"pentagi/pkg/terminal"
+	"pentagentx/pkg/terminal"
 )
 
 // info displays statistics about the embedding database

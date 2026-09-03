@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"pentagi/cmd/installer/wizard/terminal"
+	"pentagentx/cmd/installer/wizard/terminal"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/google/uuid"

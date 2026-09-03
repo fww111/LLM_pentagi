@@ -1,7 +1,7 @@
 # Processor Implementation Summary
 
 ## Overview
-Processor package implements the operational engine for PentAGI installer operations per [processor.md](processor.md). Core lifecycle flows, file integrity logic, Docker/Compose orchestration, and Bubble Tea integration are implemented. Installer self-update flows are stubbed and intentionally not finalized yet.
+Processor package implements the operational engine for PentAgentX installer operations per [processor.md](processor.md). Core lifecycle flows, file integrity logic, Docker/Compose orchestration, and Bubble Tea integration are implemented. Installer self-update flows are stubbed and intentionally not finalized yet.
 
 ## Implementation Notes
 
@@ -9,7 +9,7 @@ Processor package implements the operational engine for PentAGI installer operat
 - **Interface-based design**: Internal interfaces per operation type (`fileSystemOperations`, `dockerOperations`, `composeOperations`, `updateOperations`) enable separation of concerns and testability
 - **Two-track execution**: Docker API SDK for worker environment; Compose stacks via console commands with live output streaming
 - **OperationOption pattern**: Functional options applied to an internal `operationState` support force mode and embedded terminal integration via `WithForce` and `WithTerminal`
-- **State machine logic**: `ApplyChanges` implements three-phase stack management (Observability → Langfuse → PentAGI) with integrity validation; the wizard performs a pre-phase interactive integrity check with Y/N decision for force mode
+- **State machine logic**: `ApplyChanges` implements three-phase stack management (Observability → Langfuse → PentAgentX) with integrity validation; the wizard performs a pre-phase interactive integrity check with Y/N decision for force mode
 - **Single-responsibility operations**: business logic delegates to compose layer; strict purge of images is implemented as `purgeImagesStack` alongside other compose operations
 
 ### Key Features Implemented
@@ -41,7 +41,7 @@ Processor package implements the operational engine for PentAGI installer operat
    - Proper cleanup ordering and external/existing deployment handling
 
 ### Critical Implementation Details
-- **Three-phase execution**: Observability → Langfuse → PentAGI with state validation after each phase
+- **Three-phase execution**: Observability → Langfuse → PentAgentX with state validation after each phase
 - **Force mode behavior**: Aggressive file overwriting and state correction when explicitly requested
 - **File integrity logic**: `ensureStackIntegrity` for missing files, `verifyStackIntegrity` for existing files; modified files are explicitly skipped and logged when `force=false`; excluded files are ensured to exist but not overwritten when modified
 - **State consistency**: `Gather*Info` calls after each phase validate operation success

@@ -3,10 +3,10 @@ package models
 import (
 	"strings"
 
-	"pentagi/cmd/installer/wizard/controller"
-	"pentagi/cmd/installer/wizard/locale"
-	"pentagi/cmd/installer/wizard/styles"
-	"pentagi/cmd/installer/wizard/window"
+	"pentagentx/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/wizard/locale"
+	"pentagentx/cmd/installer/wizard/styles"
+	"pentagentx/cmd/installer/wizard/window"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -41,7 +41,7 @@ func (h *MaintenanceHandler) LoadItems() []ListItem {
 		})
 	}
 
-	// stop PentAGI - show if any stack is running
+	// stop PentAgentX - show if any stack is running
 	showStop := checker.CanStopAll()
 	if showStop {
 		items = append(items, ListItem{
@@ -49,7 +49,7 @@ func (h *MaintenanceHandler) LoadItems() []ListItem {
 		})
 	}
 
-	// restart PentAGI - show if any stack is running
+	// restart PentAgentX - show if any stack is running
 	if showStop {
 		items = append(items, ListItem{
 			ID: RestartPentagiScreen,
@@ -71,7 +71,7 @@ func (h *MaintenanceHandler) LoadItems() []ListItem {
 		})
 	}
 
-	// update PentAGI - show if updates are available for any stack
+	// update PentAgentX - show if updates are available for any stack
 	showUpdatePentagi := checker.CanUpdateAll()
 
 	if showUpdatePentagi {
@@ -96,21 +96,21 @@ func (h *MaintenanceHandler) LoadItems() []ListItem {
 		})
 	}
 
-	// remove PentAGI - show if any stack is installed
+	// remove PentAgentX - show if any stack is installed
 	if checker.CanRemoveAll() {
 		items = append(items, ListItem{
 			ID: RemovePentagiScreen,
 		})
 	}
 
-	// purge PentAGI - show if any stack is installed
+	// purge PentAgentX - show if any stack is installed
 	if checker.CanPurgeAll() {
 		items = append(items, ListItem{
 			ID: PurgePentagiScreen,
 		})
 	}
 
-	// reset admin password - show if PentAGI is running
+	// reset admin password - show if PentAgentX is running
 	if checker.CanResetPassword() {
 		items = append(items, ListItem{
 			ID: ResetPasswordScreen,

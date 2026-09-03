@@ -17,12 +17,12 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/server/logger"
-	"pentagi/pkg/server/models"
-	"pentagi/pkg/server/oauth"
-	"pentagi/pkg/server/rdb"
-	"pentagi/pkg/server/response"
-	"pentagi/pkg/version"
+	"pentagentx/pkg/server/logger"
+	"pentagentx/pkg/server/models"
+	"pentagentx/pkg/server/oauth"
+	"pentagentx/pkg/server/rdb"
+	"pentagentx/pkg/server/response"
+	"pentagentx/pkg/version"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

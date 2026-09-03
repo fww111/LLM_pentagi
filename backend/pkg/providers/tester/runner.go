@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
-	"pentagi/pkg/providers/tester/testdata"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
+	"pentagentx/pkg/providers/tester/testdata"
 )
 
 // testRequest represents a test execution request

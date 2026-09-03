@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"slices"
 
-	"pentagi/pkg/server/response"
+	"pentagentx/pkg/server/response"
 
 	"github.com/gin-gonic/gin"
 )

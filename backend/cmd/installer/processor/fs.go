@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"pentagi/cmd/installer/files"
+	"pentagentx/cmd/installer/files"
 
 	"gopkg.in/yaml.v3"
 )

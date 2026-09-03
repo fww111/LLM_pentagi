@@ -1,4 +1,4 @@
-# PentAGI
+# PentAgentX
 
 <div align="center" style="font-size: 1.5em; margin: 20px 0;">
     <strong>P</strong>enetration testing <strong>A</strong>rtificial <strong>G</strong>eneral <strong>I</strong>ntelligence
@@ -6,11 +6,11 @@
 <br>
 <div align="center">
 
-> **Join the Community!** Connect with security researchers, AI enthusiasts, and fellow ethical hackers. Get support, share insights, and stay updated with the latest PentAGI developments.
+> **Join the Community!** Connect with security researchers, AI enthusiasts, and fellow ethical hackers. Get support, share insights, and stay updated with the latest PentAgentX developments.
 
 [![Discord](https://img.shields.io/badge/Discord-7289DA?logo=discord&logoColor=white)](https://discord.gg/2xrMh7qX6m)⠀[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](https://t.me/+Ka9i6CNwe71hMWQy)
 
-<a href="https://trendshift.io/repositories/15161" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15161" alt="vxcontrol%2Fpentagi | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/15161" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15161" alt="vxcontrol%2Fpentagentx | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
 </div>
 
@@ -48,10 +48,10 @@
 
 ## Overview
 
-PentAGI is an innovative tool for automated security testing that leverages cutting-edge artificial intelligence technologies. The project is designed for information security professionals, researchers, and enthusiasts who need a powerful and flexible solution for conducting penetration tests.
+PentAgentX is an innovative tool for automated security testing that leverages cutting-edge artificial intelligence technologies. The project is designed for information security professionals, researchers, and enthusiasts who need a powerful and flexible solution for conducting penetration tests.
 
-You can watch the video **PentAGI overview**:
-[![PentAGI Overview Video](https://github.com/user-attachments/assets/0828dc3e-15f1-4a1d-858e-9696a146e478)](https://youtu.be/R70x5Ddzs1o)
+You can watch the video **PentAgentX overview**:
+[![PentAgentX Overview Video](https://github.com/user-attachments/assets/0828dc3e-15f1-4a1d-858e-9696a146e478)](https://youtu.be/R70x5Ddzs1o)
 
 ## Features
 
@@ -88,7 +88,7 @@ flowchart TB
     pentester["👤 Security Engineer
     (User of the system)"]
 
-    pentagi["✨ PentAGI
+    pentagentx["✨ PentAgentX
     (Autonomous penetration testing system)"]
 
     target["🎯 target-system
@@ -102,17 +102,17 @@ flowchart TB
     grafana["📈 grafana
     (System Monitoring Dashboard)"]
 
-    pentester --> |Uses HTTPS| pentagi
+    pentester --> |Uses HTTPS| pentagentx
     pentester --> |Monitors AI HTTPS| langfuse
     pentester --> |Monitors System HTTPS| grafana
-    pentagi --> |Tests Various protocols| target
-    pentagi --> |Queries HTTPS| llm
-    pentagi --> |Searches HTTPS| search
-    pentagi --> |Reports HTTPS| langfuse
-    pentagi --> |Reports HTTPS| grafana
+    pentagentx --> |Tests Various protocols| target
+    pentagentx --> |Queries HTTPS| llm
+    pentagentx --> |Searches HTTPS| search
+    pentagentx --> |Reports HTTPS| langfuse
+    pentagentx --> |Reports HTTPS| grafana
 
     class pentester person
-    class pentagi system
+    class pentagentx system
     class target,llm,search,langfuse,grafana external
 
     linkStyle default stroke:#ffffff,color:#ffffff
@@ -450,7 +450,7 @@ ASSISTANT_SUMMARIZER_KEEP_QA_SECTIONS=3
 <details>
 <summary><b>Advanced Agent Supervision</b> (click to expand)</summary>
 
-PentAGI includes sophisticated multi-layered agent supervision mechanisms to ensure efficient task execution, prevent infinite loops, and provide intelligent recovery from stuck states:
+PentAgentX includes sophisticated multi-layered agent supervision mechanisms to ensure efficient task execution, prevent infinite loops, and provide intelligent recovery from stuck states:
 
 ### Execution Monitoring (Beta)
 - **Automatic Mentor Intervention**: Adviser agent (mentor) is automatically invoked when execution patterns indicate potential issues
@@ -518,7 +518,7 @@ For optimal performance with smaller models, configure adviser agent with enhanc
 
 </details>
 
-The architecture of PentAGI is designed to be modular, scalable, and secure. Here are the key components:
+The architecture of PentAgentX is designed to be modular, scalable, and secure. Here are the key components:
 
 1. **Core Services**
    - Frontend UI: React-based web interface with TypeScript for type safety
@@ -563,7 +563,7 @@ The system uses Docker containers for isolation and easy deployment, with separa
 
 ### System Requirements
 
-- Docker and Docker Compose (or Podman - see [Podman configuration](#running-pentagi-with-podman))
+- Docker and Docker Compose (or Podman - see [Podman configuration](#running-pentagentx-with-podman))
 - Minimum 2 vCPU
 - Minimum 4GB RAM
 - 20GB free disk space
@@ -571,21 +571,21 @@ The system uses Docker containers for isolation and easy deployment, with separa
 
 ### Using Installer (Recommended)
 
-PentAGI provides an interactive installer with a terminal-based UI for streamlined configuration and deployment. The installer guides you through system checks, LLM provider setup, search engine configuration, and security hardening.
+PentAgentX provides an interactive installer with a terminal-based UI for streamlined configuration and deployment. The installer guides you through system checks, LLM provider setup, search engine configuration, and security hardening.
 
 **Supported Platforms:**
-- **Linux**: amd64 [download](https://pentagi.com/downloads/linux/amd64/installer-latest.zip) | arm64 [download](https://pentagi.com/downloads/linux/arm64/installer-latest.zip)
-- **Windows**: amd64 [download](https://pentagi.com/downloads/windows/amd64/installer-latest.zip)
-- **macOS**: amd64 (Intel) [download](https://pentagi.com/downloads/darwin/amd64/installer-latest.zip) | arm64 (M-series) [download](https://pentagi.com/downloads/darwin/arm64/installer-latest.zip)
+- **Linux**: amd64 [download](https://pentagentx.com/downloads/linux/amd64/installer-latest.zip) | arm64 [download](https://pentagentx.com/downloads/linux/arm64/installer-latest.zip)
+- **Windows**: amd64 [download](https://pentagentx.com/downloads/windows/amd64/installer-latest.zip)
+- **macOS**: amd64 (Intel) [download](https://pentagentx.com/downloads/darwin/amd64/installer-latest.zip) | arm64 (M-series) [download](https://pentagentx.com/downloads/darwin/arm64/installer-latest.zip)
 
 **Quick Installation (Linux amd64):**
 
 ```bash
 # Create installation directory
-mkdir -p pentagi && cd pentagi
+mkdir -p pentagentx && cd pentagentx
 
 # Download installer
-wget -O installer.zip https://pentagi.com/downloads/linux/amd64/installer-latest.zip
+wget -O installer.zip https://pentagentx.com/downloads/linux/amd64/installer-latest.zip
 
 # Extract
 unzip installer.zip
@@ -623,7 +623,7 @@ The installer will:
 3. **Provider Configuration**: Set up LLM providers (OpenAI, Anthropic, Gemini, Bedrock, Ollama, Custom)
 4. **Search Engines**: Configure DuckDuckGo, Google, Tavily, Traversaal, Perplexity, Sploitus, Searxng
 5. **Security Hardening**: Generate secure credentials and configure SSL certificates
-6. **Deployment**: Start PentAGI with docker-compose
+6. **Deployment**: Start PentAgentX with docker-compose
 
 **For Production & Enhanced Security:**
 
@@ -642,7 +642,7 @@ The two-node setup provides:
 1. Create a working directory or clone the repository:
 
 ```bash
-mkdir pentagi && cd pentagi
+mkdir pentagentx && cd pentagentx
 ```
 
 2. Copy `.env.example` to `.env` or download it:
@@ -734,7 +734,7 @@ ASSISTANT_USE_AGENTS=false         # Default value for agent usage when creating
 
 ### Main Security Settings
 - `COOKIE_SIGNING_SALT` - Salt for cookie signing, change to random value
-- `PUBLIC_URL` - Public URL of your server (eg. `https://pentagi.example.com`)
+- `PUBLIC_URL` - Public URL of your server (eg. `https://pentagentx.example.com`)
 - `SERVER_SSL_CRT` and `SERVER_SSL_KEY` - Custom paths to your existing SSL certificate and key for HTTPS (these paths should be used in the docker-compose.yml file to mount as volumes)
 
 ### Scraper Access
@@ -753,31 +753,31 @@ ASSISTANT_USE_AGENTS=false         # Default value for agent usage when creating
 perl -i -pe 's/\s+#.*$//' .env
 ```
 
-7. Run the PentAGI stack:
+7. Run the PentAgentX stack:
 
 ```bash
 curl -O https://raw.githubusercontent.com/vxcontrol/pentagi/master/docker-compose.yml
 docker compose up -d
 ```
 
-Visit [localhost:8443](https://localhost:8443) to access PentAGI Web UI (default is `admin@pentagi.com` / `admin`)
+Visit [localhost:8443](https://localhost:8443) to access PentAgentX Web UI (default is `admin@pentagentx.com` / `admin`)
 
 > [!NOTE]
-> If you caught an error about `pentagi-network` or `observability-network` or `langfuse-network` you need to run `docker-compose.yml` firstly to create these networks and after that run `docker-compose-langfuse.yml`, `docker-compose-graphiti.yml`, and `docker-compose-observability.yml` to use Langfuse, Graphiti, and Observability services.
+> If you caught an error about `pentagentx-network` or `observability-network` or `langfuse-network` you need to run `docker-compose.yml` firstly to create these networks and after that run `docker-compose-langfuse.yml`, `docker-compose-graphiti.yml`, and `docker-compose-observability.yml` to use Langfuse, Graphiti, and Observability services.
 >
-> You have to set at least one Language Model provider (OpenAI, Anthropic, Gemini, AWS Bedrock, or Ollama) to use PentAGI. AWS Bedrock provides enterprise-grade access to multiple foundation models from leading AI companies, while Ollama provides zero-cost local inference if you have sufficient computational resources. Additional API keys for search engines are optional but recommended for better results.
+> You have to set at least one Language Model provider (OpenAI, Anthropic, Gemini, AWS Bedrock, or Ollama) to use PentAgentX. AWS Bedrock provides enterprise-grade access to multiple foundation models from leading AI companies, while Ollama provides zero-cost local inference if you have sufficient computational resources. Additional API keys for search engines are optional but recommended for better results.
 >
-> **For fully local deployment with advanced models**: See our comprehensive guide on [Running PentAGI with vLLM and Qwen3.5-27B-FP8](examples/guides/vllm-qwen35-27b-fp8.md) for a production-grade local LLM setup. This configuration achieves ~13,000 TPS for prompt processing and ~650 TPS for completion on 4× RTX 5090 GPUs, supporting 12+ concurrent flows with complete independence from cloud providers.
+> **For fully local deployment with advanced models**: See our comprehensive guide on [Running PentAgentX with vLLM and Qwen3.5-27B-FP8](examples/guides/vllm-qwen35-27b-fp8.md) for a production-grade local LLM setup. This configuration achieves ~13,000 TPS for prompt processing and ~650 TPS for completion on 4× RTX 5090 GPUs, supporting 12+ concurrent flows with complete independence from cloud providers.
 >
 > `LLM_SERVER_*` environment variables are experimental feature and will be changed in the future. Right now you can use them to specify custom LLM server URL and one model for all agent types.
 >
 > `PROXY_URL` is a global proxy URL for all LLM providers and external search systems. You can use it for isolation from external networks.
 >
-> The `docker-compose.yml` file runs the PentAGI service as root user because it needs access to docker.sock for container management. If you're using TCP/IP network connection to Docker instead of socket file, you can remove root privileges and use the default `pentagi` user for better security.
+> The `docker-compose.yml` file runs the PentAgentX service as root user because it needs access to docker.sock for container management. If you're using TCP/IP network connection to Docker instead of socket file, you can remove root privileges and use the default `pentagentx` user for better security.
 
-### Accessing PentAGI from External Networks
+### Accessing PentAgentX from External Networks
 
-By default, PentAGI binds to `127.0.0.1` (localhost only) for security. To access PentAGI from other machines on your network, you need to configure external access.
+By default, PentAgentX binds to `127.0.0.1` (localhost only) for security. To access PentAgentX from other machines on your network, you need to configure external access.
 
 #### Configuration Steps
 
@@ -792,7 +792,7 @@ PENTAGI_LISTEN_PORT=8443
 # Replace 192.168.1.100 with your server's IP address
 PUBLIC_URL=https://192.168.1.100:8443
 
-# CORS origins - list all URLs that will access PentAGI
+# CORS origins - list all URLs that will access PentAgentX
 # Include localhost for local access AND your server IP for external access
 CORS_ORIGINS=https://localhost:8443,https://192.168.1.100:8443
 ```
@@ -812,7 +812,7 @@ docker compose up -d --force-recreate
 3. **Verify port binding:**
 
 ```bash
-docker ps | grep pentagi
+docker ps | grep pentagentx
 ```
 
 You should see `0.0.0.0:8443->8443/tcp` or `:::8443->8443/tcp`.
@@ -838,7 +838,7 @@ sudo firewall-cmd --permanent --add-port=8443/tcp
 sudo firewall-cmd --reload
 ```
 
-5. **Access PentAGI:**
+5. **Access PentAgentX:**
 
 - **Local access:** `https://localhost:8443`
 - **Network access:** `https://your-server-ip:8443`
@@ -848,9 +848,9 @@ sudo firewall-cmd --reload
 
 ---
 
-### Running PentAGI with Podman
+### Running PentAgentX with Podman
 
-PentAGI fully supports Podman as a Docker alternative. However, when using **Podman in rootless mode**, the scraper service requires special configuration because rootless containers cannot bind privileged ports (ports below 1024).
+PentAgentX fully supports Podman as a Docker alternative. However, when using **Podman in rootless mode**, the scraper service requires special configuration because rootless containers cannot bind privileged ports (ports below 1024).
 
 #### Podman Rootless Configuration
 
@@ -879,7 +879,7 @@ scraper:
   volumes:
     - scraper-ssl:/usr/src/app/ssl
   networks:
-    - pentagi-network
+    - pentagentx-network
   shm_size: 2g
 ```
 
@@ -909,8 +909,8 @@ podman-compose up -d --force-recreate
 **4. Test scraper connectivity:**
 
 ```bash
-# Test from within the pentagi container
-podman exec -it pentagi wget -O- "http://someuser:somepass@scraper:3000/html?url=http://example.com"
+# Test from within the pentagentx container
+podman exec -it pentagentx wget -O- "http://someuser:somepass@scraper:3000/html?url=http://example.com"
 ```
 
 If you see HTML output, the scraper is working correctly.
@@ -925,7 +925,7 @@ All Podman configurations remain fully compatible with Docker. The non-privilege
 
 ### Assistant Configuration
 
-PentAGI allows you to configure default behavior for assistants:
+PentAgentX allows you to configure default behavior for assistants:
 
 | Variable               | Default | Description                                                             |
 | ---------------------- | ------- | ----------------------------------------------------------------------- |
@@ -939,11 +939,11 @@ Note that users can always override this setting by toggling the "Use Agents" bu
 
 ## API Access
 
-PentAGI provides comprehensive programmatic access through both REST and GraphQL APIs, allowing you to integrate penetration testing workflows into your automation pipelines, CI/CD processes, and custom applications.
+PentAgentX provides comprehensive programmatic access through both REST and GraphQL APIs, allowing you to integrate penetration testing workflows into your automation pipelines, CI/CD processes, and custom applications.
 
 ### Generating API Tokens
 
-API tokens are managed through the PentAGI web interface:
+API tokens are managed through the PentAgentX web interface:
 
 1. Navigate to **Settings** → **API Tokens** in the web UI
 2. Click **Create Token** to generate a new API token
@@ -961,23 +961,23 @@ Include the API token in the `Authorization` header of your HTTP requests:
 
 ```bash
 # GraphQL API example
-curl -X POST https://your-pentagi-instance:8443/api/v1/graphql \
+curl -X POST https://your-pentagentx-instance:8443/api/v1/graphql \
   -H "Authorization: Bearer YOUR_API_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"query": "{ flows { id title status } }"}'
 
 # REST API example
-curl https://your-pentagi-instance:8443/api/v1/flows \
+curl https://your-pentagentx-instance:8443/api/v1/flows \
   -H "Authorization: Bearer YOUR_API_TOKEN"
 ```
 
 ### API Exploration and Testing
 
-PentAGI provides interactive documentation for exploring and testing API endpoints:
+PentAgentX provides interactive documentation for exploring and testing API endpoints:
 
 #### GraphQL Playground
 
-Access the GraphQL Playground at `https://your-pentagi-instance:8443/api/v1/graphql/playground`
+Access the GraphQL Playground at `https://your-pentagentx-instance:8443/api/v1/graphql/playground`
 
 1. Click the **HTTP Headers** tab at the bottom
 2. Add your authorization header:
@@ -990,7 +990,7 @@ Access the GraphQL Playground at `https://your-pentagi-instance:8443/api/v1/grap
 
 #### Swagger UI
 
-Access the REST API documentation at `https://your-pentagi-instance:8443/api/v1/swagger/index.html`
+Access the REST API documentation at `https://your-pentagentx-instance:8443/api/v1/swagger/index.html`
 
 1. Click the **Authorize** button
 2. Enter your token in the format: `Bearer YOUR_API_TOKEN`
@@ -999,7 +999,7 @@ Access the REST API documentation at `https://your-pentagi-instance:8443/api/v1/
 
 ### Generating API Clients
 
-You can generate type-safe API clients for your preferred programming language using the schema files included with PentAGI:
+You can generate type-safe API clients for your preferred programming language using the schema files included with PentAgentX:
 
 #### GraphQL Clients
 
@@ -1015,32 +1015,32 @@ Generate clients using tools like:
 #### REST API Clients
 
 The OpenAPI specification is available at:
-- **Swagger JSON**: `https://your-pentagi-instance:8443/api/v1/swagger/doc.json`
+- **Swagger JSON**: `https://your-pentagentx-instance:8443/api/v1/swagger/doc.json`
 - **Swagger YAML**: Available in `backend/pkg/server/docs/swagger.yaml`
 
 Generate clients using:
 - **OpenAPI Generator**: [https://openapi-generator.tech](https://openapi-generator.tech)
   ```bash
   openapi-generator-cli generate \
-    -i https://your-pentagi-instance:8443/api/v1/swagger/doc.json \
+    -i https://your-pentagentx-instance:8443/api/v1/swagger/doc.json \
     -g python \
-    -o ./pentagi-client
+    -o ./pentagentx-client
   ```
 
 - **Swagger Codegen**: [https://github.com/swagger-api/swagger-codegen](https://github.com/swagger-api/swagger-codegen)
   ```bash
   swagger-codegen generate \
-    -i https://your-pentagi-instance:8443/api/v1/swagger/doc.json \
+    -i https://your-pentagentx-instance:8443/api/v1/swagger/doc.json \
     -l typescript-axios \
-    -o ./pentagi-client
+    -o ./pentagentx-client
   ```
 
 - **swagger-typescript-api** (TypeScript): [https://github.com/acacode/swagger-typescript-api](https://github.com/acacode/swagger-typescript-api)
   ```bash
   npx swagger-typescript-api \
-    -p https://your-pentagi-instance:8443/api/v1/swagger/doc.json \
+    -p https://your-pentagentx-instance:8443/api/v1/swagger/doc.json \
     -o ./src/api \
-    -n pentagi-api.ts
+    -n pentagentx-api.ts
   ```
 
 ### API Usage Examples
@@ -1068,7 +1068,7 @@ mutation CreateFlow {
 <summary><b>Listing Flows (REST API)</b></summary>
 
 ```bash
-curl https://your-pentagi-instance:8443/api/v1/flows \
+curl https://your-pentagentx-instance:8443/api/v1/flows \
   -H "Authorization: Bearer YOUR_API_TOKEN" \
   | jq '.flows[] | {id, title, status}'
 ```
@@ -1081,7 +1081,7 @@ curl https://your-pentagi-instance:8443/api/v1/flows \
 ```python
 import requests
 
-class PentAGIClient:
+class PentAgentXClient:
     def __init__(self, base_url, api_token):
         self.base_url = base_url
         self.headers = {
@@ -1120,8 +1120,8 @@ class PentAGIClient:
         return response.json()
 
 # Usage
-client = PentAGIClient(
-    "https://your-pentagi-instance:8443",
+client = PentAgentXClient(
+    "https://your-pentagentx-instance:8443",
     "your_api_token_here"
 )
 
@@ -1149,7 +1149,7 @@ interface Flow {
   createdAt: string;
 }
 
-class PentAGIClient {
+class PentAgentXClient {
   private client: AxiosInstance;
 
   constructor(baseURL: string, apiToken: string) {
@@ -1194,8 +1194,8 @@ class PentAGIClient {
 }
 
 // Usage
-const client = new PentAGIClient(
-  'https://your-pentagi-instance:8443',
+const client = new PentAgentXClient(
+  'https://your-pentagentx-instance:8443',
   'your_api_token_here'
 );
 
@@ -1271,7 +1271,7 @@ This setting is required by some LLM providers (e.g., Moonshot) that return erro
 
 ### Ollama Provider Configuration
 
-PentAGI supports Ollama for both local LLM inference (zero-cost, enhanced privacy) and Ollama Cloud (managed service with free tier).
+PentAgentX supports Ollama for both local LLM inference (zero-cost, enhanced privacy) and Ollama Cloud (managed service with free tier).
 
 #### Configuration Variables
 
@@ -1306,7 +1306,7 @@ For paid tiers supporting multiple concurrent models, use the pre-built Ollama C
 # Using pre-built Ollama Cloud configuration (included in Docker image)
 OLLAMA_SERVER_URL=https://ollama.com
 OLLAMA_SERVER_API_KEY=your_ollama_cloud_api_key
-OLLAMA_SERVER_CONFIG_PATH=/opt/pentagi/conf/ollama-cloud.provider.yml
+OLLAMA_SERVER_CONFIG_PATH=/opt/pentagentx/conf/ollama-cloud.provider.yml
 ```
 
 The pre-built `ollama-cloud.provider.yml` configuration includes optimized model assignments for all agent types:
@@ -1326,13 +1326,13 @@ To create your own agent configuration, mount a custom file from your host files
 # Using custom provider configuration
 OLLAMA_SERVER_URL=https://ollama.com
 OLLAMA_SERVER_API_KEY=your_ollama_cloud_api_key
-OLLAMA_SERVER_CONFIG_PATH=/opt/pentagi/conf/ollama.provider.yml
+OLLAMA_SERVER_CONFIG_PATH=/opt/pentagentx/conf/ollama.provider.yml
 
 # Mount custom configuration from host filesystem (in .env or docker-compose override)
 PENTAGI_OLLAMA_SERVER_CONFIG_PATH=/path/on/host/my-ollama-config.yml
 ```
 
-The `PENTAGI_OLLAMA_SERVER_CONFIG_PATH` environment variable maps your host configuration file to `/opt/pentagi/conf/ollama.provider.yml` inside the container.
+The `PENTAGI_OLLAMA_SERVER_CONFIG_PATH` environment variable maps your host configuration file to `/opt/pentagentx/conf/ollama.provider.yml` inside the container.
 
 **Example custom configuration** (`my-ollama-config.yml`):
 
@@ -1367,11 +1367,11 @@ OLLAMA_SERVER_PULL_MODELS_TIMEOUT=900
 OLLAMA_SERVER_LOAD_MODELS_ENABLED=true
 
 # Using pre-built configurations from Docker image
-OLLAMA_SERVER_CONFIG_PATH=/opt/pentagi/conf/ollama-llama318b.provider.yml
+OLLAMA_SERVER_CONFIG_PATH=/opt/pentagentx/conf/ollama-llama318b.provider.yml
 # or
-OLLAMA_SERVER_CONFIG_PATH=/opt/pentagi/conf/ollama-qwen332b-fp16-tc.provider.yml
+OLLAMA_SERVER_CONFIG_PATH=/opt/pentagentx/conf/ollama-qwen332b-fp16-tc.provider.yml
 # or
-OLLAMA_SERVER_CONFIG_PATH=/opt/pentagi/conf/ollama-qwq32b-fp16-tc.provider.yml
+OLLAMA_SERVER_CONFIG_PATH=/opt/pentagentx/conf/ollama-qwq32b-fp16-tc.provider.yml
 ```
 
 **Performance Considerations:**
@@ -1383,7 +1383,7 @@ OLLAMA_SERVER_CONFIG_PATH=/opt/pentagi/conf/ollama-qwq32b-fp16-tc.provider.yml
 
 #### Creating Custom Ollama Models with Extended Context
 
-PentAGI requires models with larger context windows than the default Ollama configurations. You need to create custom models with increased `num_ctx` parameter through Modelfiles. While typical agent workflows consume around 64K tokens, PentAGI uses 110K context size for safety margin and handling complex penetration testing scenarios.
+PentAgentX requires models with larger context windows than the default Ollama configurations. You need to create custom models with increased `num_ctx` parameter through Modelfiles. While typical agent workflows consume around 64K tokens, PentAgentX uses 110K context size for safety margin and handling complex penetration testing scenarios.
 
 **Important**: The `num_ctx` parameter can only be set during model creation via Modelfile - it cannot be changed after model creation or overridden at runtime.
 
@@ -1429,11 +1429,11 @@ ollama create qwq:32b-fp16-tc -f Modelfile_qwq_32b_fp16_tc
 
 > **Note**: The QwQ 32B FP16 model requires approximately **71.3 GB VRAM** for inference. Ensure your system has sufficient GPU memory before attempting to use this model.
 
-These custom models are referenced in the pre-built provider configuration files (`ollama-qwen332b-fp16-tc.provider.yml` and `ollama-qwq32b-fp16-tc.provider.yml`) that are included in the Docker image at `/opt/pentagi/conf/`.
+These custom models are referenced in the pre-built provider configuration files (`ollama-qwen332b-fp16-tc.provider.yml` and `ollama-qwq32b-fp16-tc.provider.yml`) that are included in the Docker image at `/opt/pentagentx/conf/`.
 
 ### OpenAI Provider Configuration
 
-PentAGI integrates with OpenAI's comprehensive model lineup, featuring advanced reasoning capabilities with extended chain-of-thought, agentic models with enhanced tool integration, and specialized code models for security engineering.
+PentAgentX integrates with OpenAI's comprehensive model lineup, featuring advanced reasoning capabilities with extended chain-of-thought, agentic models with enhanced tool integration, and specialized code models for security engineering.
 
 #### Configuration Variables
 
@@ -1456,7 +1456,7 @@ PROXY_URL=http://your-proxy:8080
 
 #### Supported Models
 
-PentAGI supports 31 OpenAI models with tool calling, streaming, reasoning modes, and prompt caching. Models marked with `*` are used in default configuration.
+PentAgentX supports 31 OpenAI models with tool calling, streaming, reasoning modes, and prompt caching. Models marked with `*` are used in default configuration.
 
 **GPT-5.2 Series - Latest Flagship Agentic (December 2025)**
 
@@ -1517,7 +1517,7 @@ PentAGI supports 31 OpenAI models with tool calling, streaming, reasoning modes,
 > [!WARNING]
 > **GPT-5* Models - Trusted Access Required**
 >
-> All GPT-5 series models (`gpt-5`, `gpt-5.1`, `gpt-5.2`, `gpt-5-pro`, `gpt-5.2-pro`, and all Codex variants) work **unstably with PentAGI** and may trigger OpenAI's cybersecurity safety mechanisms without verified access.
+> All GPT-5 series models (`gpt-5`, `gpt-5.1`, `gpt-5.2`, `gpt-5-pro`, `gpt-5.2-pro`, and all Codex variants) work **unstably with PentAgentX** and may trigger OpenAI's cybersecurity safety mechanisms without verified access.
 >
 > **To use GPT-5* models reliably:**
 > 1. **Individual users**: Verify your identity at [chatgpt.com/cyber](https://chatgpt.com/cyber)
@@ -1546,7 +1546,7 @@ PentAGI supports 31 OpenAI models with tool calling, streaming, reasoning modes,
 
 ### Anthropic Provider Configuration
 
-PentAGI integrates with Anthropic's Claude models, featuring advanced extended thinking capabilities, exceptional safety mechanisms, and sophisticated understanding of complex security contexts with prompt caching.
+PentAgentX integrates with Anthropic's Claude models, featuring advanced extended thinking capabilities, exceptional safety mechanisms, and sophisticated understanding of complex security contexts with prompt caching.
 
 #### Configuration Variables
 
@@ -1569,7 +1569,7 @@ PROXY_URL=http://your-proxy:8080
 
 #### Supported Models
 
-PentAGI supports 10 Claude models with tool calling, streaming, extended thinking, adaptive thinking, and prompt caching. Models marked with `*` are used in default configuration.
+PentAgentX supports 10 Claude models with tool calling, streaming, extended thinking, adaptive thinking, and prompt caching. Models marked with `*` are used in default configuration.
 
 **Claude 4 Series - Latest Models (2025-2026)**
 
@@ -1616,7 +1616,7 @@ PentAGI supports 10 Claude models with tool calling, streaming, extended thinkin
 
 ### Google AI (Gemini) Provider Configuration
 
-PentAGI integrates with Google's Gemini models through the Google AI API, offering state-of-the-art multimodal reasoning capabilities with extended thinking and context caching.
+PentAgentX integrates with Google's Gemini models through the Google AI API, offering state-of-the-art multimodal reasoning capabilities with extended thinking and context caching.
 
 #### Configuration Variables
 
@@ -1639,7 +1639,7 @@ PROXY_URL=http://your-proxy:8080
 
 #### Supported Models
 
-PentAGI supports 13 Gemini models with tool calling, streaming, thinking modes, and context caching. Models marked with `*` are used in default configuration.
+PentAgentX supports 13 Gemini models with tool calling, streaming, thinking modes, and context caching. Models marked with `*` are used in default configuration.
 
 **Gemini 3.1 Series - Latest Flagship (February 2026)**
 
@@ -1710,7 +1710,7 @@ PentAGI supports 13 Gemini models with tool calling, streaming, thinking modes, 
 
 ### AWS Bedrock Provider Configuration
 
-PentAGI integrates with Amazon Bedrock, offering access to 20+ foundation models from leading AI companies including Anthropic, Amazon, Cohere, DeepSeek, OpenAI, Qwen, Mistral, and Moonshot.
+PentAgentX integrates with Amazon Bedrock, offering access to 20+ foundation models from leading AI companies including Anthropic, Amazon, Cohere, DeepSeek, OpenAI, Qwen, Mistral, and Moonshot.
 
 #### Configuration Variables
 
@@ -1751,7 +1751,7 @@ PROXY_URL=http://your-proxy:8080
 
 #### Supported Models
 
-PentAGI supports 21 AWS Bedrock models with tool calling, streaming, and multimodal capabilities. Models marked with `*` are used in default configuration.
+PentAgentX supports 21 AWS Bedrock models with tool calling, streaming, and multimodal capabilities. Models marked with `*` are used in default configuration.
 
 | Model ID                                         | Provider        | Thinking | Multimodal | Price (Input/Output) | Use Case                                |
 | ------------------------------------------------ | --------------- | -------- | ---------- | -------------------- | --------------------------------------- |
@@ -1808,7 +1808,7 @@ Some AWS Bedrock models were tested but are **not supported** due to technical l
 > [!WARNING]
 > **Converse API Requirements**
 >
-> PentAGI uses Amazon Bedrock **Converse API** for unified model access. All supported models require:
+> PentAgentX uses Amazon Bedrock **Converse API** for unified model access. All supported models require:
 >
 > - ✅ Converse/ConverseStream API support
 > - ✅ Tool use (function calling) for penetration testing workflows
@@ -1825,7 +1825,7 @@ Some AWS Bedrock models were tested but are **not supported** due to technical l
 
 ### DeepSeek Provider Configuration
 
-PentAGI integrates with DeepSeek, providing access to advanced AI models with strong reasoning, coding capabilities, and context caching at competitive prices.
+PentAgentX integrates with DeepSeek, providing access to advanced AI models with strong reasoning, coding capabilities, and context caching at competitive prices.
 
 #### Configuration Variables
 
@@ -1850,7 +1850,7 @@ DEEPSEEK_PROVIDER=deepseek  # Adds prefix to model names (deepseek/deepseek-chat
 
 #### Supported Models
 
-PentAGI supports 2 DeepSeek-V3.2 models with tool calling, streaming, thinking modes, and context caching. Both models are used in default configuration.
+PentAgentX supports 2 DeepSeek-V3.2 models with tool calling, streaming, thinking modes, and context caching. Both models are used in default configuration.
 
 | Model ID              | Thinking | Context | Max Output | Price (Input/Output/Cache) | Use Case                                        |
 | --------------------- | -------- | ------- | ---------- | -------------------------- | ----------------------------------------------- |
@@ -1868,11 +1868,11 @@ PentAGI supports 2 DeepSeek-V3.2 models with tool calling, streaming, thinking m
 - **Multilingual**: Strong Chinese and English support
 - **Additional Features**: JSON Output, Chat Prefix Completion, FIM (Fill-in-the-Middle) Completion
 
-**LiteLLM Integration**: Set `DEEPSEEK_PROVIDER=deepseek` to enable model name prefixing when using default PentAGI configurations with LiteLLM proxy. Leave empty for direct API usage.
+**LiteLLM Integration**: Set `DEEPSEEK_PROVIDER=deepseek` to enable model name prefixing when using default PentAgentX configurations with LiteLLM proxy. Leave empty for direct API usage.
 
 ### GLM Provider Configuration
 
-PentAGI integrates with GLM from Zhipu AI (Z.AI), providing advanced language models with MoE architecture, strong reasoning, and agentic capabilities developed by Tsinghua University.
+PentAgentX integrates with GLM from Zhipu AI (Z.AI), providing advanced language models with MoE architecture, strong reasoning, and agentic capabilities developed by Tsinghua University.
 
 #### Configuration Variables
 
@@ -1901,7 +1901,7 @@ GLM_PROVIDER=zai  # Adds prefix to model names (zai/glm-4) for LiteLLM
 
 #### Supported Models
 
-PentAGI supports 12 GLM models with tool calling, streaming, thinking modes, and prompt caching. Models marked with `*` are used in default configuration.
+PentAgentX supports 12 GLM models with tool calling, streaming, thinking modes, and prompt caching. Models marked with `*` are used in default configuration.
 
 **GLM-5 Series - Flagship MoE (744B/40B active)**
 
@@ -1968,11 +1968,11 @@ PentAGI supports 12 GLM models with tool calling, streaming, thinking modes, and
 - **Multilingual**: Exceptional Chinese and English NLP capabilities
 - **Free Options**: GLM-4.7-Flash and GLM-4.5-Flash for prototyping and experimentation
 
-**LiteLLM Integration**: Set `GLM_PROVIDER=zai` to enable model name prefixing when using default PentAGI configurations with LiteLLM proxy. Leave empty for direct API usage.
+**LiteLLM Integration**: Set `GLM_PROVIDER=zai` to enable model name prefixing when using default PentAgentX configurations with LiteLLM proxy. Leave empty for direct API usage.
 
 ### Kimi Provider Configuration
 
-PentAGI integrates with Kimi from Moonshot AI, providing ultra-long context models with multimodal capabilities perfect for analyzing extensive codebases and documentation.
+PentAgentX integrates with Kimi from Moonshot AI, providing ultra-long context models with multimodal capabilities perfect for analyzing extensive codebases and documentation.
 
 #### Configuration Variables
 
@@ -2000,7 +2000,7 @@ KIMI_PROVIDER=moonshot  # Adds prefix to model names (moonshot/kimi-k2.5) for Li
 
 #### Supported Models
 
-PentAGI supports 11 Kimi/Moonshot models with tool calling, streaming, thinking modes, and multimodal capabilities. Models marked with `*` are used in default configuration.
+PentAgentX supports 11 Kimi/Moonshot models with tool calling, streaming, thinking modes, and multimodal capabilities. Models marked with `*` are used in default configuration.
 
 **Kimi K2.5 Series - Advanced Multimodal**
 
@@ -2046,11 +2046,11 @@ PentAGI supports 11 Kimi/Moonshot models with tool calling, streaming, thinking 
 - **Multilingual**: Strong Chinese and English language support
 - **MoE Architecture**: Efficient 1T total parameters with 32B activated for K2 series
 
-**LiteLLM Integration**: Set `KIMI_PROVIDER=moonshot` to enable model name prefixing when using default PentAGI configurations with LiteLLM proxy. Leave empty for direct API usage.
+**LiteLLM Integration**: Set `KIMI_PROVIDER=moonshot` to enable model name prefixing when using default PentAgentX configurations with LiteLLM proxy. Leave empty for direct API usage.
 
 ### Qwen Provider Configuration
 
-PentAGI integrates with Qwen from Alibaba Cloud Model Studio (DashScope), providing powerful multilingual models with reasoning capabilities and context caching support.
+PentAgentX integrates with Qwen from Alibaba Cloud Model Studio (DashScope), providing powerful multilingual models with reasoning capabilities and context caching support.
 
 #### Configuration Variables
 
@@ -2079,7 +2079,7 @@ QWEN_PROVIDER=dashscope  # Adds prefix to model names (dashscope/qwen-plus) for 
 
 #### Supported Models
 
-PentAGI supports 32 Qwen models with tool calling, streaming, thinking modes, and context caching. Models marked with `*` are used in default configuration.
+PentAgentX supports 32 Qwen models with tool calling, streaming, thinking modes, and context caching. Models marked with `*` are used in default configuration.
 
 **Wide Availability Models (All Regions)**
 
@@ -2154,7 +2154,7 @@ PentAGI supports 32 Qwen models with tool calling, streaming, thinking modes, an
 - **Multilingual**: Strong Chinese, English, and multi-language support
 - **Ultra-Long Context**: Up to 10M tokens with qwen-long-latest for massive codebase analysis
 
-**LiteLLM Integration**: Set `QWEN_PROVIDER=dashscope` to enable model name prefixing when using default PentAGI configurations with LiteLLM proxy. Leave empty for direct API usage.
+**LiteLLM Integration**: Set `QWEN_PROVIDER=dashscope` to enable model name prefixing when using default PentAgentX configurations with LiteLLM proxy. Leave empty for direct API usage.
 
 ## Advanced Setup
 
@@ -2183,8 +2183,8 @@ Langfuse provides advanced capabilities for monitoring and analyzing AI agent op
 - `LANGFUSE_INIT_USER_NAME` - Admin username
 
 ### API Keys and Tokens
-- `LANGFUSE_INIT_PROJECT_PUBLIC_KEY` - Project public key (used from PentAGI side too)
-- `LANGFUSE_INIT_PROJECT_SECRET_KEY` - Project secret key (used from PentAGI side too)
+- `LANGFUSE_INIT_PROJECT_PUBLIC_KEY` - Project public key (used from PentAgentX side too)
+- `LANGFUSE_INIT_PROJECT_SECRET_KEY` - Project secret key (used from PentAgentX side too)
 
 ### S3 Storage
 - `LANGFUSE_S3_ACCESS_KEY_ID` - S3 access key ID
@@ -2192,7 +2192,7 @@ Langfuse provides advanced capabilities for monitoring and analyzing AI agent op
 
 </details>
 
-2. Enable integration with Langfuse for PentAGI service in `.env` file.
+2. Enable integration with Langfuse for PentAgentX service in `.env` file.
 
 ```bash
 LANGFUSE_BASE_URL=http://langfuse-web:3000
@@ -2217,7 +2217,7 @@ Visit [localhost:4000](http://localhost:4000) to access Langfuse Web UI with cre
 
 For detailed system operation tracking, integration with monitoring tools is available.
 
-1. Enable integration with OpenTelemetry and all observability services for PentAGI in `.env` file.
+1. Enable integration with OpenTelemetry and all observability services for PentAgentX in `.env` file.
 
 ```bash
 OTEL_HOST=otelcol:8148
@@ -2244,14 +2244,14 @@ Visit [localhost:3000](http://localhost:3000) to access Grafana Web UI.
 > You can also register aliases for these commands in your shell to run it faster:
 >
 > ```bash
-> alias pentagi="docker compose -f docker-compose.yml -f docker-compose-langfuse.yml -f docker-compose-graphiti.yml -f docker-compose-observability.yml"
-> alias pentagi-up="docker compose -f docker-compose.yml -f docker-compose-langfuse.yml -f docker-compose-graphiti.yml -f docker-compose-observability.yml up -d"
-> alias pentagi-down="docker compose -f docker-compose.yml -f docker-compose-langfuse.yml -f docker-compose-graphiti.yml -f docker-compose-observability.yml down"
+> alias pentagentx="docker compose -f docker-compose.yml -f docker-compose-langfuse.yml -f docker-compose-graphiti.yml -f docker-compose-observability.yml"
+> alias pentagentx-up="docker compose -f docker-compose.yml -f docker-compose-langfuse.yml -f docker-compose-graphiti.yml -f docker-compose-observability.yml up -d"
+> alias pentagentx-down="docker compose -f docker-compose.yml -f docker-compose-langfuse.yml -f docker-compose-graphiti.yml -f docker-compose-observability.yml down"
 > ```
 
 ### Knowledge Graph Integration (Graphiti)
 
-PentAGI integrates with [Graphiti](https://github.com/vxcontrol/pentagi-graphiti), a temporal knowledge graph system powered by Neo4j, to provide advanced semantic understanding and relationship tracking for AI agent operations. The vxcontrol fork provides custom entity and edge types that are specific to pentesting purposes.
+PentAgentX integrates with [Graphiti](https://github.com/vxcontrol/pentagi-graphiti), a temporal knowledge graph system powered by Neo4j, to provide advanced semantic understanding and relationship tracking for AI agent operations. The vxcontrol fork provides custom entity and edge types that are specific to pentesting purposes.
 
 #### What is Graphiti?
 
@@ -2285,13 +2285,13 @@ NEO4J_URI=bolt://neo4j:7687
 OPEN_AI_KEY=your_openai_api_key
 ```
 
-2. Run the Graphiti stack along with the main PentAGI services:
+2. Run the Graphiti stack along with the main PentAgentX services:
 
 ```bash
 # Download the Graphiti compose file if needed
 curl -O https://raw.githubusercontent.com/vxcontrol/pentagi/master/docker-compose-graphiti.yml
 
-# Start PentAGI with Graphiti
+# Start PentAgentX with Graphiti
 docker compose -f docker-compose.yml -f docker-compose-graphiti.yml up -d
 ```
 
@@ -2316,7 +2316,7 @@ docker compose -f docker-compose.yml -f docker-compose-graphiti.yml logs -f grap
 
 #### What Gets Stored
 
-When enabled, PentAGI automatically captures:
+When enabled, PentAgentX automatically captures:
 
 - **Agent Responses**: All agent reasoning, analysis, and decisions
 - **Tool Executions**: Commands executed, tools used, and their results
@@ -2337,7 +2337,7 @@ For using Google OAuth you need to create a new OAuth application in your Google
 
 ### Docker Image Configuration
 
-PentAGI allows you to configure Docker image selection for executing various tasks. The system automatically chooses the most appropriate image based on the task type, but you can constrain this selection by specifying your preferred images:
+PentAgentX allows you to configure Docker image selection for executing various tasks. The system automatically chooses the most appropriate image based on the task type, but you can constrain this selection by specifying your preferred images:
 
 | Variable                           | Default                | Description                                                 |
 | ---------------------------------- | ---------------------- | ----------------------------------------------------------- |
@@ -2382,7 +2382,7 @@ Run once `cd backend && go mod download` to install needed packages.
 For generating swagger files have to run
 
 ```bash
-swag init -g ../../pkg/server/router.go -o pkg/server/docs/ --parseDependency --parseInternal --parseDepth 2 -d cmd/pentagi
+swag init -g ../../pkg/server/router.go -o pkg/server/docs/ --parseDependency --parseInternal --parseDepth 2 -d cmd/pentagentx
 ```
 
 before installing `swag` package via
@@ -2402,7 +2402,7 @@ after that you can see the generated files in `pkg/graph` folder.
 For generating ORM methods (database package) from sqlc configuration
 
 ```bash
-docker run --rm -v $(pwd):/src -w /src --network pentagi-network -e DATABASE_URL="{URL}" sqlc/sqlc:1.27.0 generate -f sqlc/sqlc.yml
+docker run --rm -v $(pwd):/src -w /src --network pentagentx-network -e DATABASE_URL="{URL}" sqlc/sqlc:1.27.0 generate -f sqlc/sqlc.yml
 ```
 
 For generating Langfuse SDK from OpenAPI specification
@@ -2465,7 +2465,7 @@ Edit the configuration for `frontend` in `.vscode/launch.json` file:
 
 Run the command(s) in `backend` folder:
 - Use `.env` file to set environment variables like a `source .env`
-- Run `go run cmd/pentagi/main.go` to start the server
+- Run `go run cmd/pentagentx/main.go` to start the server
 
 > [!NOTE]
 > The first run can take a while as dependencies and docker images need to be downloaded to setup the backend environment.
@@ -2481,7 +2481,7 @@ Open your browser and visit the web app URL.
 
 ## Testing LLM Agents
 
-PentAGI includes a powerful utility called `ctester` for testing and validating LLM agent capabilities. This tool helps ensure your LLM provider configurations work correctly with different agent types, allowing you to optimize model selection for each specific agent role.
+PentAgentX includes a powerful utility called `ctester` for testing and validating LLM agent capabilities. This tool helps ensure your LLM provider configurations work correctly with different agent types, allowing you to optimize model selection for each specific agent role.
 
 The utility features parallel testing of multiple agents, detailed reporting, and flexible configuration options.
 
@@ -2523,19 +2523,19 @@ If you prefer to use the pre-built Docker image without setting up a development
 
 ```bash
 # Using Docker to test with default environment
-docker run --rm -v $(pwd)/.env:/opt/pentagi/.env vxcontrol/pentagi /opt/pentagi/bin/ctester -verbose
+docker run --rm -v $(pwd)/.env:/opt/pentagentx/.env vxcontrol/pentagi /opt/pentagentx/bin/ctester -verbose
 
 # Test with your custom provider configuration
 docker run --rm \
-  -v $(pwd)/.env:/opt/pentagi/.env \
-  -v $(pwd)/my-config.yml:/opt/pentagi/config.yml \
-  vxcontrol/pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/config.yml -agents simple,primary_agent,coder -verbose
+  -v $(pwd)/.env:/opt/pentagentx/.env \
+  -v $(pwd)/my-config.yml:/opt/pentagentx/config.yml \
+  vxcontrol/pentagi /opt/pentagentx/bin/ctester -config /opt/pentagentx/config.yml -agents simple,primary_agent,coder -verbose
 
 # Generate a detailed report
 docker run --rm \
-  -v $(pwd)/.env:/opt/pentagi/.env \
-  -v $(pwd):/opt/pentagi/output \
-  vxcontrol/pentagi /opt/pentagi/bin/ctester -report /opt/pentagi/output/report.md
+  -v $(pwd)/.env:/opt/pentagentx/.env \
+  -v $(pwd):/opt/pentagentx/output \
+  vxcontrol/pentagi /opt/pentagentx/bin/ctester -report /opt/pentagentx/output/report.md
 ```
 
 #### Using Pre-configured Providers
@@ -2544,55 +2544,55 @@ The Docker image comes with built-in support for major providers (OpenAI, Anthro
 
 ```bash
 # Test with OpenRouter configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/openrouter.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/openrouter.provider.yml
 
 # Test with DeepInfra configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/deepinfra.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/deepinfra.provider.yml
 
 # Test with DeepSeek configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -provider deepseek
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -provider deepseek
 
 # Test with GLM configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -provider glm
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -provider glm
 
 # Test with Kimi configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -provider kimi
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -provider kimi
 
 # Test with Qwen configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -provider qwen
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -provider qwen
 
 # Test with DeepSeek configuration file for custom provider
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/deepseek.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/deepseek.provider.yml
 
 # Test with Moonshot configuration file for custom provider
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/moonshot.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/moonshot.provider.yml
 
 # Test with Novita configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/novita.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/novita.provider.yml
 
 # Test with OpenAI configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -type openai
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -type openai
 
 # Test with Anthropic configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -type anthropic
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -type anthropic
 
 # Test with Gemini configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -type gemini
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -type gemini
 
 # Test with AWS Bedrock configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -type bedrock
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -type bedrock
 
 # Test with Custom OpenAI configuration
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/custom-openai.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/custom-openai.provider.yml
 
 # Test with Ollama configuration (local inference)
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/ollama-llama318b.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/ollama-llama318b.provider.yml
 
 # Test with Ollama Qwen3 32B configuration (requires custom model creation)
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/ollama-qwen332b-fp16-tc.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/ollama-qwen332b-fp16-tc.provider.yml
 
 # Test with Ollama QwQ 32B configuration (requires custom model creation and 71.3GB VRAM)
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/ollama-qwq32b-fp16-tc.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/ollama-qwq32b-fp16-tc.provider.yml
 ```
 
 To use these configurations, your `.env` file only needs to contain:
@@ -2601,7 +2601,7 @@ To use these configurations, your `.env` file only needs to contain:
 LLM_SERVER_URL=https://openrouter.ai/api/v1      # or https://api.deepinfra.com/v1/openai or https://api.openai.com/v1 or https://api.novita.ai/openai
 LLM_SERVER_KEY=your_api_key
 LLM_SERVER_MODEL=                                # Leave empty, as models are specified in the config
-LLM_SERVER_CONFIG_PATH=/opt/pentagi/conf/openrouter.provider.yml  # or deepinfra.provider.ymll or custom-openai.provider.yml or novita.provider.yml
+LLM_SERVER_CONFIG_PATH=/opt/pentagentx/conf/openrouter.provider.yml  # or deepinfra.provider.ymll or custom-openai.provider.yml or novita.provider.yml
 LLM_SERVER_PROVIDER=                             # Provider name for LiteLLM proxy (e.g., openrouter, deepseek, moonshot, novita)
 LLM_SERVER_LEGACY_REASONING=false                # Controls reasoning format, for OpenAI must be true (default: false)
 LLM_SERVER_PRESERVE_REASONING=false              # Preserve reasoning content in multi-turn conversations (required by Moonshot, default: false)
@@ -2660,7 +2660,7 @@ QWEN_PROVIDER=                                   # Optional: LiteLLM prefix (e.g
 # For Ollama (local inference) use variables above
 OLLAMA_SERVER_URL=http://localhost:11434
 OLLAMA_SERVER_MODEL=llama3.1:8b-instruct-q8_0
-OLLAMA_SERVER_CONFIG_PATH=/opt/pentagi/conf/ollama-llama318b.provider.yml
+OLLAMA_SERVER_CONFIG_PATH=/opt/pentagentx/conf/ollama-llama318b.provider.yml
 OLLAMA_SERVER_PULL_MODELS_ENABLED=false
 OLLAMA_SERVER_LOAD_MODELS_ENABLED=false
 ```
@@ -2675,7 +2675,7 @@ To use OpenAI with unverified organization accounts, configure your `.env` file 
 LLM_SERVER_URL=https://api.openai.com/v1
 LLM_SERVER_KEY=your_openai_api_key
 LLM_SERVER_MODEL=                                # Leave empty, models are specified in config
-LLM_SERVER_CONFIG_PATH=/opt/pentagi/conf/custom-openai.provider.yml
+LLM_SERVER_CONFIG_PATH=/opt/pentagentx/conf/custom-openai.provider.yml
 LLM_SERVER_LEGACY_REASONING=true                 # Required for OpenAI reasoning format
 ```
 
@@ -2685,7 +2685,7 @@ You can test this configuration using:
 
 ```bash
 # Test with custom OpenAI configuration for unverified accounts
-docker exec -it pentagi /opt/pentagi/bin/ctester -config /opt/pentagi/conf/custom-openai.provider.yml
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -config /opt/pentagentx/conf/custom-openai.provider.yml
 ```
 
 > [!NOTE]
@@ -2699,13 +2699,13 @@ When using LiteLLM proxy to access various LLM providers, model names are prefix
 # Direct access to Moonshot API
 LLM_SERVER_URL=https://api.moonshot.ai/v1
 LLM_SERVER_KEY=your_moonshot_api_key
-LLM_SERVER_CONFIG_PATH=/opt/pentagi/conf/moonshot.provider.yml
+LLM_SERVER_CONFIG_PATH=/opt/pentagentx/conf/moonshot.provider.yml
 LLM_SERVER_PROVIDER=                             # Empty for direct access
 
 # Access via LiteLLM proxy
 LLM_SERVER_URL=http://litellm-proxy:4000
 LLM_SERVER_KEY=your_litellm_api_key
-LLM_SERVER_CONFIG_PATH=/opt/pentagi/conf/moonshot.provider.yml
+LLM_SERVER_CONFIG_PATH=/opt/pentagentx/conf/moonshot.provider.yml
 LLM_SERVER_PROVIDER=moonshot                     # Provider prefix for LiteLLM
 ```
 
@@ -2745,20 +2745,20 @@ This approach allows you to:
 
 #### Running Tests in a Production Environment
 
-If you already have a running PentAGI container and want to test the current configuration:
+If you already have a running PentAgentX container and want to test the current configuration:
 
 ```bash
 # Run ctester in an existing container using current environment variables
-docker exec -it pentagi /opt/pentagi/bin/ctester -verbose
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -verbose
 
 # Test specific agent types with deterministic ordering
-docker exec -it pentagi /opt/pentagi/bin/ctester -agents simple,primary_agent,pentester -groups basic,knowledge -verbose
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -agents simple,primary_agent,pentester -groups basic,knowledge -verbose
 
 # Generate a report file inside the container
-docker exec -it pentagi /opt/pentagi/bin/ctester -report /opt/pentagi/data/agent-test-report.md
+docker exec -it pentagentx /opt/pentagentx/bin/ctester -report /opt/pentagentx/data/agent-test-report.md
 
 # Access the report from the host
-docker cp pentagi:/opt/pentagi/data/agent-test-report.md ./
+docker cp pentagentx:/opt/pentagentx/data/agent-test-report.md ./
 ```
 
 ### Command-line Options
@@ -2838,11 +2838,11 @@ This tool helps ensure your AI agents are using the most effective models for th
 
 ## Embedding Configuration and Testing
 
-PentAGI uses vector embeddings for semantic search, knowledge storage, and memory management. The system supports multiple embedding providers that can be configured according to your needs and preferences.
+PentAgentX uses vector embeddings for semantic search, knowledge storage, and memory management. The system supports multiple embedding providers that can be configured according to your needs and preferences.
 
 ### Supported Embedding Providers
 
-PentAGI supports the following embedding providers:
+PentAgentX supports the following embedding providers:
 
 - **OpenAI** (default): Uses OpenAI's text embedding models
 - **Ollama**: Local embedding model through Ollama
@@ -2874,7 +2874,7 @@ HTTP_CLIENT_TIMEOUT=600         # Timeout in seconds for external API calls (def
 
 # SSL/TLS Certificate Configuration (for external communication with LLM backends and tool servers)
 EXTERNAL_SSL_CA_PATH=           # Path to custom CA certificate file (PEM format) inside the container
-                                # Must point to /opt/pentagi/ssl/ directory (e.g., /opt/pentagi/ssl/ca-bundle.pem)
+                                # Must point to /opt/pentagentx/ssl/ directory (e.g., /opt/pentagentx/ssl/ca-bundle.pem)
 EXTERNAL_SSL_INSECURE=false     # Skip certificate verification (use only for testing)
 ```
 
@@ -2896,18 +2896,18 @@ cp ca-bundle.pem /path/to/your/ssl/dir/
 
 **Step 3:** Set the path in `.env` file (path must be inside the container):
 ```bash
-# The volume pentagi-ssl is mounted to /opt/pentagi/ssl inside the container
-EXTERNAL_SSL_CA_PATH=/opt/pentagi/ssl/ca-bundle.pem
+# The volume pentagi-ssl is mounted to /opt/pentagentx/ssl inside the container
+EXTERNAL_SSL_CA_PATH=/opt/pentagentx/ssl/ca-bundle.pem
 EXTERNAL_SSL_INSECURE=false
 ```
 
-**Step 4:** Restart PentAGI:
+**Step 4:** Restart PentAgentX:
 ```bash
-docker compose restart pentagi
+docker compose restart pentagentx
 ```
 
 **Notes:**
-- The `pentagi-ssl` volume is mounted to `/opt/pentagi/ssl` inside the container
+- The `pentagi-ssl` volume is mounted to `/opt/pentagentx/ssl` inside the container
 - You can change host directory using `PENTAGI_SSL_DIR` variable in docker-compose.yml
 - File supports multiple certificates and intermediate CAs in one PEM file
 - Use `EXTERNAL_SSL_INSECURE=true` only for testing (not recommended for production)
@@ -2942,7 +2942,7 @@ If you change your embedding provider, you should flush and reindex your entire 
 
 ### Embedding Tester Utility (etester)
 
-PentAGI includes a specialized `etester` utility for testing, managing, and debugging embedding functionality. This tool is essential for diagnosing and resolving issues related to vector embeddings and knowledge storage.
+PentAgentX includes a specialized `etester` utility for testing, managing, and debugging embedding functionality. This tool is essential for diagnosing and resolving issues related to vector embeddings and knowledge storage.
 
 <details>
 <summary><b>Etester Commands</b> (click to expand)</summary>
@@ -2967,14 +2967,14 @@ go run cmd/etester/main.go search -query "How to install PostgreSQL" -limit 5
 
 ### Using Docker
 
-If you're running PentAGI in Docker, you can use etester from within the container:
+If you're running PentAgentX in Docker, you can use etester from within the container:
 
 ```bash
 # Test embedding provider
-docker exec -it pentagi /opt/pentagi/bin/etester test
+docker exec -it pentagentx /opt/pentagentx/bin/etester test
 
 # Show detailed database information
-docker exec -it pentagi /opt/pentagi/bin/etester info -verbose
+docker exec -it pentagentx /opt/pentagentx/bin/etester info -verbose
 ```
 
 ### Advanced Search Options
@@ -2983,13 +2983,13 @@ The `search` command supports various filters to narrow down results:
 
 ```bash
 # Filter by document type
-docker exec -it pentagi /opt/pentagi/bin/etester search -query "Security vulnerability" -doc_type guide -threshold 0.8
+docker exec -it pentagentx /opt/pentagentx/bin/etester search -query "Security vulnerability" -doc_type guide -threshold 0.8
 
 # Filter by flow ID
-docker exec -it pentagi /opt/pentagi/bin/etester search -query "Code examples" -doc_type code -flow_id 42
+docker exec -it pentagentx /opt/pentagentx/bin/etester search -query "Code examples" -doc_type code -flow_id 42
 
 # All available search options
-docker exec -it pentagi /opt/pentagi/bin/etester search -help
+docker exec -it pentagentx /opt/pentagentx/bin/etester search -help
 ```
 
 Available search parameters:
@@ -3012,12 +3012,12 @@ Available search parameters:
 
 ## Function Testing with ftester
 
-PentAGI includes a versatile utility called `ftester` for debugging, testing, and developing specific functions and AI agent behaviors. While `ctester` focuses on testing LLM model capabilities, `ftester` allows you to directly invoke individual system functions and AI agent components with precise control over execution context.
+PentAgentX includes a versatile utility called `ftester` for debugging, testing, and developing specific functions and AI agent behaviors. While `ctester` focuses on testing LLM model capabilities, `ftester` allows you to directly invoke individual system functions and AI agent components with precise control over execution context.
 
 ### Key Features
 
 - **Direct Function Access**: Test individual functions without running the entire system
-- **Mock Mode**: Test functions without a live PentAGI deployment using built-in mocks
+- **Mock Mode**: Test functions without a live PentAgentX deployment using built-in mocks
 - **Interactive Input**: Fill function arguments interactively for exploratory testing
 - **Detailed Output**: Color-coded terminal output with formatted responses and errors
 - **Context-Aware Testing**: Debug AI agents within the context of specific flows, tasks, and subtasks
@@ -3095,7 +3095,7 @@ go run cmd/ftester/main.go browser
 <details>
 <summary><b>Debugging Flow Context</b> (click to expand)</summary>
 
-The `describe` function provides detailed information about tasks and subtasks within a flow. This is particularly useful for diagnosing issues when PentAGI encounters problems or gets stuck.
+The `describe` function provides detailed information about tasks and subtasks within a flow. This is particularly useful for diagnosing issues when PentAgentX encounters problems or gets stuck.
 
 ```bash
 # List all flows in the system
@@ -3163,7 +3163,7 @@ JSON and Markdown responses are automatically formatted for readability.
 
 ### Debugging Stuck AI Flows
 
-When PentAGI gets stuck in a flow:
+When PentAgentX gets stuck in a flow:
 
 1. Pause the flow through the UI
 2. Use `describe` to identify the current task and subtask
@@ -3205,15 +3205,15 @@ go run cmd/ftester/main.go -flow 123 terminal -command "env | grep -i proxy" -me
 <details>
 <summary><b>Docker Container Usage</b> (click to expand)</summary>
 
-If you have PentAGI running in Docker, you can use ftester from within the container:
+If you have PentAgentX running in Docker, you can use ftester from within the container:
 
 ```bash
-# Run ftester inside the running PentAGI container
-docker exec -it pentagi /opt/pentagi/bin/ftester [arguments]
+# Run ftester inside the running PentAgentX container
+docker exec -it pentagentx /opt/pentagentx/bin/ftester [arguments]
 
 # Examples:
-docker exec -it pentagi /opt/pentagi/bin/ftester -flow 123 describe
-docker exec -it pentagi /opt/pentagi/bin/ftester -flow 123 terminal -command "ps aux" -message "List processes"
+docker exec -it pentagentx /opt/pentagentx/bin/ftester -flow 123 describe
+docker exec -it pentagentx /opt/pentagentx/bin/ftester -flow 123 terminal -command "ps aux" -message "List processes"
 ```
 
 This is particularly useful for production deployments where you don't have a local development environment.
@@ -3265,21 +3265,21 @@ source ./scripts/version.sh
 docker build \
   --build-arg PACKAGE_VER=$PACKAGE_VER \
   --build-arg PACKAGE_REV=$PACKAGE_REV \
-  -t pentagi:$PACKAGE_VER .
+  -t pentagentx:$PACKAGE_VER .
 
 # Multi-platform build
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   --build-arg PACKAGE_VER=$PACKAGE_VER \
   --build-arg PACKAGE_REV=$PACKAGE_REV \
-  -t pentagi:$PACKAGE_VER .
+  -t pentagentx:$PACKAGE_VER .
 
 # Build and push
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   --build-arg PACKAGE_VER=$PACKAGE_VER \
   --build-arg PACKAGE_REV=$PACKAGE_REV \
-  -t myregistry/pentagi:$PACKAGE_VER \
+  -t myregistry/pentagentx:$PACKAGE_VER \
   --push .
 ```
 
@@ -3293,14 +3293,14 @@ docker buildx build \
 docker build `
   --build-arg PACKAGE_VER=$env:PACKAGE_VER `
   --build-arg PACKAGE_REV=$env:PACKAGE_REV `
-  -t pentagi:$env:PACKAGE_VER .
+  -t pentagentx:$env:PACKAGE_VER .
 
 # Multi-platform build
 docker buildx build `
   --platform linux/amd64,linux/arm64 `
   --build-arg PACKAGE_VER=$env:PACKAGE_VER `
   --build-arg PACKAGE_REV=$env:PACKAGE_REV `
-  -t pentagi:$env:PACKAGE_VER .
+  -t pentagentx:$env:PACKAGE_VER .
 ```
 
 #### Quick build without version
@@ -3308,7 +3308,7 @@ docker buildx build `
 For development builds without version tracking:
 
 ```bash
-docker build -t pentagi:dev .
+docker build -t pentagentx:dev .
 ```
 
 > [!NOTE]
@@ -3326,9 +3326,9 @@ This project is made possible thanks to the following research and developments:
 
 ## License
 
-**PentAGI** is licensed under the [MIT License](LICENSE).
+**PentAgentX** is licensed under the [MIT License](LICENSE).
 
-Copyright (c) 2025 PentAGI Development Team
+Copyright (c) 2025 PentAgentX Development Team
 
 ### Third-Party Dependencies
 
@@ -3340,4 +3340,4 @@ All third-party dependencies use MIT-compatible licenses. See [licenses/](licens
 
 The SDK code itself is free to use - service access requires registration.
 
-For questions contact: **info@pentagi.com** or **info@vxcontrol.com**
+For questions contact: **info@pentagentx.com** or **info@vxcontrol.com**

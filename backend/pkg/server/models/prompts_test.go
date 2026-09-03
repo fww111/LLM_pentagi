@@ -3,7 +3,7 @@ package models
 import (
 	"testing"
 
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/templates"
 
 	"github.com/stretchr/testify/assert"
 )

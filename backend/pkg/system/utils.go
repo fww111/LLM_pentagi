@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"pentagi/pkg/config"
+	"pentagentx/pkg/config"
 )
 
 const (
@@ -90,7 +90,7 @@ func GetHTTPClient(cfg *config.Config) (*http.Client, error) {
 	if cfg.ProxyURL != "" {
 		httpClient = &http.Client{
 			Timeout: timeout,
-			Transport: &http.Transport{
+			Transport: newRetryRoundTripper(&http.Transport{
 				Proxy: func(req *http.Request) (*url.URL, error) {
 					return url.Parse(cfg.ProxyURL)
 				},
@@ -98,17 +98,17 @@ func GetHTTPClient(cfg *config.Config) (*http.Client, error) {
 					RootCAs:            rootCAPool,
 					InsecureSkipVerify: cfg.ExternalSSLInsecure,
 				},
-			},
+			}),
 		}
 	} else {
 		httpClient = &http.Client{
 			Timeout: timeout,
-			Transport: &http.Transport{
+			Transport: newRetryRoundTripper(&http.Transport{
 				TLSClientConfig: &tls.Config{
 					RootCAs:            rootCAPool,
 					InsecureSkipVerify: cfg.ExternalSSLInsecure,
 				},
-			},
+			}),
 		}
 	}
 

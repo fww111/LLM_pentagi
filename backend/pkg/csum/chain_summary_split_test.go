@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/pkg/cast"
-	"pentagi/pkg/templates"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/cast"
+	"pentagentx/pkg/templates"
+	"pentagentx/pkg/tools"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/vxcontrol/langchaingo/llms"

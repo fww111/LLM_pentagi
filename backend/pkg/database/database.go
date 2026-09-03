@@ -8,7 +8,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	obs "pentagi/pkg/observability"
+	obs "pentagentx/pkg/observability"
 
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
@@ -108,7 +108,7 @@ func (*GormLogger) Print(v ...interface{}) {
 		}
 		logrus.WithContext(ctx).WithFields(
 			logrus.Fields{
-				"component":     "pentagi-gorm",
+				"component":     "pentagentx-gorm",
 				"type":          "sql",
 				"rows_returned": v[5],
 				"src":           v[1],
@@ -117,7 +117,7 @@ func (*GormLogger) Print(v ...interface{}) {
 			},
 		).Info(query)
 	case "log":
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"component": "pentagi-gorm"}).Info(v[2])
+		logrus.WithContext(ctx).WithFields(logrus.Fields{"component": "pentagentx-gorm"}).Info(v[2])
 	case "info":
 		// do not log validators
 	}

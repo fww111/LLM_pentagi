@@ -11,8 +11,8 @@ import (
 	"runtime"
 	"time"
 
-	"pentagi/cmd/installer/checker"
-	"pentagi/pkg/version"
+	"pentagentx/cmd/installer/checker"
+	"pentagentx/pkg/version"
 )
 
 const updateServerURL = "https://update.pentagi.com"

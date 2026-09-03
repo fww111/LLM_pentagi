@@ -3,11 +3,11 @@
 package blobstorageintegrations
 
 import (
-    internal "pentagi/pkg/observability/langfuse/api/internal"
-    core "pentagi/pkg/observability/langfuse/api/core"
+    internal "pentagentx/pkg/observability/langfuse/api/internal"
+    core "pentagentx/pkg/observability/langfuse/api/core"
     context "context"
-    option "pentagi/pkg/observability/langfuse/api/option"
-    api "pentagi/pkg/observability/langfuse/api"
+    option "pentagentx/pkg/observability/langfuse/api/option"
+    api "pentagentx/pkg/observability/langfuse/api"
     http "net/http"
 )
 

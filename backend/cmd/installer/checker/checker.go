@@ -8,15 +8,15 @@ import (
 	"runtime"
 	"sync"
 
-	"pentagi/cmd/installer/state"
-	"pentagi/pkg/version"
+	"pentagentx/cmd/installer/state"
+	"pentagentx/pkg/version"
 
 	"github.com/docker/docker/client"
 )
 
 var (
 	InstallerVersion = version.GetBinaryVersion()
-	UserAgent        = "PentAGI-Installer/" + InstallerVersion
+	UserAgent        = "PentAgentX-Installer/" + InstallerVersion
 )
 
 const (
@@ -275,7 +275,7 @@ func (c *CheckResult) CanRemoveAll() bool { return c.CanFactoryReset() }
 // CanPurgeAll returns true when any compose stack is installed
 func (c *CheckResult) CanPurgeAll() bool { return c.CanFactoryReset() }
 
-// CanResetPassword returns true when PentAGI is running
+// CanResetPassword returns true when PentAgentX is running
 func (c *CheckResult) CanResetPassword() bool { return c.PentagiRunning }
 
 // CanInstallAll returns true when main stack is not installed yet
@@ -571,7 +571,7 @@ func (h *defaultCheckHandler) GatherUpdatesInfo(ctx context.Context, c *CheckRes
 		ObservabilityInstalled: c.ObservabilityInstalled,
 	}
 
-	// get PentAGI container image info
+	// get PentAgentX container image info
 	if h.dockerClient != nil && c.PentagiInstalled {
 		if imageInfo := getContainerImageInfo(ctx, h.dockerClient, PentagiContainerName); imageInfo != nil {
 			request.PentagiImageName = &imageInfo.Name

@@ -22,7 +22,7 @@ API_PORT=8080`
 
 	os.WriteFile(envPath, []byte(initialContent), 0644)
 
-	fmt.Println("=== PentAGI Configuration Manager ===")
+	fmt.Println("=== PentAgentX Configuration Manager ===")
 	fmt.Println("Starting configuration process...")
 
 	// Step 1: Initialize state management
@@ -71,7 +71,7 @@ API_PORT=8080`
 	fmt.Printf("State file exists: %v\n", state.Exists())
 
 	// Output:
-	// === PentAGI Configuration Manager ===
+	// === PentAgentX Configuration Manager ===
 	// Starting configuration process...
 	//
 	// --- Step 1: Database Configuration ---

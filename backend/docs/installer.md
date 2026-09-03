@@ -1,8 +1,8 @@
-# PentAGI Installer Documentation
+# PentAgentX Installer Documentation
 
 ## Overview
 
-The PentAGI installer provides a robust Terminal User Interface (TUI) for configuring the application. Built using the [Charm](https://charm.sh/) tech stack (bubbletea, lipgloss, bubbles), it implements modern responsive design patterns optimized for terminal environments.
+The PentAgentX installer provides a robust Terminal User Interface (TUI) for configuring the application. Built using the [Charm](https://charm.sh/) tech stack (bubbletea, lipgloss, bubbles), it implements modern responsive design patterns optimized for terminal environments.
 
 ## ⚠️ Development Constraints & TUI Workflow
 
@@ -891,7 +891,7 @@ coreChecks := []struct {
 **Implementation**:
 ```go
 // Multi-line text stored as single constants
-const MainMenuLLMProvidersInfo = `Configure AI language model providers for PentAGI.
+const MainMenuLLMProvidersInfo = `Configure AI language model providers for PentAgentX.
 
 Supported providers:
 • OpenAI (GPT-4, GPT-3.5-turbo)

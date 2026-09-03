@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/server/auth"
-	"pentagi/pkg/server/models"
+	"pentagentx/pkg/server/auth"
+	"pentagentx/pkg/server/models"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"

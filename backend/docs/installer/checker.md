@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `checker` package is responsible for gathering system facts and verifying installation prerequisites for PentAGI. It performs comprehensive system analysis to determine the current state of the installation and what operations are available.
+The `checker` package is responsible for gathering system facts and verifying installation prerequisites for PentAgentX. It performs comprehensive system analysis to determine the current state of the installation and what operations are available.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ The `checker` package is responsible for gathering system facts and verifying in
 
 #### CheckResult Structure
 Central data structure that holds all system check results:
-- Installation status for each component (PentAGI, Langfuse, Observability)
+- Installation status for each component (PentAgentX, Langfuse, Observability)
 - System resource availability (CPU, memory, disk)
 - Docker environment status
 - Network connectivity status
@@ -56,14 +56,14 @@ type CheckHandler interface {
 ### 2. Component Installation Checks
 - **File Existence**: Verifies presence of docker-compose files
 - **Container Status**: Checks if containers exist and their running state
-- **Script Installation**: Verifies PentAGI CLI script in /usr/local/bin
+- **Script Installation**: Verifies PentAgentX CLI script in /usr/local/bin
 
 ### 3. System Resource Checks
 - **Write Permissions**: Verifies write access to configuration directory
 - **CPU**: Minimum 2 CPU cores required
 - **Memory**: Dynamic calculation based on components to be installed
   - Base: 0.5GB free
-  - PentAGI: +0.5GB
+  - PentAgentX: +0.5GB
   - Langfuse: +1.5GB
   - Observability: +1.5GB
 - **Disk Space**: Context-aware requirements
@@ -81,7 +81,7 @@ Three-tier verification process:
 - Communicates with update server to check latest versions
 - Sends current component versions and configuration
 - Supports proxy configuration
-- Checks updates for: Installer, PentAGI, Langfuse, Observability, Worker images
+- Checks updates for: Installer, PentAgentX, Langfuse, Observability, Worker images
 
 ## Public API
 

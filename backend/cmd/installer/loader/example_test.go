@@ -13,7 +13,7 @@ func ExampleEnvFile_workflow() {
 	defer os.RemoveAll(tmpDir)
 
 	envPath := filepath.Join(tmpDir, ".env")
-	initialContent := `# PentAGI Configuration
+	initialContent := `# PentAgentX Configuration
 DATABASE_URL=postgres://localhost:5432/db
 DEBUG=false
 # API Settings

@@ -21,9 +21,9 @@ resolver:
 
 # Automatic type binding from existing Go packages
 autobind:
-#  - "pentagi/pkg/database"
-#  - "pentagi/pkg/graph/model"
-#  - "pentagi/pkg/providers"
+#  - "pentagentx/pkg/database"
+#  - "pentagentx/pkg/graph/model"
+#  - "pentagentx/pkg/providers"
 
 # GraphQL to Go type mappings
 models:
@@ -56,10 +56,10 @@ models:
   
   # Reuse existing Go types for input objects (avoids duplication)
   ReasoningConfigInput:
-    model: pentagi/pkg/graph/model.ReasoningConfig
+    model: pentagentx/pkg/graph/model.ReasoningConfig
   ModelPriceInput:
-    model: pentagi/pkg/graph/model.ModelPrice
+    model: pentagentx/pkg/graph/model.ModelPrice
   AgentConfigInput:
-    model: pentagi/pkg/graph/model.AgentConfig
+    model: pentagentx/pkg/graph/model.AgentConfig
   AgentsConfigInput:
-    model: pentagi/pkg/graph/model.AgentsConfig
+    model: pentagentx/pkg/graph/model.AgentsConfig

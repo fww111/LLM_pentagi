@@ -1,4 +1,4 @@
-module pentagi
+module pentagentx
 
 go 1.24.1
 

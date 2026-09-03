@@ -179,7 +179,7 @@ const LoginForm = ({ providers, returnUrl = '/flows/new' }: LoginFormProps) => {
                 className="mx-auto grid w-[350px] gap-8"
                 onSubmit={form.handleSubmit(handleSubmit)}
             >
-                <h1 className="text-center text-3xl font-bold">PentAGI</h1>
+                <h1 className="text-center text-3xl font-bold">PentAgentX</h1>
 
                 {providers?.length > 0 && (
                     <>

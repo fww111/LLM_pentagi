@@ -5,18 +5,18 @@ import (
 	"strconv"
 	"strings"
 
-	"pentagi/cmd/installer/loader"
-	"pentagi/cmd/installer/wizard/controller"
-	"pentagi/cmd/installer/wizard/locale"
-	"pentagi/cmd/installer/wizard/logger"
-	"pentagi/cmd/installer/wizard/styles"
-	"pentagi/cmd/installer/wizard/window"
+	"pentagentx/cmd/installer/loader"
+	"pentagentx/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/wizard/locale"
+	"pentagentx/cmd/installer/wizard/logger"
+	"pentagentx/cmd/installer/wizard/styles"
+	"pentagentx/cmd/installer/wizard/window"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/vxcontrol/cloud/sdk"
 )
 
-// ServerSettingsFormModel represents the PentAGI server settings configuration form
+// ServerSettingsFormModel represents the PentAgentX server settings configuration form
 type ServerSettingsFormModel struct {
 	*BaseScreen
 }

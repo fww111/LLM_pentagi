@@ -1543,15 +1543,15 @@ definitions:
     type: object
 info:
   contact:
-    email: team@pentagi.com
-    name: PentAGI Development Team
-    url: https://pentagi.com
-  description: Swagger API for Penetration Testing Advanced General Intelligence PentAGI.
+    email: team@pentagentx.com
+    name: PentAgentX Development Team
+    url: https://pentagentx.com
+  description: Swagger API for Penetration Testing Advanced General Intelligence PentAgentX.
   license:
     name: MIT
     url: https://opensource.org/license/mit
   termsOfService: http://swagger.io/terms/
-  title: PentAGI Swagger API
+  title: PentAgentX Swagger API
   version: "1.0"
 paths:
   /agentlogs/:

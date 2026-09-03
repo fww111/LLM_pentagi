@@ -8,9 +8,9 @@ import (
 	"sync"
 	"testing"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
 
 	"github.com/vxcontrol/langchaingo/httputil"
 )

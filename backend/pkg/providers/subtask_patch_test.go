@@ -4,8 +4,8 @@ import (
 	"io"
 	"testing"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/tools"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"

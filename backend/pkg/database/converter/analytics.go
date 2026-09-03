@@ -2,8 +2,8 @@ package converter
 
 import (
 	"math"
-	"pentagi/pkg/database"
-	"pentagi/pkg/graph/model"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graph/model"
 	"sort"
 	"time"
 )

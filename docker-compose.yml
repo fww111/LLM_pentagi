@@ -1,7 +1,7 @@
 volumes:
   pentagi-data:
     driver: local
-  pentagi-langgraph-data:
+  pentagentx-langgraph-data:
     driver: local
   pentagi-ssl:
     driver: local
@@ -13,9 +13,11 @@ volumes:
     driver: local
 
 networks:
-  pentagi-network:
+  pentagentx-network:
     driver: bridge
-    name: pentagi-network
+    name: pentagentx-network
+    driver_opts:
+      com.docker.network.driver.mtu: "1400"
   observability-network:
     driver: bridge
     name: observability-network
@@ -24,11 +26,11 @@ networks:
     name: langfuse-network
 
 services:
-  pentagi:
-    image: ${PENTAGI_IMAGE:-vxcontrol/pentagi:latest}
+  pentagentx:
+    image: ${PENTAGI_IMAGE:-local/pentagentx:latest}
     restart: unless-stopped
-    container_name: pentagi
-    hostname: pentagi
+    container_name: pentagentx
+    hostname: pentagentx
     expose:
       - 8443/tcp
     ports:
@@ -106,7 +108,7 @@ services:
       - ASSISTANT_SUMMARIZER_KEEP_QA_SECTIONS=${ASSISTANT_SUMMARIZER_KEEP_QA_SECTIONS:-}
       - LANGGRAPH_ENABLED=${LANGGRAPH_ENABLED:-false}
       - LANGGRAPH_URL=${LANGGRAPH_URL:-http://orchestrator:8091}
-      - LANGGRAPH_INTERNAL_TOKEN=${LANGGRAPH_INTERNAL_TOKEN:-pentagi-internal-dev-token}
+      - LANGGRAPH_INTERNAL_TOKEN=${LANGGRAPH_INTERNAL_TOKEN:-pentagentx-internal-dev-token}
       - LANGGRAPH_TIMEOUT=${LANGGRAPH_TIMEOUT:-3600}
       - EXECUTION_MONITOR_ENABLED=${EXECUTION_MONITOR_ENABLED:-}
       - EXECUTION_MONITOR_SAME_TOOL_LIMIT=${EXECUTION_MONITOR_SAME_TOOL_LIMIT:-}
@@ -176,16 +178,19 @@ services:
         max-size: 50m
         max-file: "7"
     volumes:
-      - ${PENTAGI_DATA_DIR:-pentagi-data}:/opt/pentagi/data
-      - ${PENTAGI_SSL_DIR:-pentagi-ssl}:/opt/pentagi/ssl
+      - ${PENTAGI_DATA_DIR:-pentagi-data}:/opt/pentagentx/data
+      - ${PENTAGI_SSL_DIR:-pentagi-ssl}:/opt/pentagentx/ssl
       - ${PENTAGI_OLLAMA_DIR:-pentagi-ollama}:/root/.ollama
       - ${PENTAGI_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
-      - ${PENTAGI_LLM_SERVER_CONFIG_PATH:-./example.custom.provider.yml}:/opt/pentagi/conf/custom.provider.yml
-      - ${PENTAGI_OLLAMA_SERVER_CONFIG_PATH:-./example.ollama.provider.yml}:/opt/pentagi/conf/ollama.provider.yml
-      - ${PENTAGI_DOCKER_CERT_PATH:-./docker-ssl}:/opt/pentagi/docker/ssl
+      - ${PENTAGI_LLM_SERVER_CONFIG_PATH:-./example.custom.provider.yml}:/opt/pentagentx/conf/custom.provider.yml
+      - ${PENTAGI_OLLAMA_SERVER_CONFIG_PATH:-./example.ollama.provider.yml}:/opt/pentagentx/conf/ollama.provider.yml
+      - ${PENTAGI_DOCKER_CERT_PATH:-./docker-ssl}:/opt/pentagentx/docker/ssl
     user: root:root # while using docker.sock
+    # pin LLM API domain to the healthy backend IP (local DNS sometimes returns a dead node)
+    extra_hosts:
+      - "api.vectorengine.cn=40.160.33.47"
     networks:
-      - pentagi-network
+      - pentagentx-network
       - observability-network
       - langfuse-network
 
@@ -193,15 +198,15 @@ services:
     build:
       context: ./orchestrator
     restart: unless-stopped
-    container_name: pentagi-orchestrator
+    container_name: pentagentx-orchestrator
     hostname: orchestrator
     expose:
       - 8091/tcp
     environment:
-      - PENTAGI_INTERNAL_BASE_URL=${PENTAGI_INTERNAL_BASE_URL:-https://pentagi:8443/api/v1/internal/orchestrator}
+      - PENTAGI_INTERNAL_BASE_URL=${PENTAGI_INTERNAL_BASE_URL:-https://pentagentx:8443/api/v1/internal/orchestrator}
       - PENTAGI_INTERNAL_VERIFY_SSL=${PENTAGI_INTERNAL_VERIFY_SSL:-false}
-      - LANGGRAPH_INTERNAL_TOKEN=${LANGGRAPH_INTERNAL_TOKEN:-pentagi-internal-dev-token}
-      - LANGGRAPH_CHECKPOINT_PATH=${LANGGRAPH_CHECKPOINT_PATH:-/var/lib/pentagi-langgraph/langgraph-checkpoints.sqlite}
+      - LANGGRAPH_INTERNAL_TOKEN=${LANGGRAPH_INTERNAL_TOKEN:-pentagentx-internal-dev-token}
+      - LANGGRAPH_CHECKPOINT_PATH=${LANGGRAPH_CHECKPOINT_PATH:-/var/lib/pentagentx-langgraph/langgraph-checkpoints.sqlite}
       - LANGGRAPH_HOST=${LANGGRAPH_HOST:-0.0.0.0}
       - LANGGRAPH_PORT=${LANGGRAPH_PORT:-8091}
       - ORCHESTRATOR_LOG_LEVEL=${ORCHESTRATOR_LOG_LEVEL:-INFO}
@@ -210,9 +215,9 @@ services:
         max-size: 50m
         max-file: "7"
     volumes:
-      - ${PENTAGI_LANGGRAPH_DATA_DIR:-pentagi-langgraph-data}:/var/lib/pentagi-langgraph
+      - ${PENTAGI_LANGGRAPH_DATA_DIR:-pentagi-langgraph-data}:/var/lib/pentagentx-langgraph
     networks:
-      - pentagi-network
+      - pentagentx-network
 
   pgvector:
     image: vxcontrol/pgvector:latest
@@ -240,7 +245,7 @@ services:
     volumes:
       - pentagi-postgres-data:/var/lib/postgresql/data
     networks:
-      - pentagi-network
+      - pentagentx-network
 
   pgexporter:
     image: quay.io/prometheuscommunity/postgres-exporter:v0.16.0
@@ -261,7 +266,7 @@ services:
         max-size: 50m
         max-file: "7"
     networks:
-      - pentagi-network
+      - pentagentx-network
 
   scraper:
     image: vxcontrol/scraper:latest
@@ -283,5 +288,5 @@ services:
     volumes:
       - scraper-ssl:/usr/src/app/ssl
     networks:
-      - pentagi-network
+      - pentagentx-network
     shm_size: 2g

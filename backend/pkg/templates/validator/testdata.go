@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"time"
 
-	"pentagi/pkg/cast"
-	"pentagi/pkg/csum"
-	"pentagi/pkg/database"
-	"pentagi/pkg/providers"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/cast"
+	"pentagentx/pkg/csum"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/tools"
 )
 
 // CreateDummyTemplateData creates realistic test data that matches the actual data types used in production

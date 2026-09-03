@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	obs "pentagi/pkg/observability"
+	obs "pentagentx/pkg/observability"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/gin-gonic/gin"

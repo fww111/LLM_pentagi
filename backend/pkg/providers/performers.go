@@ -8,12 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/cast"
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/templates"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/cast"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/templates"
+	"pentagentx/pkg/tools"
 
 	"github.com/sirupsen/logrus"
 	"github.com/vxcontrol/langchaingo/llms"

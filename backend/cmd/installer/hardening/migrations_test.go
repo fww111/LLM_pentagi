@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/cmd/installer/loader"
-	"pentagi/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/loader"
+	"pentagentx/cmd/installer/wizard/controller"
 )
 
 // Test 1: Successful migrations for all variables

@@ -4,9 +4,9 @@ import (
 	"os"
 	"slices"
 
-	"pentagi/cmd/installer/files"
-	"pentagi/cmd/installer/state"
-	"pentagi/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/files"
+	"pentagentx/cmd/installer/state"
+	"pentagentx/cmd/installer/wizard/controller"
 )
 
 type checkPathType string

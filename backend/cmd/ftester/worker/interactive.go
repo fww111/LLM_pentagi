@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"pentagi/pkg/terminal"
+	"pentagentx/pkg/terminal"
 )
 
 // InteractiveFillArgs interactively fills in missing function arguments

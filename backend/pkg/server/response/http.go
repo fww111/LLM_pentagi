@@ -3,8 +3,8 @@ package response
 import (
 	"fmt"
 
-	"pentagi/pkg/server/logger"
-	"pentagi/pkg/version"
+	"pentagentx/pkg/server/logger"
+	"pentagentx/pkg/version"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

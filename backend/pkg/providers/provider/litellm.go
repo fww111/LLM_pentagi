@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/pconfig"
 )
 
 // ApplyModelPrefix adds provider prefix to model name if prefix is not empty.

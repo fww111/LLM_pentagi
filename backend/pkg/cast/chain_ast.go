@@ -2,7 +2,7 @@ package cast
 
 import (
 	"fmt"
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/templates"
 	"sort"
 	"strings"
 

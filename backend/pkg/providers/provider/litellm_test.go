@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/pconfig"
 )
 
 func TestApplyModelPrefix(t *testing.T) {

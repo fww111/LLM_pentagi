@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"pentagi/cmd/installer/processor"
-	"pentagi/cmd/installer/wizard/controller"
-	"pentagi/cmd/installer/wizard/locale"
-	"pentagi/cmd/installer/wizard/styles"
-	"pentagi/cmd/installer/wizard/terminal"
-	"pentagi/cmd/installer/wizard/window"
+	"pentagentx/cmd/installer/processor"
+	"pentagentx/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/wizard/locale"
+	"pentagentx/cmd/installer/wizard/styles"
+	"pentagentx/cmd/installer/wizard/terminal"
+	"pentagentx/cmd/installer/wizard/window"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

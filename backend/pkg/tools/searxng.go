@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/system"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/system"
 
 	"github.com/sirupsen/logrus"
 )
@@ -152,7 +152,7 @@ func (s *searxng) search(ctx context.Context, query string, maxResults int) (str
 		return "", fmt.Errorf("failed to create request: %w", err)
 	}
 
-	req.Header.Set("User-Agent", "PentAGI/1.0")
+	req.Header.Set("User-Agent", "PentAgentX/1.0")
 
 	resp, err := client.Do(req)
 	if err != nil {

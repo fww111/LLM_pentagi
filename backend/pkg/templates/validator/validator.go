@@ -7,7 +7,7 @@ import (
 	"text/template"
 	"text/template/parse"
 
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/templates"
 )
 
 // ValidationError represents different types of validation errors

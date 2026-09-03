@@ -1,4 +1,4 @@
-# SQLC configuration for PentAGI database layer code generation
+# SQLC configuration for PentAgentX database layer code generation
 # Generates type-safe Go code from SQL queries and PostgreSQL schema
 version: "2"
 cloud:

@@ -3,7 +3,7 @@ package converter
 import (
 	"database/sql"
 	"math"
-	"pentagi/pkg/database"
+	"pentagentx/pkg/database"
 	"testing"
 	"time"
 )

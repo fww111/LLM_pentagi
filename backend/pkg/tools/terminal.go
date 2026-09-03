@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/docker"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/docker"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/sirupsen/logrus"
@@ -27,7 +27,7 @@ const (
 	defaultQuickCheckTimeout  = 500 * time.Millisecond
 	timeoutCleanupTimeout     = 5 * time.Second
 
-	// ANSI terminal color codes (aligned with PentAGI UI palette)
+	// ANSI terminal color codes (aligned with PentAgentX UI palette)
 	ansiColorInputCmd  = "\033[96m" // Bright Cyan - matches UI blue accents
 	ansiColorSystemMsg = "\033[92m" // Bright Green - universal success/info
 	ansiColorReset     = "\033[0m"  // Reset to default
@@ -729,7 +729,7 @@ func (t *terminal) WriteFile(ctx context.Context, flowID int64, content string, 
 }
 
 func PrimaryTerminalName(flowID int64) string {
-	return fmt.Sprintf("pentagi-terminal-%d", flowID)
+	return fmt.Sprintf("pentagentx-terminal-%d", flowID)
 }
 
 func (t *terminal) IsAvailable() bool {

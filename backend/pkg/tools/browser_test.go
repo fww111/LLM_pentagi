@@ -412,7 +412,7 @@ func TestBrowserHandle_ValidationErrors(t *testing.T) {
 
 	t.Run("unknown action", func(t *testing.T) {
 		_, err := b.Handle(t.Context(), "browser", json.RawMessage(`{"url":"https://example.com","action":"unknown","message":"m"}`))
-		if err == nil || !strings.Contains(err.Error(), "unknown file action") {
+		if err == nil || !strings.Contains(err.Error(), "unknown browser action") {
 			t.Fatalf("expected unknown action error, got: %v", err)
 		}
 	})

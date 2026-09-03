@@ -1,4 +1,4 @@
-# PentAGI Installer Troubleshooting Guide
+# PentAgentX Installer Troubleshooting Guide
 
 > Comprehensive troubleshooting guide including recent fixes, performance optimization, and common issues.
 
@@ -73,7 +73,7 @@ func (m *MenuModel) handleSelection() (tea.Model, tea.Cmd) {
 **Implementation**:
 ```go
 // Multi-line text stored as single constants
-const MainMenuLLMProvidersInfo = `Configure AI language model providers for PentAGI.
+const MainMenuLLMProvidersInfo = `Configure AI language model providers for PentAgentX.
 
 Supported providers:
 • OpenAI (GPT-4, GPT-3.5-turbo)

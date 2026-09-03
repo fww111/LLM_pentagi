@@ -9,10 +9,10 @@ import (
 	"strings"
 	"sync"
 
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/templates"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/templates"
 
 	"github.com/google/uuid"
 	"github.com/vxcontrol/langchaingo/llms"

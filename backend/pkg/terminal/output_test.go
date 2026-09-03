@@ -291,7 +291,7 @@ func TestColoredOutputFunctions_DoNotPanic(t *testing.T) {
 
 func TestPrintKeyValue_DoesNotPanic(t *testing.T) {
 	assert.NotPanics(t, func() {
-		PrintKeyValue("Name", "PentAGI")
+		PrintKeyValue("Name", "PentAgentX")
 	})
 }
 

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/providers/pconfig"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/providers/pconfig"
 
 	awshttp "github.com/aws/aws-sdk-go-v2/aws/transport/http"
 	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime/types"

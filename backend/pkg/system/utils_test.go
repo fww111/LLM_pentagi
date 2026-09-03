@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/config"
+	"pentagentx/pkg/config"
 )
 
 // testCerts holds generated test certificates
@@ -87,7 +87,7 @@ func generateTestCerts() (*testCerts, error) {
 		SerialNumber: rootSerial,
 		Subject: pkix.Name{
 			CommonName:   "Test Root CA",
-			Organization: []string{"PentAGI Test"},
+			Organization: []string{"PentAgentX Test"},
 		},
 		NotBefore:             time.Now(),
 		NotAfter:              time.Now().Add(24 * time.Hour),
@@ -122,7 +122,7 @@ func generateTestCerts() (*testCerts, error) {
 		SerialNumber: intermediateSerial,
 		Subject: pkix.Name{
 			CommonName:   "Test Intermediate CA",
-			Organization: []string{"PentAGI Test"},
+			Organization: []string{"PentAgentX Test"},
 		},
 		NotBefore:             time.Now(),
 		NotAfter:              time.Now().Add(24 * time.Hour),
@@ -157,7 +157,7 @@ func generateTestCerts() (*testCerts, error) {
 		SerialNumber: serverSerial,
 		Subject: pkix.Name{
 			CommonName:   "localhost",
-			Organization: []string{"PentAGI Test Server"},
+			Organization: []string{"PentAgentX Test Server"},
 		},
 		NotBefore:             time.Now(),
 		NotAfter:              time.Now().Add(24 * time.Hour),
@@ -421,7 +421,11 @@ func TestGetHTTPClient_NoProxy(t *testing.T) {
 		t.Fatal("expected non-nil HTTP client")
 	}
 
-	transport, ok := client.Transport.(*http.Transport)
+	retryRt, ok := client.Transport.(*retryRoundTripper)
+	if !ok {
+		t.Fatal("expected retryRoundTripper")
+	}
+	transport, ok := retryRt.base.(*http.Transport)
 	if !ok {
 		t.Fatal("expected http.Transport")
 	}
@@ -453,7 +457,11 @@ func TestGetHTTPClient_WithProxy(t *testing.T) {
 		t.Fatal("expected non-nil HTTP client")
 	}
 
-	transport, ok := client.Transport.(*http.Transport)
+	retryRt, ok := client.Transport.(*retryRoundTripper)
+	if !ok {
+		t.Fatal("expected retryRoundTripper")
+	}
+	transport, ok := retryRt.base.(*http.Transport)
 	if !ok {
 		t.Fatal("expected http.Transport")
 	}
@@ -475,7 +483,11 @@ func TestGetHTTPClient_InsecureSkipVerify(t *testing.T) {
 		t.Fatalf("expected no error, got: %v", err)
 	}
 
-	transport, ok := client.Transport.(*http.Transport)
+	retryRt, ok := client.Transport.(*retryRoundTripper)
+	if !ok {
+		t.Fatal("expected retryRoundTripper")
+	}
+	transport, ok := retryRt.base.(*http.Transport)
 	if !ok {
 		t.Fatal("expected http.Transport")
 	}

@@ -1,9 +1,9 @@
 package models
 
 import (
-	"pentagi/cmd/installer/loader"
-	"pentagi/cmd/installer/wizard/styles"
-	"pentagi/cmd/installer/wizard/window"
+	"pentagentx/cmd/installer/loader"
+	"pentagentx/cmd/installer/wizard/styles"
+	"pentagentx/cmd/installer/wizard/window"
 
 	"github.com/charmbracelet/bubbles/textinput"
 )

@@ -1,4 +1,4 @@
-# PentAGI Agent 改造方案 — 执行流程驱动
+# PentAgentX Agent 改造方案 — 执行流程驱动
 
 > 基于《多智能体协同与调度规范 v1.0》，按执行流程描述改造后的完整系统。
 > 核心原则：直接替换原编排层，不保留旧链路，不建兼容映射。
@@ -1234,7 +1234,7 @@ CREATE TABLE todos (
     inputs TEXT,
     success_criteria TEXT,
     evidence_requirements JSONB DEFAULT '[]',
-    data JSONB,                    -- Todo 扩展字段（PentAGI 特有）
+    data JSONB,                    -- Todo 扩展字段（PentAgentX 特有）
     todo_status_code INT DEFAULT 0,  -- Todo 级别状态码（0=pending, 1=ready, 2=running, 3=done, 4=failed, 5=skipped, 6=blocked）
     status VARCHAR(32) DEFAULT 'pending',
     result TEXT,

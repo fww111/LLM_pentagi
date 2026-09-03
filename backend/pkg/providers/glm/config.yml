@@ -1,5 +1,5 @@
 simple:
-  model: "glm-4.7-flashx"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -8,7 +8,7 @@ simple:
     cache_read: 0.01
 
 simple_json:
-  model: "glm-4.7-flashx"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -17,7 +17,7 @@ simple_json:
     cache_read: 0.01
 
 primary_agent:
-  model: "glm-5"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -26,7 +26,7 @@ primary_agent:
     cache_read: 0.20
 
 assistant:
-  model: "glm-5"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -35,7 +35,7 @@ assistant:
     cache_read: 0.20
 
 generator:
-  model: "glm-5"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -44,7 +44,7 @@ generator:
     cache_read: 0.20
 
 refiner:
-  model: "glm-5"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -53,7 +53,7 @@ refiner:
     cache_read: 0.20
 
 adviser:
-  model: "glm-5"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -62,7 +62,7 @@ adviser:
     cache_read: 0.20
 
 reflector:
-  model: "glm-4.5-air"
+  model: "glm-5.3-flash"
   temperature: 0.7
   n: 1
   price:
@@ -71,7 +71,7 @@ reflector:
     cache_read: 0.03
 
 searcher:
-  model: "glm-4.5-air"
+  model: "glm-5.3-flash"
   temperature: 0.7
   n: 1
   price:
@@ -80,7 +80,7 @@ searcher:
     cache_read: 0.03
 
 enricher:
-  model: "glm-4.5-air"
+  model: "glm-5.3-flash"
   temperature: 0.7
   n: 1
   price:
@@ -89,7 +89,7 @@ enricher:
     cache_read: 0.03
 
 coder:
-  model: "glm-5"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -98,7 +98,7 @@ coder:
     cache_read: 0.20
 
 installer:
-  model: "glm-4.7"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
@@ -107,10 +107,38 @@ installer:
     cache_read: 0.11
 
 pentester:
-  model: "glm-4.7"
+  model: "glm-5.3-flash"
   temperature: 1.0
   n: 1
   price:
     input: 0.60
     output: 2.20
     cache_read: 0.11
+
+# Multi-agent core roles - use glm-5 (verified stable for streaming tool calls)
+designer:
+  model: "glm-5"
+  temperature: 1.0
+  n: 1
+  price:
+    input: 1.00
+    output: 3.20
+    cache_read: 0.20
+
+planner:
+  model: "glm-5"
+  temperature: 1.0
+  n: 1
+  price:
+    input: 1.00
+    output: 3.20
+    cache_read: 0.20
+
+supervisor:
+  model: "glm-5"
+  temperature: 1.0
+  n: 1
+  price:
+    input: 1.00
+    output: 3.20
+    cache_read: 0.20

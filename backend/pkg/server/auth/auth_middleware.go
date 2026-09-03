@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/server/models"
-	"pentagi/pkg/server/rdb"
-	"pentagi/pkg/server/response"
+	"pentagentx/pkg/server/models"
+	"pentagentx/pkg/server/rdb"
+	"pentagentx/pkg/server/response"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

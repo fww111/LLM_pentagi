@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/graph/subscriptions"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graph/subscriptions"
 )
 
 type FlowAgentLogWorker interface {

@@ -14,17 +14,17 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/controller"
-	"pentagi/pkg/database"
-	"pentagi/pkg/graph/subscriptions"
-	"pentagi/pkg/providers"
-	"pentagi/pkg/server/auth"
-	"pentagi/pkg/server/logger"
-	"pentagi/pkg/server/oauth"
-	"pentagi/pkg/server/services"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/controller"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graph/subscriptions"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/server/auth"
+	"pentagentx/pkg/server/logger"
+	"pentagentx/pkg/server/oauth"
+	"pentagentx/pkg/server/services"
 
-	_ "pentagi/pkg/server/docs" // swagger docs
+	_ "pentagentx/pkg/server/docs" // swagger docs
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
@@ -53,14 +53,14 @@ var frontendRoutes = []string{
 	"/dashboard",
 }
 
-// @title PentAGI Swagger API
+// @title PentAgentX Swagger API
 // @version 1.0
-// @description Swagger API for Penetration Testing Advanced General Intelligence PentAGI.
+// @description Swagger API for Penetration Testing Advanced General Intelligence PentAgentX.
 // @termsOfService http://swagger.io/terms/
 
-// @contact.url https://pentagi.com
-// @contact.name PentAGI Development Team
-// @contact.email team@pentagi.com
+// @contact.url https://pentagentx.com
+// @contact.name PentAgentX Development Team
+// @contact.email team@pentagentx.com
 
 // @license.name MIT
 // @license.url https://opensource.org/license/mit
@@ -182,7 +182,7 @@ func NewRouter(
 	}
 
 	router.Use(gin.Recovery())
-	router.Use(logger.WithGinLogger("pentagi-api"))
+	router.Use(logger.WithGinLogger("pentagentx-api"))
 
 	cookieStore := cookie.NewStore(auth.MakeCookieStoreKey(cfg.CookieSigningSalt)...)
 	router.Use(sessions.Sessions("auth", cookieStore))

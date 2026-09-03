@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"pentagi/pkg/terminal"
+	"pentagentx/pkg/terminal"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/pgvector/pgvector-go"

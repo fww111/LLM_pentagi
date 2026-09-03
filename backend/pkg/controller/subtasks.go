@@ -7,7 +7,7 @@ import (
 	"sort"
 	"sync"
 
-	"pentagi/pkg/database"
+	"pentagentx/pkg/database"
 )
 
 type NewSubtaskInfo struct {

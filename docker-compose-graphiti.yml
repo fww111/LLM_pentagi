@@ -3,10 +3,10 @@ volumes:
     driver: local
 
 networks:
-  pentagi-network:
+  pentagentx-network:
     driver: bridge
     external: true
-    name: pentagi-network
+    name: pentagentx-network
 
 services:
   neo4j:
@@ -32,7 +32,7 @@ services:
     environment:
       - NEO4J_AUTH=${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-devpassword}
     networks:
-      - pentagi-network
+      - pentagentx-network
     shm_size: 4g
 
   graphiti:
@@ -70,4 +70,4 @@ services:
       - OPENAI_API_KEY=${OPEN_AI_KEY:-}
       - PORT=8000
     networks:
-      - pentagi-network
+      - pentagentx-network

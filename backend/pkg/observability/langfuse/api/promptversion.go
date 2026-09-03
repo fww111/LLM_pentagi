@@ -5,7 +5,7 @@ package api
 import (
 	json "encoding/json"
 	big "math/big"
-	internal "pentagi/pkg/observability/langfuse/api/internal"
+	internal "pentagentx/pkg/observability/langfuse/api/internal"
 )
 
 var (

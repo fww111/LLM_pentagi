@@ -8,14 +8,14 @@
 - [Core Interfaces](#core-interfaces)
 - [Container Lifecycle Management](#container-lifecycle-management)
 - [Security and Isolation](#security-and-isolation)
-- [Integration with PentAGI](#integration-with-pentagi)
+- [Integration with PentAgentX](#integration-with-pentagentx)
 - [Usage Examples](#usage-examples)
 - [Error Handling](#error-handling)
 - [Best Practices](#best-practices)
 
 ## Overview
 
-The Docker client package (`backend/pkg/docker`) provides a secure and isolated containerized environment for PentAGI's AI agents to execute penetration testing operations. This package serves as a wrapper around the official Docker SDK, offering specialized functionality for managing containers that AI agents use to perform security testing tasks.
+The Docker client package (`backend/pkg/docker`) provides a secure and isolated containerized environment for PentAgentX's AI agents to execute penetration testing operations. This package serves as a wrapper around the official Docker SDK, offering specialized functionality for managing containers that AI agents use to perform security testing tasks.
 
 ### Key Features
 
@@ -28,9 +28,9 @@ The Docker client package (`backend/pkg/docker`) provides a secure and isolated 
 - **Resource Management**: Memory and CPU limits for controlled execution
 - **Volume Management**: Persistent and temporary storage solutions
 
-### Role in PentAGI Ecosystem
+### Role in PentAgentX Ecosystem
 
-The Docker client is a critical component that enables PentAGI's core promise of secure, isolated penetration testing. It provides the foundation for:
+The Docker client is a critical component that enables PentAgentX's core promise of secure, isolated penetration testing. It provides the foundation for:
 
 - **Terminal Access**: AI agents execute commands in isolated environments
 - **Tool Execution**: Professional pentesting tools run in dedicated containers
@@ -62,7 +62,7 @@ const limitContainerPortsNumber = 2000                // Maximum port range for 
 
 ### Port Allocation Strategy
 
-PentAGI uses a deterministic port allocation algorithm to ensure each flow gets unique, predictable ports:
+PentAgentX uses a deterministic port allocation algorithm to ensure each flow gets unique, predictable ports:
 
 ```go
 func GetPrimaryContainerPorts(flowID int64) []int {
@@ -89,8 +89,8 @@ The Docker client is configured through several environment variables defined in
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DOCKER_HOST` | `unix:///var/run/docker.sock` | Docker daemon connection |
-| `DOCKER_INSIDE` | `false` | Whether PentAGI communicates with host Docker daemon from containers |
-| `DOCKER_NET_ADMIN` | `false` | Whether PentAGI grants the primary container NET_ADMIN capability for advanced networking. |
+| `DOCKER_INSIDE` | `false` | Whether PentAgentX communicates with host Docker daemon from containers |
+| `DOCKER_NET_ADMIN` | `false` | Whether PentAgentX grants the primary container NET_ADMIN capability for advanced networking. |
 | `DOCKER_SOCKET` | `/var/run/docker.sock` | Path to Docker socket on host |
 | `DOCKER_NETWORK` | | Docker network for container communication (bridge mode) or `host` for host network mode |
 | `DOCKER_PUBLIC_IP` | `0.0.0.0` | Public IP for port binding (bridge mode only) |
@@ -118,7 +118,7 @@ type Config struct {
 
 ### NET_ADMIN Capability Configuration
 
-The `DOCKER_NET_ADMIN` option controls whether PentAGI containers are granted the `NET_ADMIN` Linux capability, which provides advanced networking permissions essential for many penetration testing operations.
+The `DOCKER_NET_ADMIN` option controls whether PentAgentX containers are granted the `NET_ADMIN` Linux capability, which provides advanced networking permissions essential for many penetration testing operations.
 
 #### Network Administration Capabilities
 
@@ -166,18 +166,18 @@ hostConfig := &container.HostConfig{
 
 ### Docker-in-Docker Support
 
-PentAGI supports running inside Docker containers while still managing other containers. This is controlled by the `DOCKER_INSIDE` setting:
+PentAgentX supports running inside Docker containers while still managing other containers. This is controlled by the `DOCKER_INSIDE` setting:
 
-- **`DOCKER_INSIDE=false`**: PentAGI runs on host, manages containers directly
-- **`DOCKER_INSIDE=true`**: PentAGI runs in container, mounts Docker socket to manage sibling containers
+- **`DOCKER_INSIDE=false`**: PentAgentX runs on host, manages containers directly
+- **`DOCKER_INSIDE=true`**: PentAgentX runs in container, mounts Docker socket to manage sibling containers
 
 ### Network Configuration
 
-PentAGI supports two network modes for container isolation:
+PentAgentX supports two network modes for container isolation:
 
 #### Bridge Network Mode (Default)
 
-When `DOCKER_NETWORK` is set to a custom network name (e.g., `pentagi-network`), containers are connected to an isolated bridge network:
+When `DOCKER_NETWORK` is set to a custom network name (e.g., `pentagentx-network`), containers are connected to an isolated bridge network:
 - **Isolated Communication**: Containers communicate only within the defined network
 - **Port Mapping**: Container ports are mapped to host ports for external access
 - **Service Discovery**: Enables internal DNS-based service discovery
@@ -197,7 +197,7 @@ When `DOCKER_NETWORK` is set to the special value `host`, containers use the hos
 
 ### DockerClient Interface
 
-The main interface defines all Docker operations available to PentAGI components:
+The main interface defines all Docker operations available to PentAgentX components:
 
 ```go
 type DockerClient interface {
@@ -309,7 +309,7 @@ hostConfig := &container.HostConfig{
 
 ### Container States and Transitions
 
-PentAGI tracks container states in the database:
+PentAgentX tracks container states in the database:
 
 - **`Starting`**: Container creation in progress
 - **`Running`**: Container is active and available
@@ -323,11 +323,11 @@ Containers follow a specific naming pattern for easy identification:
 
 ```go
 func PrimaryTerminalName(flowID int64) string {
-    return fmt.Sprintf("pentagi-terminal-%d", flowID)
+    return fmt.Sprintf("pentagentx-terminal-%d", flowID)
 }
 ```
 
-This creates names like `pentagi-terminal-123` for flow ID 123, making it easy to:
+This creates names like `pentagentx-terminal-123` for flow ID 123, making it easy to:
 - Identify containers belonging to specific flows
 - Perform flow-based cleanup operations
 - Debug container-related issues
@@ -354,7 +354,7 @@ The `Cleanup` method performs comprehensive cleanup:
 
 ### Container Security Model
 
-PentAGI implements a multi-layered security approach for container isolation:
+PentAgentX implements a multi-layered security approach for container isolation:
 
 #### Network Isolation
 - **Custom Networks**: Containers run in dedicated Docker networks
@@ -387,11 +387,11 @@ hostConfig := &container.HostConfig{
 4. **Automatic Cleanup**: Failed or abandoned containers are automatically removed
 5. **Socket Security**: Docker socket is only mounted when explicitly required
 
-## Integration with PentAGI
+## Integration with PentAgentX
 
 ### Tool Integration
 
-The Docker client integrates with PentAGI's tool system to provide terminal access:
+The Docker client integrates with PentAgentX's tool system to provide terminal access:
 
 ```go
 type terminal struct {
@@ -633,6 +633,6 @@ The Docker client handles several categories of errors:
 
 ### Integration Guidelines
 - Always use the DockerClient interface instead of direct Docker SDK calls
-- Integrate with PentAGI's database for state management
+- Integrate with PentAgentX's database for state management
 - Use the provided logging and observability infrastructure
 - Follow the established naming conventions for containers

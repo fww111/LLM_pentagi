@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"pentagi/cmd/installer/checker"
-	"pentagi/cmd/installer/files"
-	"pentagi/pkg/version"
+	"pentagentx/cmd/installer/checker"
+	"pentagentx/cmd/installer/files"
+	"pentagentx/pkg/version"
 )
 
 // newProcessorForLogicTests creates a processor with recording mocks and mock checker

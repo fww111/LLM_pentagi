@@ -3,9 +3,9 @@ package subscriptions
 import (
 	"context"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/database/converter"
-	"pentagi/pkg/providers/pconfig"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/database/converter"
+	"pentagentx/pkg/providers/pconfig"
 )
 
 type flowPublisher struct {

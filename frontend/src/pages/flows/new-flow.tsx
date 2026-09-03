@@ -66,7 +66,7 @@ const NewFlow = () => {
                     <CardContent className="flex flex-col gap-4 pt-6">
                         <div className="text-center">
                             <h1 className="text-2xl font-semibold">Create a new flow</h1>
-                            <p className="text-muted-foreground mt-2">Describe what you would like PentAGI to test</p>
+                            <p className="text-muted-foreground mt-2">Describe what you would like PentAgentX to test</p>
                         </div>
                         <Tabs
                             onValueChange={(value) => setFlowType(value as 'assistant' | 'automation')}
@@ -97,7 +97,7 @@ const NewFlow = () => {
                             placeholder={
                                 !isLoading
                                     ? flowType === 'automation'
-                                        ? 'Describe what you would like PentAGI to test...'
+                                        ? 'Describe what you would like PentAgentX to test...'
                                         : 'What would you like me to help you with?'
                                     : 'Creating a new flow...'
                             }

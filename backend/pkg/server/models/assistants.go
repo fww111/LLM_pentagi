@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/tools"
 	"time"
 
 	"github.com/jinzhu/gorm"

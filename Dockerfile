@@ -84,38 +84,38 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Generate license reports for backend dependencies
 RUN mkdir -p /licenses/backend && \
     go list -m all > /licenses/backend/dependencies.txt && \
-    GOROOT=$(go env GOROOT) GOTOOLCHAIN=auto go-licenses csv ./cmd/pentagi > /licenses/backend/licenses.csv 2>/dev/null || true
+    GOROOT=$(go env GOROOT) GOTOOLCHAIN=auto go-licenses csv ./cmd/pentagentx > /licenses/backend/licenses.csv 2>/dev/null || true
 
 # Compile main application binary with embedded version metadata
 RUN go build -trimpath \
     -ldflags "\
-        -X pentagi/pkg/version.PackageName=pentagi \
-        -X pentagi/pkg/version.PackageVer=${PACKAGE_VER} \
-        -X pentagi/pkg/version.PackageRev=${PACKAGE_REV}" \
-    -o /pentagi ./cmd/pentagi
+        -X pentagentx/pkg/version.PackageName=PentAgentX \
+        -X pentagentx/pkg/version.PackageVer=${PACKAGE_VER} \
+        -X pentagentx/pkg/version.PackageRev=${PACKAGE_REV}" \
+    -o /pentagentx ./cmd/pentagentx
 
 # Build ctester utility
 RUN go build -trimpath \
     -ldflags "\
-        -X pentagi/pkg/version.PackageName=ctester \
-        -X pentagi/pkg/version.PackageVer=${PACKAGE_VER} \
-        -X pentagi/pkg/version.PackageRev=${PACKAGE_REV}" \
+        -X pentagentx/pkg/version.PackageName=ctester \
+        -X pentagentx/pkg/version.PackageVer=${PACKAGE_VER} \
+        -X pentagentx/pkg/version.PackageRev=${PACKAGE_REV}" \
     -o /ctester ./cmd/ctester
 
 # Build ftester utility
 RUN go build -trimpath \
     -ldflags "\
-        -X pentagi/pkg/version.PackageName=ftester \
-        -X pentagi/pkg/version.PackageVer=${PACKAGE_VER} \
-        -X pentagi/pkg/version.PackageRev=${PACKAGE_REV}" \
+        -X pentagentx/pkg/version.PackageName=ftester \
+        -X pentagentx/pkg/version.PackageVer=${PACKAGE_VER} \
+        -X pentagentx/pkg/version.PackageRev=${PACKAGE_REV}" \
     -o /ftester ./cmd/ftester
 
 # Build etester utility
 RUN go build -trimpath \
     -ldflags "\
-        -X pentagi/pkg/version.PackageName=etester \
-        -X pentagi/pkg/version.PackageVer=${PACKAGE_VER} \
-        -X pentagi/pkg/version.PackageRev=${PACKAGE_REV}" \
+        -X pentagentx/pkg/version.PackageName=etester \
+        -X pentagentx/pkg/version.PackageVer=${PACKAGE_VER} \
+        -X pentagentx/pkg/version.PackageRev=${PACKAGE_REV}" \
     -o /etester ./cmd/etester
 
 # ========================================
@@ -125,67 +125,67 @@ FROM alpine:3.23.3
 
 # Establish non-privileged execution context with docker socket access
 RUN addgroup -g 998 docker && \
-    addgroup -S pentagi && \
-    adduser -S pentagi -G pentagi && \
-    addgroup pentagi docker
+    addgroup -S pentagentx && \
+    adduser -S pentagentx -G pentagentx && \
+    addgroup pentagentx docker
 
 # Install required packages
 RUN apk --no-cache add ca-certificates openssl openssh-keygen shadow
 
-ADD scripts/entrypoint.sh /opt/pentagi/bin/
+ADD scripts/entrypoint.sh /opt/pentagentx/bin/
 
-RUN sed -i 's/\r//' /opt/pentagi/bin/entrypoint.sh && \
-    chmod +x /opt/pentagi/bin/entrypoint.sh
+RUN sed -i 's/\r//' /opt/pentagentx/bin/entrypoint.sh && \
+    chmod +x /opt/pentagentx/bin/entrypoint.sh
 
 RUN mkdir -p \
     /root/.ollama \
-    /opt/pentagi/bin \
-    /opt/pentagi/ssl \
-    /opt/pentagi/fe \
-    /opt/pentagi/logs \
-    /opt/pentagi/data \
-    /opt/pentagi/conf && \
+    /opt/pentagentx/bin \
+    /opt/pentagentx/ssl \
+    /opt/pentagentx/fe \
+    /opt/pentagentx/logs \
+    /opt/pentagentx/data \
+    /opt/pentagentx/conf && \
     chmod 777 /root/.ollama
 
-COPY --from=api-builder /pentagi /opt/pentagi/bin/pentagi
-COPY --from=api-builder /ctester /opt/pentagi/bin/ctester
-COPY --from=api-builder /ftester /opt/pentagi/bin/ftester
-COPY --from=api-builder /etester /opt/pentagi/bin/etester
-COPY --from=frontend-compiler /app/ui/dist /opt/pentagi/fe
-COPY --from=api-builder /licenses/backend /opt/pentagi/licenses/backend
-COPY --from=frontend-compiler /licenses/frontend /opt/pentagi/licenses/frontend
+COPY --from=api-builder /pentagentx /opt/pentagentx/bin/pentagentx
+COPY --from=api-builder /ctester /opt/pentagentx/bin/ctester
+COPY --from=api-builder /ftester /opt/pentagentx/bin/ftester
+COPY --from=api-builder /etester /opt/pentagentx/bin/etester
+COPY --from=frontend-compiler /app/ui/dist /opt/pentagentx/fe
+COPY --from=api-builder /licenses/backend /opt/pentagentx/licenses/backend
+COPY --from=frontend-compiler /licenses/frontend /opt/pentagentx/licenses/frontend
 
 # Copy provider configuration files
-COPY examples/configs/custom-openai.provider.yml /opt/pentagi/conf/
-COPY examples/configs/deepinfra.provider.yml /opt/pentagi/conf/
-COPY examples/configs/deepseek.provider.yml /opt/pentagi/conf/
-COPY examples/configs/moonshot.provider.yml /opt/pentagi/conf/
-COPY examples/configs/ollama-cloud.provider.yml /opt/pentagi/conf/
-COPY examples/configs/ollama-llama318b-instruct.provider.yml /opt/pentagi/conf/
-COPY examples/configs/ollama-llama318b.provider.yml /opt/pentagi/conf/
-COPY examples/configs/ollama-qwen332b-fp16-tc.provider.yml /opt/pentagi/conf/
-COPY examples/configs/ollama-qwq32b-fp16-tc.provider.yml /opt/pentagi/conf/
-COPY examples/configs/openrouter.provider.yml /opt/pentagi/conf/
-COPY examples/configs/novita.provider.yml /opt/pentagi/conf/
-COPY examples/configs/vllm-qwen3.5-27b-fp8.provider.yml /opt/pentagi/conf/
-COPY examples/configs/vllm-qwen3.5-27b-fp8-no-think.provider.yml /opt/pentagi/conf/
-COPY examples/configs/vllm-qwen332b-fp16.provider.yml /opt/pentagi/conf/
+COPY examples/configs/custom-openai.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/deepinfra.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/deepseek.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/moonshot.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/ollama-cloud.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/ollama-llama318b-instruct.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/ollama-llama318b.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/ollama-qwen332b-fp16-tc.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/ollama-qwq32b-fp16-tc.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/openrouter.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/novita.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/vllm-qwen3.5-27b-fp8.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/vllm-qwen3.5-27b-fp8-no-think.provider.yml /opt/pentagentx/conf/
+COPY examples/configs/vllm-qwen332b-fp16.provider.yml /opt/pentagentx/conf/
 
-COPY LICENSE /opt/pentagi/LICENSE
-COPY NOTICE /opt/pentagi/NOTICE
-COPY EULA.md /opt/pentagi/EULA
-COPY EULA.md /opt/pentagi/fe/EULA.md
+COPY LICENSE /opt/pentagentx/LICENSE
+COPY NOTICE /opt/pentagentx/NOTICE
+COPY EULA.md /opt/pentagentx/EULA
+COPY EULA.md /opt/pentagentx/fe/EULA.md
 
-RUN chown -R pentagi:pentagi /opt/pentagi
+RUN chown -R pentagentx:pentagentx /opt/pentagentx
 
-WORKDIR /opt/pentagi
+WORKDIR /opt/pentagentx
 
-USER pentagi
+USER pentagentx
 
-ENTRYPOINT ["/opt/pentagi/bin/entrypoint.sh", "/opt/pentagi/bin/pentagi"]
+ENTRYPOINT ["/opt/pentagentx/bin/entrypoint.sh", "/opt/pentagentx/bin/pentagentx"]
 
 # Image Metadata
 LABEL org.opencontainers.image.source="https://github.com/vxcontrol/pentagi"
 LABEL org.opencontainers.image.description="Fully autonomous AI Agents system capable of performing complex penetration testing tasks"
-LABEL org.opencontainers.image.authors="PentAGI Development Team"
+LABEL org.opencontainers.image.authors="PentAgentX Development Team"
 LABEL org.opencontainers.image.licenses="MIT License"

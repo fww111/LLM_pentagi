@@ -860,7 +860,7 @@ const SettingsProvider = () => {
     // Maintain a blocker state at the top of history when form is dirty
     useEffect(() => {
         if (isDirty && !hasPushedBlockerStateRef.current) {
-            window.history.pushState({ __pentagiBlock__: true }, '');
+            window.history.pushState({ __pentagentxBlock__: true }, '');
             hasPushedBlockerStateRef.current = true;
         }
     }, [isDirty]);

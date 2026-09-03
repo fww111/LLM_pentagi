@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `processor` package serves as the core orchestrator for PentAGI installer operations, managing system interactions, Docker environments, and file system operations across different product stacks. It acts as the operational engine that executes user configuration changes determined through the TUI wizard interface.
+The `processor` package serves as the core orchestrator for PentAgentX installer operations, managing system interactions, Docker environments, and file system operations across different product stacks. It acts as the operational engine that executes user configuration changes determined through the TUI wizard interface.
 
 ## Installer Integration Architecture
 
@@ -20,7 +20,7 @@ graph TB
     subgraph "External Systems"
         Docker[Docker Engine<br/>Container Management]
         FS[File System<br/>Host OS]
-        UpdateServer[Update Server<br/>pentagi.com]
+        UpdateServer[Update Server<br/>pentagentx.com]
         Compose[Docker Compose<br/>Stack Orchestration]
     end
 
@@ -47,7 +47,7 @@ graph TB
 
 ## Terms and Definitions
 
-- **ProductStack**: Logical grouping of services that can be managed as a unit (pentagi, langfuse, observability, worker, installer, all)
+- **ProductStack**: Logical grouping of services that can be managed as a unit (pentagentx, langfuse, observability, worker, installer, all)
 - **Deployment Modes**: embedded (full local stack), external (existing service), disabled (no functionality)
 - **State**: Persistent configuration storage including .env variables and wizard navigation stack
 - **Checker**: System environment assessment providing current installation status and capabilities
@@ -78,7 +78,7 @@ graph TB
 type ProductStack string
 
 const (
-    StackPentAGI        ProductStack = "pentagi"        // Main stack (docker-compose.yml)
+    StackPentAgentX        ProductStack = "pentagentx"        // Main stack (docker-compose.yml)
     StackLangfuse       ProductStack = "langfuse"       // LLM observability (docker-compose-langfuse.yml)
     StackObservability  ProductStack = "observability" // System monitoring (docker-compose-observability.yml)
     StackWorker         ProductStack = "worker"         // Docker images for AI agent tasks
@@ -91,13 +91,13 @@ const (
 
 ### Lifecycle Management
 - **Start(stack)**:
-  - pentagi/langfuse/observability: `docker compose ... up -d` (honors embedded mode for non-destructive ops)
-  - all: sequential start in order observability → langfuse → pentagi
+  - pentagentx/langfuse/observability: `docker compose ... up -d` (honors embedded mode for non-destructive ops)
+  - all: sequential start in order observability → langfuse → pentagentx
   - worker/installer: not applicable
 
 - **Stop(stack)**:
-  - pentagi/langfuse/observability: `docker compose ... stop`
-  - all: sequential stop in reverse order (pentagi → langfuse → observability)
+  - pentagentx/langfuse/observability: `docker compose ... stop`
+  - all: sequential stop in reverse order (pentagentx → langfuse → observability)
   - worker/installer: not applicable
 
 - **Restart(stack)**:
@@ -106,13 +106,13 @@ const (
 
 ### Installation & Content Management
 - **Download(stack)**:
-  - pentagi/langfuse/observability: `docker compose pull`
+  - pentagentx/langfuse/observability: `docker compose pull`
   - worker: `docker pull ${DOCKER_DEFAULT_IMAGE_FOR_PENTEST}` (default 6GB+)
   - installer: stubbed (not implemented fully yet)
   - all: download all applicable stacks
 
 - **Install(stack)**:
-  - pentagi: extract compose file and example provider config
+  - pentagentx: extract compose file and example provider config
   - langfuse: extract compose file (embedded mode only)
   - observability: extract compose file and directory tree (embedded mode only)
   - worker: download images
@@ -120,20 +120,20 @@ const (
   - all: install all configured stacks
 
 - **Update(stack)**:
-  - pentagi/langfuse/observability: download → `docker compose up -d`
+  - pentagentx/langfuse/observability: download → `docker compose up -d`
   - worker: download only (no forced restart)
   - installer: stubbed (checksum/replace helpers exist, flow returns not implemented)
   - all: sequence with dependency ordering
 
 ### Removal Operations
 - **Remove(stack)**:
-  - pentagi/langfuse/observability: `docker compose down` (keep volumes/images)
+  - pentagentx/langfuse/observability: `docker compose down` (keep volumes/images)
   - worker: remove images via Docker API and related containers
   - installer: remove flow stubbed
   - all: remove all stacks
 
 - **Purge(stack)**:
-  - pentagi/langfuse/observability: `down --rmi all -v` for strict purge; standard purge `down -v` is also available
+  - pentagentx/langfuse/observability: `down --rmi all -v` for strict purge; standard purge `down -v` is also available
   - worker: remove all containers, images, and volumes in worker environment
   - installer: complete removal flow stubbed
   - all: purge all stacks and remove custom networks
@@ -143,7 +143,7 @@ const (
   - pre-phase (wizard): integrity scan, user selects overwrite (force) or keep (no force)
   - phase 1: observability (ensure/verify files → update stack or remove if external/disabled)
   - phase 2: langfuse (same logic; local start requires `LangfuseConnected`)
-  - phase 3: pentagi (always embedded; ensure/verify → update)
+  - phase 3: pentagentx (always embedded; ensure/verify → update)
   - refresh checker state after each phase
 
 - **ResetChanges()**:
@@ -158,7 +158,7 @@ Each specialized file should contain business-logic level methods that directly 
 
 ### Stack-Specific Operations
 - **compose.go**:
-  - `installPentAGI()`, `installLangfuse()`, `installObservability()` - extract compose files with environment patching
+  - `installPentAgentX()`, `installLangfuse()`, `installObservability()` - extract compose files with environment patching
   - `startStack(stack)`, `stopStack(stack)`, `restartStack(stack)` - orchestrate docker compose commands
   - `updateStack(stack)` - rolling updates with health checks
 - **docker.go**:
@@ -173,7 +173,7 @@ Each specialized file should contain business-logic level methods that directly 
   - File integrity validation with YAML syntax checking
   - Embedded directory tree handling for observability stack
 - **update.go**:
-  - `checkUpdates()` - communicate with pentagi.com update server
+  - `checkUpdates()` - communicate with pentagentx.com update server
   - `downloadInstaller()` - atomic binary replacement with backup
   - `updateStackImages(stack)` - orchestrate image updates with rollback
 - **remove.go**:
@@ -194,7 +194,7 @@ Each specialized file should contain business-logic level methods that directly 
 - **Environment Variable Handling**: Compose files use --env-file parameter for environment variables, only special cases require file patching
 - **Progress Tracking**: Worker downloads (vxcontrol/kali-linux 6GB+ → 13GB disk) with real-time progress via terminal
 - **Docker Configuration**: Support NET_ADMIN capability for network scanning, Docker socket access for container management
-- **Dependency Ordering**: PentAGI must start before Langfuse/Observability for network creation
+- **Dependency Ordering**: PentAgentX must start before Langfuse/Observability for network creation
 - **State Persistence**: All operations update checker.CheckResult and state.State for consistency
 - **Atomic Operations**: Install/Update operations must be reversible on failure
 
@@ -230,7 +230,7 @@ Each specialized file should contain business-logic level methods that directly 
 ### External Systems
 - Docker Compose CLI for stack orchestration
 - Docker API for container/image management
-- HTTP client for installer updates from pentagi.com
+- HTTP client for installer updates from pentagentx.com
 - File system for content extraction and cleanup
 
 ## ApplyChanges State Machine

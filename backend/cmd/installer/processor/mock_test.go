@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/cmd/installer/checker"
-	"pentagi/cmd/installer/files"
-	"pentagi/cmd/installer/loader"
+	"pentagentx/cmd/installer/checker"
+	"pentagentx/cmd/installer/files"
+	"pentagentx/cmd/installer/loader"
 )
 
 // mockState implements state.State interface for testing
@@ -883,7 +883,7 @@ type mockCheckConfig struct {
 	DockerVersion          string
 	DockerComposeVersion   string
 
-	// PentAGI states
+	// PentAgentX states
 	PentagiScriptInstalled bool
 	PentagiExtracted       bool
 	PentagiInstalled       bool
@@ -1804,7 +1804,7 @@ func TestMockCheckHandler_CompleteScenarios(t *testing.T) {
 			t.Error("expected Docker API to be accessible")
 		}
 		if result.PentagiInstalled {
-			t.Error("expected PentAGI not to be installed")
+			t.Error("expected PentAgentX not to be installed")
 		}
 		if !result.LangfuseRunning {
 			t.Error("expected Langfuse to be running")

@@ -38,3 +38,20 @@ data/*
 # OS
 Thumbs.db
 
+
+# Local AI-tool workspaces & temp artifacts (not part of the project)
+.codex-ppt-work/
+.codex-pptx-searcher/
+.codex_tmp/
+.httptest/
+.ruff_cache/
+.screenshot-env.html
+
+# Local demo environment (Python venv for scripts/demo)
+.venv-demo/
+
+# Runtime data produced by the LangGraph orchestrator
+pentagentx-langgraph-data/
+
+# Python bytecode cache
+__pycache__/

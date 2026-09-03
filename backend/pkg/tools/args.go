@@ -299,12 +299,12 @@ type TodoOperation struct {
 	Op          TodoOperationType `json:"op" jsonschema:"required,enum=add,enum=remove,enum=modify,enum=reorder" jsonschema_description:"Operation type: add, remove, modify, or reorder"`
 	TodoID      string            `json:"todo_id,omitempty" jsonschema_description:"ID of existing todo (required for remove/modify/reorder)"`
 	AfterTodoID string            `json:"after_todo_id,omitempty" jsonschema_description:"For add/reorder: insert after this todo ID"`
-	TodoItem    *TodoItem         `json:"todo_item,omitempty" jsonschema_description:"New or updated todo item data (required for add/modify)"`
+	TodoItem    *TodoItem         `json:"todo_item,omitempty" jsonschema_description:"New or updated todo item object (REQUIRED for op=add and op=modify). For modify, include at least the fields to change, e.g. {\"status\":\"in_progress\"} or {\"title\":\"new title\"}"`
 }
 
 // TodoPatchAction is the delta-based refinement output for modifying todo lists
 type TodoPatchAction struct {
-	Operations []TodoOperation `json:"operations" jsonschema:"required" jsonschema_description:"List of operations to apply to the current todo list"`
+	Operations []TodoOperation `json:"operations" jsonschema:"required" jsonschema_description:"List of operations to apply to the current todo list; every modify op MUST include a todo_item object; return an empty list only when no changes are needed"`
 	Message    string          `json:"message" jsonschema:"required,title=Refinement summary" jsonschema_description:"Summary of changes made to send to the user in user's language only"`
 }
 

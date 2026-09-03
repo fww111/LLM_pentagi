@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/database"
+	"pentagentx/pkg/database"
 )
 
 var _ SummarizeHandler = testSummarizerHandler

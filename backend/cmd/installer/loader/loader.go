@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"pentagi/pkg/config"
+	"pentagentx/pkg/config"
 
 	"github.com/caarlos0/env/v10"
 )

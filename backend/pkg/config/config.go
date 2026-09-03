@@ -22,7 +22,7 @@ type Config struct {
 	DataDir     string `env:"DATA_DIR" envDefault:"./data"`
 	AskUser     bool   `env:"ASK_USER" envDefault:"false"`
 
-	// === PentAGI Cloud Service Integration ===
+	// === PentAgentX Cloud Service Integration ===
 	InstallationID string `env:"INSTALLATION_ID"`
 	LicenseKey     string `env:"LICENSE_KEY"`
 

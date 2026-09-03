@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"pentagi/pkg/database"
+	"pentagentx/pkg/database"
 )
 
 func TestToolTypeString(t *testing.T) {

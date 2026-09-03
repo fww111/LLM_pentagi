@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/tools"
 
 	"github.com/jinzhu/gorm"
 )

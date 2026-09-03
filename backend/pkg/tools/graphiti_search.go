@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/graphiti"
-	obs "pentagi/pkg/observability"
+	"pentagentx/pkg/graphiti"
+	obs "pentagentx/pkg/observability"
 
 	"github.com/sirupsen/logrus"
 )

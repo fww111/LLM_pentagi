@@ -5,14 +5,14 @@ import (
 	"strconv"
 	"strings"
 
-	"pentagi/cmd/installer/loader"
-	"pentagi/cmd/installer/wizard/controller"
-	"pentagi/cmd/installer/wizard/locale"
-	"pentagi/cmd/installer/wizard/logger"
-	"pentagi/cmd/installer/wizard/models/helpers"
-	"pentagi/cmd/installer/wizard/styles"
-	"pentagi/cmd/installer/wizard/window"
-	"pentagi/pkg/csum"
+	"pentagentx/cmd/installer/loader"
+	"pentagentx/cmd/installer/wizard/controller"
+	"pentagentx/cmd/installer/wizard/locale"
+	"pentagentx/cmd/installer/wizard/logger"
+	"pentagentx/cmd/installer/wizard/models/helpers"
+	"pentagentx/cmd/installer/wizard/styles"
+	"pentagentx/cmd/installer/wizard/window"
+	"pentagentx/pkg/csum"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

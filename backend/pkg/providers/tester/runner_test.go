@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
-	"pentagi/pkg/providers/tester/mock"
-	"pentagi/pkg/providers/tester/testdata"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
+	"pentagentx/pkg/providers/tester/mock"
+	"pentagentx/pkg/providers/tester/testdata"
 
 	"github.com/vxcontrol/langchaingo/llms"
 )

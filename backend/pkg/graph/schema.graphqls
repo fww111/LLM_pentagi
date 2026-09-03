@@ -9,7 +9,7 @@ enum StatusType {
   failed
 }
 
-# LLM provider types supported by PentAGI
+# LLM provider types supported by PentAgentX
 enum ProviderType {
   openai
   anthropic

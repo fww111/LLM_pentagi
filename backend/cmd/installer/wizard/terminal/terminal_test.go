@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/cmd/installer/wizard/terminal/vt"
+	"pentagentx/cmd/installer/wizard/terminal/vt"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/ansi"

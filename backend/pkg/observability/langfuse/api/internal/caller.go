@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"strings"
 
-	"pentagi/pkg/observability/langfuse/api/core"
+	"pentagentx/pkg/observability/langfuse/api/core"
 )
 
 const (

@@ -12,15 +12,15 @@ import (
 	"syscall"
 	"time"
 
-	"pentagi/cmd/ftester/worker"
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
-	"pentagi/pkg/docker"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/providers"
-	"pentagi/pkg/providers/provider"
-	"pentagi/pkg/terminal"
-	"pentagi/pkg/version"
+	"pentagentx/cmd/ftester/worker"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/docker"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/providers/provider"
+	"pentagentx/pkg/terminal"
+	"pentagentx/pkg/version"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -43,7 +43,7 @@ func main() {
 		subtaskID = nil
 	}
 
-	logrus.Infof("Starting PentAGI Function Tester %s", version.GetBinaryVersion())
+	logrus.Infof("Starting PentAgentX Function Tester %s", version.GetBinaryVersion())
 
 	err := godotenv.Load(*envFile)
 	if err != nil {

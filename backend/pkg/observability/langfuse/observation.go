@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"pentagi/pkg/observability/langfuse/api"
+	"pentagentx/pkg/observability/langfuse/api"
 
 	"github.com/sirupsen/logrus"
 )

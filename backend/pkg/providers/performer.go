@@ -9,15 +9,15 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/cast"
-	"pentagi/pkg/csum"
-	"pentagi/pkg/database"
-	"pentagi/pkg/graphiti"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/templates"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/cast"
+	"pentagentx/pkg/csum"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graphiti"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/templates"
+	"pentagentx/pkg/tools"
 
 	"github.com/sirupsen/logrus"
 	"github.com/vxcontrol/langchaingo/llms"
@@ -982,7 +982,7 @@ func (fp *flowProvider) storeAgentResponseToGraphiti(
 		return
 	}
 
-	parts := []string{fmt.Sprintf("PentAGI %s agent execution in flow %d", agentType, fp.flowID)}
+	parts := []string{fmt.Sprintf("PentAgentX %s agent execution in flow %d", agentType, fp.flowID)}
 	if taskID != nil {
 		parts = append(parts, fmt.Sprintf("task %d", *taskID))
 	}
@@ -1089,7 +1089,7 @@ func (fp *flowProvider) storeToolExecutionToGraphiti(
 		return
 	}
 
-	parts := []string{fmt.Sprintf("PentAGI tool execution in flow %d", fp.flowID)}
+	parts := []string{fmt.Sprintf("PentAgentX tool execution in flow %d", fp.flowID)}
 	if taskID != nil {
 		parts = append(parts, fmt.Sprintf("task %d", *taskID))
 	}

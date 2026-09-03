@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
+	"pentagentx/pkg/templates"
 
 	"github.com/vxcontrol/langchaingo/llms"
 	"github.com/vxcontrol/langchaingo/llms/reasoning"

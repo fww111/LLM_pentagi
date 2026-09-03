@@ -4,7 +4,7 @@ package api
 
 import (
 	json "encoding/json"
-	core "pentagi/pkg/observability/langfuse/api/core"
+	core "pentagentx/pkg/observability/langfuse/api/core"
 )
 
 type BadRequestError struct {

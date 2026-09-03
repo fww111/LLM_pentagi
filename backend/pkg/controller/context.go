@@ -5,12 +5,12 @@ import (
 	"errors"
 	"fmt"
 
-	"pentagi/pkg/database"
-	"pentagi/pkg/graph/subscriptions"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/orchestrator"
-	"pentagi/pkg/providers"
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graph/subscriptions"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/orchestrator"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/tools"
 
 	"github.com/sirupsen/logrus"
 )

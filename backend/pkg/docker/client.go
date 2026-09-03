@@ -11,8 +11,8 @@ import (
 	"strings"
 	"sync"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -335,7 +335,7 @@ func (dc *dockerClient) RunContainer(
 			Force:         true,
 		}
 		for _, container := range containers {
-			// containerName is unique for PentAGI environment, so we can use it to find the container
+			// containerName is unique for PentAgentX environment, so we can use it to find the container
 			if len(container.Names) > 0 && container.Names[0] == containerName {
 				_ = dc.client.ContainerRemove(ctx, container.ID, options)
 			}
@@ -692,7 +692,7 @@ func getHostDataDir(ctx context.Context, cli *client.Client, dataDir, workDir st
 		// it's for the following cases:
 		// * docker socket hosted on the different machine
 		// * data directory is not mounted
-		// * pentagi is not running as a docker container
+		// * pentagentx is not running as a docker container
 		return ""
 	}
 

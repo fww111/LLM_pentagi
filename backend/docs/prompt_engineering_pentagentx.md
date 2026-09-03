@@ -1,6 +1,6 @@
-# PentAGI Prompt Engineering Guide
+# PentAgentX Prompt Engineering Guide
 
-A comprehensive framework for designing high-performance prompts within the PentAGI penetration testing system. This guide provides specialized principles for creating prompts that leverage the multi-agent architecture, memory systems, security tools, and specific operational context of PentAGI.
+A comprehensive framework for designing high-performance prompts within the PentAgentX penetration testing system. This guide provides specialized principles for creating prompts that leverage the multi-agent architecture, memory systems, security tools, and specific operational context of PentAgentX.
 
 ## Understanding Cognitive Aspects of Language Models
 
@@ -18,13 +18,13 @@ A comprehensive framework for designing high-performance prompts within the Pent
 - Brief examples often provide clearer guidance than lengthy explanations.
 - Be aware that unintended priming can occur through choice of words, examples, or framing.
 
-## Core Principles for PentAGI Prompts
+## Core Principles for PentAgentX Prompts
 
 ### 1. Structure and Organization
 
 **Clear Hierarchical Structure**
 - Use Markdown headings (`#`, `##`, `###`) for clear visual hierarchy and logical grouping of instructions. Ensure a logical flow from high-level role definition to specific protocols and requirements.
-- Begin with a clear definition of the agent's specific **role** (e.g., Orchestrator, Pentester, Searcher), its primary **objective** within the PentAGI workflow, and any overarching **security focus**.
+- Begin with a clear definition of the agent's specific **role** (e.g., Orchestrator, Pentester, Searcher), its primary **objective** within the PentAgentX workflow, and any overarching **security focus**.
 - Place critical **operational constraints** (security, environment) early in the prompt for high visibility.
 - Use separate, clearly marked sections for key areas:
     - `CORE CAPABILITIES / KNOWLEDGE BASE`
@@ -35,7 +35,7 @@ A comprehensive framework for designing high-performance prompts within the Pent
     - `SUMMARIZATION AWARENESS PROTOCOL` (including `<summarized_content_handling>`)
     - `EXECUTION CONTEXT` (detailing use of `{{.ExecutionContext}}`)
     - `COMPLETION REQUIREMENTS`
-- Ensure instructions are **specific**, **unambiguous**, use **active voice**, and are directly relevant to the agent's function within PentAGI.
+- Ensure instructions are **specific**, **unambiguous**, use **active voice**, and are directly relevant to the agent's function within PentAgentX.
 
 **Semantic XML Delimiters**
 - Use descriptive XML tags (e.g., `<container_constraints>`, `<terminal_protocol>`, `<memory_protocol>`, `<team_specialists>`, `<summarized_content_handling>`) to logically group related instructions, especially for complex protocols and constraints requiring precise adherence by the LLM.
@@ -53,10 +53,10 @@ A comprehensive framework for designing high-performance prompts within the Pent
 ```markdown
 # [AGENT SPECIALIST TITLE]
 
-[Role definition, primary objective, and security focus relevant to PentAGI]
+[Role definition, primary objective, and security focus relevant to PentAgentX]
 
 ## CORE CAPABILITIES / KNOWLEDGE BASE
-[Agent-specific skills, knowledge areas relevant to PentAGI tasks]
+[Agent-specific skills, knowledge areas relevant to PentAgentX tasks]
 
 ## OPERATIONAL ENVIRONMENT
 <container_constraints>...</container_constraints>
@@ -87,7 +87,7 @@ A comprehensive framework for designing high-performance prompts within the Pent
 ### 2. Agent-Specific Instructions
 
 **Role-Based Customization**
-- Tailor instructions, tone, knowledge references, and complexity directly to the agent's specialized role within the PentAGI system (Orchestrator, Pentester, Searcher, Developer, Adviser, Memorist, Installer). Explicitly reference `ai-concepts.mdc` for role definitions.
+- Tailor instructions, tone, knowledge references, and complexity directly to the agent's specialized role within the PentAgentX system (Orchestrator, Pentester, Searcher, Developer, Adviser, Memorist, Installer). Explicitly reference `ai-concepts.mdc` for role definitions.
 - Enforce stricter command protocols and safety measures for agents with direct system/tool access (Pentester, Maintenance/Installer).
 - Include references to specialized knowledge bases or toolsets relevant to the agent's function (e.g., specific security tools from `security-tools.mdc` for Pentester; search strategies and tool priorities for Searcher).
 - Clearly define inter-agent communication protocols, especially delegation criteria and the expected format/content of information exchange between agents.
@@ -139,7 +139,7 @@ A comprehensive framework for designing high-performance prompts within the Pent
 ### 4. Memory System Integration
 
 **Memory Operations Protocol (`<memory_protocol>`)**
-- Provide explicit, actionable instructions on *when* and *how* to interact with PentAGI's vector memory system. Reference `ai-concepts.mdc` (Memory section).
+- Provide explicit, actionable instructions on *when* and *how* to interact with PentAgentX's vector memory system. Reference `ai-concepts.mdc` (Memory section).
 - **Crucially, specify the primary action:** Agents MUST **always attempt to retrieve relevant information from memory first** using retrieval tools (e.g., `{{.SearchGuideToolName}}`, `{{.SearchAnswerToolName}}`) *before* performing external actions like web searches or running discovery tools.
 - Define clear criteria for *storing* new information: Only store valuable, novel, and reusable knowledge (e.g., confirmed vulnerabilities, successful complex command sequences, effective troubleshooting steps, reusable code snippets) using storage tools (e.g., `{{.StoreGuideToolName}}`, `{{.StoreAnswerToolName}}`). Avoid cluttering memory with trivial or intermediate results.
 - Specify the exact tool names (`{{.ToolName}}`) for memory interaction.
@@ -151,7 +151,7 @@ A comprehensive framework for designing high-performance prompts within the Pent
 ### 5. Multi-Agent Team Collaboration
 
 **Team Specialist Definition (`<team_specialists>`)**
-- Include a complete, accurate roster of **all available specialist agents** within PentAGI (searcher, pentester, developer, adviser, memorist, installer).
+- Include a complete, accurate roster of **all available specialist agents** within PentAgentX (searcher, pentester, developer, adviser, memorist, installer).
 - For each specialist, clearly define:
     - `skills`: Core competencies.
     - `use_cases`: Specific situations or types of problems they should be delegated.
@@ -200,7 +200,7 @@ A comprehensive framework for designing high-performance prompts within the Pent
     - Instruct agents to treat summaries *strictly* as **historical records of actual past events, tool executions, and their results**. They are *not* examples to be copied.
     - Mandate extracting useful information from summaries (past commands, successes, failures, errors, findings) to inform current strategy and **avoid redundant actions**.
     - **Strictly prohibit** agents from: mimicking summary formats, using the `{{.SummarizedContentPrefix}}`, or calling the `{{.SummarizationToolName}}` tool.
-    - **Reinforce:** The PentAGI system operates **exclusively via structured tool calls.** Any attempt to simulate actions or results in plain text will fail.
+    - **Reinforce:** The PentAgentX system operates **exclusively via structured tool calls.** Any attempt to simulate actions or results in plain text will fail.
 
 **Execution Context Awareness**
 - Instruct agents to **actively utilize the information provided in the `{{.ExecutionContext}}` variable.**
@@ -211,7 +211,7 @@ A comprehensive framework for designing high-performance prompts within the Pent
 
 **Container Constraints (`<container_constraints>`)**
 - Clearly define the **Docker runtime environment** using template variables: `{{.DockerImage}}` (image name), `{{.Cwd}}` (working directory), `{{.ContainerPorts}}` (available ports).
-- Specify **resource limitations** (e.g., default command timeouts) and **operational restrictions** derived from PentAGI's secure execution model (No GUI, No host access, No UDP scanning, No arbitrary software installation). Reference `security-tools.mdc`.
+- Specify **resource limitations** (e.g., default command timeouts) and **operational restrictions** derived from PentAgentX's secure execution model (No GUI, No host access, No UDP scanning, No arbitrary software installation). Reference `security-tools.mdc`.
 
 **Available Tools (`<tools>`)**
 - For agents like the Pentester, explicitly **list the specific security testing tools** confirmed to be available within their container environment. Reference the list in `pentester.tmpl` and cross-check with `security-tools.mdc`.
@@ -266,20 +266,20 @@ A comprehensive framework for designing high-performance prompts within the Pent
 ### LLM Instruction Following Characteristics
 
 **Modern LLM Instruction Following**
-- Understand that newer LLMs (like those used in PentAGI) follow instructions **more literally and precisely** than previous generations. Make instructions explicit and unambiguous, avoiding indirect or implied guidance.
+- Understand that newer LLMs (like those used in PentAgentX) follow instructions **more literally and precisely** than previous generations. Make instructions explicit and unambiguous, avoiding indirect or implied guidance.
 - Use **directive language** rather than suggestions: "DO X" instead of "You might want to do X" when the action is truly required.
 - For critical behaviors, use **clear, unequivocal instructions** rather than lengthy explanations. A single direct statement is often more effective than paragraphs of background.
 - When creating prompts, remember that if agent behavior deviates from expectations, a single clear corrective instruction is usually sufficient to guide it back on track.
 
 **Literal Adherence vs. Intent Inference**
-- Design prompts with the understanding that PentAGI agents will **follow the letter of instructions** rather than attempting to infer unstated intent.
+- Design prompts with the understanding that PentAgentX agents will **follow the letter of instructions** rather than attempting to infer unstated intent.
 - Make all critical behaviors explicit rather than relying on the agent to infer them from context or examples.
 - If you need the agent to reason through problems rather than following a rigid process, explicitly instruct it to "think step-by-step" or "consider alternatives before deciding."
 
 ### Prompt Template Variables
 
 **Essential Context Variables**
-- Ensure prompts utilize essential context variables provided by the PentAGI backend:
+- Ensure prompts utilize essential context variables provided by the PentAgentX backend:
     - `{{.ExecutionContext}}`: **Critical.** Provides structured details (IDs, status, titles, descriptions) about the current `Flow`, `Task`, and `SubTask`. Essential for scope and objective understanding.
     - `{{.Lang}}`: Specifies the preferred language for agent responses and reports.
     - `{{.CurrentTime}}`: Provides the execution timestamp for context.

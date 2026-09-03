@@ -1,7 +1,7 @@
 package tester
 
 import (
-	"pentagi/pkg/providers/tester/testdata"
+	"pentagentx/pkg/providers/tester/testdata"
 )
 
 type AgentTestResults []testdata.TestResult

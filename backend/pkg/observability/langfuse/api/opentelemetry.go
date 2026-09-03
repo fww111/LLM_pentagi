@@ -6,7 +6,7 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	big "math/big"
-	internal "pentagi/pkg/observability/langfuse/api/internal"
+	internal "pentagentx/pkg/observability/langfuse/api/internal"
 )
 
 var (

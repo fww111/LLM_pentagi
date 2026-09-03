@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
 
 	customsearch "google.golang.org/api/customsearch/v1"
 )

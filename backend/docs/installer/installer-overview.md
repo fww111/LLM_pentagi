@@ -1,10 +1,10 @@
-# PentAGI Installer Overview
+# PentAgentX Installer Overview
 
-> Comprehensive guide to the PentAGI installer - a robust Terminal User Interface (TUI) for configuring and deploying PentAGI services.
+> Comprehensive guide to the PentAgentX installer - a robust Terminal User Interface (TUI) for configuring and deploying PentAgentX services.
 
 ## 🎯 **Project Overview**
 
-The PentAGI installer provides a modern, interactive Terminal User Interface for configuring and deploying the PentAGI autonomous penetration testing platform. Built using the [Charm](https://charm.sh/) tech stack, it implements responsive design patterns optimized for terminal environments.
+The PentAgentX installer provides a modern, interactive Terminal User Interface for configuring and deploying the PentAgentX autonomous penetration testing platform. Built using the [Charm](https://charm.sh/) tech stack, it implements responsive design patterns optimized for terminal environments.
 
 ### **Core Purpose**
 - **Configuration Management**: Interactive setup of LLM providers, monitoring, and security settings
@@ -210,8 +210,8 @@ All user-visible text stored in `locale/locale.go`:
 ```go
 // Screen-specific constants
 const (
-    WelcomeTitle = "PentAGI Installer"
-    WelcomeGreeting = "Welcome to PentAGI!"
+    WelcomeTitle = "PentAgentX Installer"
+    WelcomeGreeting = "Welcome to PentAgentX!"
 
     // Form help text with practical guidance
     LLMFormOpenAIHelp = `OpenAI provides access to GPT models...
@@ -274,4 +274,4 @@ Detailed guidance integrated into forms:
 - **Dimension Testing**: Minimum (80x24) to large terminal support
 - **Navigation Testing**: Complete flow validation
 
-This overview provides the foundation for understanding the PentAGI installer's architecture, features, and development approach. The system prioritizes user experience, maintainability, and production reliability.
+This overview provides the foundation for understanding the PentAgentX installer's architecture, features, and development approach. The system prioritizes user experience, maintainability, and production reliability.

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"pentagi/pkg/observability/langfuse/api"
+	"pentagentx/pkg/observability/langfuse/api"
 )
 
 const (

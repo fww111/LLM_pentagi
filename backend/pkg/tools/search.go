@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
 
 	"github.com/sirupsen/logrus"
 	"github.com/vxcontrol/cloud/anonymizer"

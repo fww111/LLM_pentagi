@@ -13,16 +13,16 @@ import (
 	"syscall"
 	"time"
 
-	"pentagi/migrations"
-	"pentagi/pkg/config"
-	"pentagi/pkg/controller"
-	"pentagi/pkg/database"
-	"pentagi/pkg/docker"
-	"pentagi/pkg/graph/subscriptions"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/providers"
-	router "pentagi/pkg/server"
-	"pentagi/pkg/version"
+	"pentagentx/migrations"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/controller"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/docker"
+	"pentagentx/pkg/graph/subscriptions"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/providers"
+	router "pentagentx/pkg/server"
+	"pentagentx/pkg/version"
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
@@ -40,7 +40,7 @@ func main() {
 	)
 	defer cancelOnSignal()
 
-	logrus.Infof("Starting PentAGI %s", version.GetBinaryVersion())
+	logrus.Infof("Starting PentAgentX %s", version.GetBinaryVersion())
 
 	cfg, err := config.NewConfig()
 	if err != nil {

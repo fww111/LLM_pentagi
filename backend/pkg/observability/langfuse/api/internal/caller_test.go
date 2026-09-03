@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/pkg/observability/langfuse/api/core"
+	"pentagentx/pkg/observability/langfuse/api/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"slices"
 
-	"pentagi/pkg/tools"
+	"pentagentx/pkg/tools"
 
 	"github.com/sirupsen/logrus"
 )
@@ -38,7 +38,12 @@ func ApplyTodoOperations(
 			removed[op.TodoID] = true
 		case tools.TodoOpModify:
 			idx, ok := idToIdx[op.TodoID]
-			if !ok || op.TodoItem == nil {
+			if !ok {
+				logger.WithField("todo_id", op.TodoID).Warn("todo modify references unknown todo_id, skipping")
+				continue
+			}
+			if op.TodoItem == nil {
+				logger.WithField("todo_id", op.TodoID).Warn("todo modify without todo_item, skipping")
 				continue
 			}
 			updated := result[idx]
@@ -119,7 +124,9 @@ func ValidateTodoPatch(patch tools.TodoPatchAction) error {
 				return fmt.Errorf("operation %d: modify requires todo_id", i)
 			}
 			if op.TodoItem == nil {
-				return fmt.Errorf("operation %d: modify requires todo_item", i)
+				// LLMs occasionally omit todo_item on modify; the operation is
+				// skipped by ApplyTodoOperations instead of failing the whole task.
+				continue
 			}
 		default:
 			return fmt.Errorf("operation %d: unknown operation type %q", i, op.Op)

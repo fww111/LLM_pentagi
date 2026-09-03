@@ -1,6 +1,6 @@
 # Ollama Provider
 
-The Ollama provider enables PentAGI to use local language models through the [Ollama](https://ollama.ai/) server.
+The Ollama provider enables PentAgentX to use local language models through the [Ollama](https://ollama.ai/) server.
 
 ## Installation
 
@@ -39,7 +39,7 @@ PROXY_URL=http://proxy:8080
 
 ### Advanced Configuration
 
-Control how PentAGI interacts with your Ollama server:
+Control how PentAgentX interacts with your Ollama server:
 
 **Model Management:**
 
@@ -47,7 +47,7 @@ Control how PentAGI interacts with your Ollama server:
 - **Pull Timeout** (`OLLAMA_SERVER_PULL_MODELS_TIMEOUT`): Maximum time to wait for model downloads (default: 600 seconds)
 - **Load Models List** (`OLLAMA_SERVER_LOAD_MODELS_ENABLED=true`): Queries Ollama server for available models via API
 
-**Performance Note:** Enabling `OLLAMA_SERVER_LOAD_MODELS_ENABLED` adds startup latency as PentAGI queries the Ollama API. Disable if you only need specific models from config file.
+**Performance Note:** Enabling `OLLAMA_SERVER_LOAD_MODELS_ENABLED` adds startup latency as PentAgentX queries the Ollama API. Disable if you only need specific models from config file.
 
 **Recommended Settings:**
 
@@ -92,7 +92,7 @@ To download new models: `ollama pull <model-name>`
 
 ## Agent Types
 
-The provider supports all PentAGI agent types with optimized configurations:
+The provider supports all PentAgentX agent types with optimized configurations:
 
 - `simple`: General purpose chat (temperature: 0.2)
 - `assistant`: AI assistant tasks (temperature: 0.2)
@@ -135,8 +135,8 @@ Ollama provides free local inference - no usage costs or API limits.
 # Set environment variables
 export OLLAMA_SERVER_URL=http://localhost:11434
 
-# Start PentAGI with Ollama provider
-./pentagi
+# Start PentAgentX with Ollama provider
+./pentagentx
 ```
 
 ## Troubleshooting

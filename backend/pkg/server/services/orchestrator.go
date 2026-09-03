@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"pentagi/pkg/controller"
-	"pentagi/pkg/server/logger"
+	"pentagentx/pkg/controller"
+	"pentagentx/pkg/server/logger"
 
 	"github.com/gin-gonic/gin"
 )

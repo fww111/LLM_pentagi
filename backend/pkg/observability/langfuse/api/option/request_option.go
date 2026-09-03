@@ -5,7 +5,7 @@ package option
 import (
 	http "net/http"
 	url "net/url"
-	core "pentagi/pkg/observability/langfuse/api/core"
+	core "pentagentx/pkg/observability/langfuse/api/core"
 )
 
 // RequestOption adapts the behavior of an individual request.

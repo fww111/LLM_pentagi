@@ -4,7 +4,9 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Core Interaction Rules
 
-1. **Always use English** for all interactions, responses, explanations, and questions with users.
+1. **Language preferences**:
+   - Use the user's preferred language for user-facing interactions, responses, explanations, and questions.
+   - Use English by default for internal agent coordination, code, identifiers, and technical artifacts unless the task requires another language.
 2. **Password Complexity Requirements**: For all password-related development (registration, password reset, API token generation, etc.), the following rules must be enforced:
    - Minimum 12 characters
    - Must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character
@@ -13,7 +15,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-**PentAGI** is an automated security testing platform powered by AI agents. It runs autonomous penetration testing workflows using a multi-agent system (Researcher, Developer, Executor agents) that coordinates LLM providers, Docker-sandboxed tool execution, and a persistent vector memory store.
+**PentAgentX** is an automated security testing platform powered by AI agents. It runs autonomous penetration testing workflows using a multi-agent system (Researcher, Developer, Executor agents) that coordinates LLM providers, Docker-sandboxed tool execution, and a persistent vector memory store.
 
 The application is a monorepo with:
 - **`backend/`** — Go REST + GraphQL API server
@@ -26,14 +28,14 @@ The application is a monorepo with:
 
 ```bash
 go mod download                              # Install dependencies
-go build -trimpath -o pentagi ./cmd/pentagi  # Build main binary
+go build -trimpath -o pentagentx ./cmd/pentagentx  # Build main binary
 go test ./...                                # Run all tests
 go test ./pkg/foo/... -v -run TestName       # Run specific test
 golangci-lint run --timeout=5m               # Lint
 
 # Code generation (run after schema changes)
 go run github.com/99designs/gqlgen --config ./gqlgen/gqlgen.yml  # GraphQL resolvers
-swag init -g ../../pkg/server/router.go -o pkg/server/docs/ --parseDependency --parseInternal --parseDepth 2 -d cmd/pentagi  # Swagger docs
+swag init -g ../../pkg/server/router.go -o pkg/server/docs/ --parseDependency --parseInternal --parseDepth 2 -d cmd/pentagentx  # Swagger docs
 ```
 
 ### Frontend (run from `frontend/`)
@@ -58,7 +60,7 @@ docker compose up -d                                                          # 
 docker compose -f docker-compose.yml -f docker-compose-observability.yml up -d  # + monitoring
 docker compose -f docker-compose.yml -f docker-compose-langfuse.yml up -d       # + LLM analytics
 docker compose -f docker-compose.yml -f docker-compose-graphiti.yml up -d       # + knowledge graph
-docker build -t local/pentagi:latest .                                        # Build image
+docker build -t local/pentagentx:latest .                                        # Build image
 ```
 
 The full stack runs at `https://localhost:8443` when using Docker Compose. Copy `.env.example` to `.env` and fill in at minimum the database and at least one LLM provider key.
@@ -69,7 +71,7 @@ The full stack runs at `https://localhost:8443` when using Docker Compose. Copy 
 
 | Package | Role |
 |---|---|
-| `cmd/pentagi/` | Main entry point; initializes config, DB, server |
+| `cmd/pentagentx/` | Main entry point; initializes config, DB, server |
 | `pkg/config/` | Environment-based config parsing |
 | `pkg/server/` | Gin router, middleware, auth (JWT/OAuth2/API tokens), Swagger |
 | `pkg/controller/` | Business logic for REST endpoints |

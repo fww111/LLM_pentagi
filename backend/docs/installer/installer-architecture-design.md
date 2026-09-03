@@ -1,6 +1,6 @@
-# PentAGI Installer Architecture & Design Patterns
+# PentAgentX Installer Architecture & Design Patterns
 
-> Architecture patterns, design decisions, and implementation strategies specific to the PentAGI installer.
+> Architecture patterns, design decisions, and implementation strategies specific to the PentAgentX installer.
 
 ## 🏗️ **Unified App Architecture**
 

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/cmd/installer/checker"
-	"pentagi/cmd/installer/loader"
+	"pentagentx/cmd/installer/checker"
+	"pentagentx/cmd/installer/loader"
 )
 
 // mockState implements State interface for testing

@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/cmd/installer/loader"
-	"pentagi/cmd/installer/state"
+	"pentagentx/cmd/installer/loader"
+	"pentagentx/cmd/installer/state"
 )
 
 type mockState struct {

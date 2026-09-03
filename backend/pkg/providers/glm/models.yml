@@ -1,4 +1,12 @@
 # GLM-5 Series - Flagship Models
+- name: glm-5.3-flash
+  description: GLM-5.3-Flash - Latest flagship flash model with fast agentic reasoning and reliable tool calling, best price/performance for multi-agent penetration testing workflows
+  thinking: true
+  price:
+    input: 1.00
+    output: 3.20
+    cache_read: 0.20
+
 - name: glm-5
   description: GLM-5 - Flagship model with MoE architecture (744B/40B active), agentic engineering, 200K context, forced thinking mode, best for complex multi-stage tasks
   thinking: true

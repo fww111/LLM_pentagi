@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"slices"
 
-	"pentagi/pkg/database"
+	"pentagentx/pkg/database"
 )
 
 // This file will not be regenerated automatically.

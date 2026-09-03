@@ -3,7 +3,7 @@ package langfuse
 import (
 	"time"
 
-	"pentagi/pkg/observability/langfuse/api"
+	"pentagentx/pkg/observability/langfuse/api"
 )
 
 const (

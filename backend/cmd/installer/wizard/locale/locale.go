@@ -54,8 +54,8 @@ const (
 // Welcome Screen constants
 const (
 	// Form interface implementation
-	WelcomeFormTitle       = "Welcome to PentAGI"
-	WelcomeFormDescription = "PentAGI is an autonomous penetration testing platform that leverages AI technologies to perform comprehensive security assessments."
+	WelcomeFormTitle       = "Welcome to PentAgentX"
+	WelcomeFormDescription = "PentAgentX is an autonomous penetration testing platform that leverages AI technologies to perform comprehensive security assessments."
 	WelcomeFormName        = "Welcome"
 	WelcomeFormOverview    = `System checks verify:
 • Environment configuration file presence
@@ -78,7 +78,7 @@ The installer guides you through each component setup with recommendations for d
 	WelcomeWorkflowStep2 = "2. Configure LLM providers (OpenAI, Anthropic, etc.)"
 	WelcomeWorkflowStep3 = "3. Set up integrations (Langfuse, Observability)"
 	WelcomeWorkflowStep4 = "4. Configure security settings"
-	WelcomeWorkflowStep5 = "5. Deploy and start PentAGI services"
+	WelcomeWorkflowStep5 = "5. Deploy and start PentAgentX services"
 	WelcomeSystemReady   = "✓ System ready - Press Enter to continue"
 )
 
@@ -88,7 +88,7 @@ const (
 
 	// Environment file issues
 	TroubleshootEnvFileTitle = "Environment Configuration Missing"
-	TroubleshootEnvFileDesc  = "The .env file is required for PentAGI configuration but was not found or is not readable."
+	TroubleshootEnvFileDesc  = "The .env file is required for PentAgentX configuration but was not found or is not readable."
 	TroubleshootEnvFileFix   = `To fix:
 1. Copy .env.example to .env in your installation directory
 2. Edit .env and configure at least one LLM provider API key
@@ -108,7 +108,7 @@ cp .env.example .env && chmod 644 .env`
 
 	// Docker not installed
 	TroubleshootDockerNotInstalledTitle = "Docker Not Installed"
-	TroubleshootDockerNotInstalledDesc  = "Docker is not installed on this system. PentAGI requires Docker to run containers."
+	TroubleshootDockerNotInstalledDesc  = "Docker is not installed on this system. PentAgentX requires Docker to run containers."
 	TroubleshootDockerNotInstalledFix   = `To fix:
 1. Install Docker Desktop: https://docs.docker.com/get-docker/
 2. For Linux: Follow distribution-specific instructions
@@ -145,7 +145,7 @@ cp .env.example .env && chmod 644 .env`
 
 	// Docker version issues
 	TroubleshootDockerVersionTitle = "Docker Version Too Old"
-	TroubleshootDockerVersionDesc  = "Your Docker version is incompatible. PentAGI requires Docker 20.0.0 or newer."
+	TroubleshootDockerVersionDesc  = "Your Docker version is incompatible. PentAgentX requires Docker 20.0.0 or newer."
 	TroubleshootDockerVersionFix   = `To fix:
 1. Update Docker to version 20.0.0 or newer
 2. Visit https://docs.docker.com/engine/install/
@@ -164,7 +164,7 @@ Verify installation: docker compose version`
 
 	// Docker Compose version issues
 	TroubleshootComposeVersionTitle = "Docker Compose Version Too Old"
-	TroubleshootComposeVersionDesc  = "Your Docker Compose version is incompatible. PentAGI requires Docker Compose 1.25.0 or newer."
+	TroubleshootComposeVersionDesc  = "Your Docker Compose version is incompatible. PentAgentX requires Docker Compose 1.25.0 or newer."
 	TroubleshootComposeVersionFix   = `Current version: %s
 Required: 1.25.0+
 
@@ -188,7 +188,7 @@ To fix:
 
 	// CPU issues
 	TroubleshootCPUTitle = "Insufficient CPU Cores"
-	TroubleshootCPUDesc  = "PentAGI requires at least 2 CPU cores for proper operation."
+	TroubleshootCPUDesc  = "PentAgentX requires at least 2 CPU cores for proper operation."
 	TroubleshootCPUFix   = `Your system has %d CPU core(s), but 2+ are required.
 
 For virtual machines:
@@ -203,7 +203,7 @@ Settings → Resources → CPUs: Set to 2 or more`
 	TroubleshootMemoryDesc  = "Not enough free memory for selected components."
 	TroubleshootMemoryFix   = `Memory requirements:
 • Base system: 0.5 GB
-• PentAGI core: +0.5 GB
+• PentAgentX core: +0.5 GB
 • Langfuse (if enabled): +1.5 GB
 • Observability (if enabled): +1.5 GB
 
@@ -276,9 +276,9 @@ const (
 // EULA Screen constants
 const (
 	// Form interface implementation
-	EULAFormDescription = "Legal terms and conditions for PentAGI usage"
+	EULAFormDescription = "Legal terms and conditions for PentAgentX usage"
 	EULAFormName        = "EULA"
-	EULAFormOverview    = `Review and accept the End User License Agreement to proceed with PentAGI installation.
+	EULAFormOverview    = `Review and accept the End User License Agreement to proceed with PentAgentX installation.
 
 The EULA contains:
 • Software license terms and usage rights
@@ -304,10 +304,10 @@ Use arrow keys, page up/down, or home/end keys to navigate through the document.
 
 // Main Menu Screen constants
 const (
-	MainMenuTitle       = "PentAGI Configuration"
-	MainMenuDescription = "Configure all PentAGI components and settings"
+	MainMenuTitle       = "PentAgentX Configuration"
+	MainMenuDescription = "Configure all PentAgentX components and settings"
 	MainMenuName        = "Main Menu"
-	MainMenuOverview    = `Welcome to PentAGI Configuration Center.
+	MainMenuOverview    = `Welcome to PentAgentX Configuration Center.
 
 Configure essential components:
 • LLM Providers - AI language models for autonomous testing
@@ -315,7 +315,7 @@ Configure essential components:
 • Tools - Additional capabilities for enhanced testing
 • System Settings - Environment and deployment options
 
-Navigate through each section to complete your PentAGI setup.`
+Navigate through each section to complete your PentAgentX setup.`
 
 	MenuTitle        = "Configuration Menu"
 	MenuSystemStatus = "System Status"
@@ -323,9 +323,9 @@ Navigate through each section to complete your PentAGI setup.`
 
 // Main Menu Status Labels (not used)
 const (
-	MainMenuStatusPentagiRunning     = "PentAGI is already running"
-	MainMenuStatusPentagiNotRunning  = "Ready to start PentAGI services"
-	MainMenuStatusUpToDate           = "PentAGI is up to date"
+	MainMenuStatusPentagiRunning     = "PentAgentX is already running"
+	MainMenuStatusPentagiNotRunning  = "Ready to start PentAgentX services"
+	MainMenuStatusUpToDate           = "PentAgentX is up to date"
 	MainMenuStatusUpdatesAvailable   = "Updates are available"
 	MainMenuStatusReadyToStart       = "Ready to start"
 	MainMenuStatusAllServicesRunning = "All services are running"
@@ -337,7 +337,7 @@ const (
 	LLMProvidersTitle       = "LLM Providers Configuration"
 	LLMProvidersDescription = "Configure Large Language Model providers for AI agents"
 	LLMProvidersName        = "LLM Providers"
-	LLMProvidersOverview    = `PentAGI uses specialized AI agents (researcher, developer, executor, pentester) that require different LLM capabilities for optimal penetration testing results.
+	LLMProvidersOverview    = `PentAgentX uses specialized AI agents (researcher, developer, executor, pentester) that require different LLM capabilities for optimal penetration testing results.
 
 Why multiple providers matter:
 • Agent Specialization: Different agents benefit from models optimized for reasoning, coding, or analysis
@@ -380,7 +380,7 @@ const (
 const (
 	LLMFormOpenAIHelp = `OpenAI delivers industry-leading models with cutting-edge reasoning capabilities perfect for sophisticated penetration testing.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • o1, o4-mini: Advanced reasoning models for complex vulnerability analysis and strategic planning
 • GPT-4.1, GPT-4.1-mini: Flagship models optimized for exploit development and code generation
 • Automatic model selection based on agent type and task complexity
@@ -398,7 +398,7 @@ Setup: Get your API key from https://platform.openai.com/api-keys`
 
 	LLMFormAnthropicHelp = `Anthropic Claude models excel in safety-conscious penetration testing with superior reasoning and analytical capabilities.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • Claude Sonnet-4: Premium reasoning model for complex security analysis and strategic vulnerability assessment
 • Claude 3.5 Haiku: High-speed model optimized for rapid information gathering and simple parsing tasks
 • Balanced cost-performance ratio across all security testing scenarios
@@ -416,7 +416,7 @@ Setup: Get your API key from https://console.anthropic.com/`
 
 	LLMFormGeminiHelp = `Google Gemini combines multimodal capabilities with advanced reasoning, perfect for comprehensive security assessments.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • Gemini 2.5 Pro: Advanced reasoning model for deep vulnerability analysis and complex exploit development
 • Gemini 2.5 Flash: High-performance model balancing speed and intelligence for most security testing tasks
 • Gemini 2.0 Flash Lite: Cost-effective model for rapid scanning and information gathering operations
@@ -435,7 +435,7 @@ Setup: Get your API key from https://aistudio.google.com/app/apikey`
 
 	LLMFormBedrockHelp = `AWS Bedrock provides enterprise-grade access to 20+ foundation models with multiple authentication methods and enhanced security.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • Claude Sonnet-4.5 (via Bedrock): Premium reasoning model with AWS enterprise security and extended thinking capabilities
 • OpenAI GPT OSS 120B: Strong reasoning model for scientific analysis and complex security tasks
 • Claude Haiku-4.5, DeepSeek V3.2, Qwen3-32B: Efficient models for specific agent roles and cost optimization
@@ -475,7 +475,7 @@ Scenario 2: Ollama Cloud (Managed Service)
 • API key required - generate at https://ollama.com/settings/keys
 • Setup: Register at https://ollama.com, configure OLLAMA_SERVER_URL=https://ollama.com + OLLAMA_SERVER_API_KEY=your_key
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • Llama 3.1:8b, Qwen3:32b, and other open models
 • Customizable - switch between 100+ available models
 • Model auto-download and loading options for convenience
@@ -491,7 +491,7 @@ Setup options: Local installation from https://10.10.10.10:11434 or cloud regist
 
 	LLMFormDeepSeekHelp = `DeepSeek provides advanced AI models with strong reasoning capabilities and multilingual support.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • DeepSeek-Chat: Flagship model for general-purpose tasks with strong coding and reasoning capabilities
 • DeepSeek-Reasoner: Advanced reasoning model for complex security analysis
 • Cost-effective pricing with competitive performance compared to leading models
@@ -514,7 +514,7 @@ Setup: Get your API key from https://platform.deepseek.com/`
 
 	LLMFormGLMHelp = `GLM from Zhipu AI provides advanced language models with strong NLP and reasoning capabilities developed by Tsinghua University.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • GLM-4-Air: High performance general dialogue model optimized for regular tasks and tool calling
 • GLM-4-Plus: Flagship model with strong reasoning and code generation capabilities
 • GLM-Z1-Plus: Advanced reasoning model with deep analysis capabilities for security research
@@ -542,7 +542,7 @@ Setup: Get your API key from https://open.bigmodel.cn/`
 
 	LLMFormKimiHelp = `Kimi from Moonshot AI provides ultra-long context models perfect for analyzing extensive codebases and documentation.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • Moonshot-v1-8k: Long-context model supporting up to 8K tokens for general dialogue
 • Kimi-k2.5: Advanced model with strong reasoning and document understanding
 • Optimized for processing large volumes of text and code
@@ -569,7 +569,7 @@ Setup: Get your API key from https://platform.moonshot.ai/`
 
 	LLMFormQwenHelp = `Qwen from Alibaba Cloud Model Studio (DashScope) provides powerful multilingual models with multimodal capabilities.
 
-Default PentAGI Models:
+Default PentAgentX Models:
 • Qwen-Turbo: Fastest lightweight model for high-frequency tasks and real-time response scenarios
 • Qwen-Plus: Balanced performance model for general dialogue, code generation, and tool calling
 • Qwen-Max: Flagship reasoning model with strong instruction following and complex task handling
@@ -900,7 +900,7 @@ const (
 • Loki for log aggregation
 • OpenTelemetry for data collection
 
-Monitor PentAGI performance and system health.`
+Monitor PentAgentX performance and system health.`
 
 	// Deployment types
 	MonitoringObservabilityEmbedded = "Embedded Stack"
@@ -1166,9 +1166,9 @@ Available settings:
 // Server Settings screen strings
 const (
 	ServerSettingsFormTitle       = "Server Settings"
-	ServerSettingsFormDescription = "Configure PentAGI server network access and public routing"
+	ServerSettingsFormDescription = "Configure PentAgentX server network access and public routing"
 	ServerSettingsFormName        = "Server Settings"
-	ServerSettingsFormOverview    = `• Network binding - control which interface and port PentAGI listens on
+	ServerSettingsFormOverview    = `• Network binding - control which interface and port PentAgentX listens on
 • Public URL - external address and optional base path used in redirects
 • CORS - allowed origins for browser access
 • Proxy - HTTP/HTTPS proxy for outbound traffic to LLM/search providers
@@ -1177,13 +1177,13 @@ const (
 
 	// Field labels and descriptions
 	ServerSettingsLicenseKey     = "License Key"
-	ServerSettingsLicenseKeyDesc = "PentAGI License Key in format of XXXX-XXXX-XXXX-XXXX"
+	ServerSettingsLicenseKeyDesc = "PentAgentX License Key in format of XXXX-XXXX-XXXX-XXXX"
 
 	ServerSettingsHost     = "Server Host (Listen IP)"
 	ServerSettingsHostDesc = "Bind address used by Docker port mapping (e.g., 0.0.0.0 to expose on all interfaces)"
 
 	ServerSettingsPort     = "Server Port (Listen Port)"
-	ServerSettingsPortDesc = "External TCP port exposed by Docker for PentAGI web UI"
+	ServerSettingsPortDesc = "External TCP port exposed by Docker for PentAgentX web UI"
 
 	ServerSettingsPublicURL     = "Public URL"
 	ServerSettingsPublicURLDesc = "Base public URL for redirects and links (supports base path, e.g., https://example.com/pentagi/)"
@@ -1233,13 +1233,13 @@ const (
 	ServerSettingsDataDirHint             = "Data Directory"
 
 	// Help texts per-field
-	ServerSettingsGeneralHelp = `PentAGI exposes its web UI via Docker with configurable host and port.
+	ServerSettingsGeneralHelp = `PentAgentX exposes its web UI via Docker with configurable host and port.
 
 Public URL must reflect how users reach the server. If using a subpath (e.g., /pentagi/), include it here. CORS controls browser access from specified origins. Proxy affects outbound traffic to LLM/search providers and other external services used by Tools.
 
 SSL directory allows providing custom certificates. When set, server will use server.crt and server.key from that directory. Data directory stores artifacts and working files for flows.`
 
-	ServerSettingsLicenseKeyHelp = `PentAGI License Key in format of XXXX-XXXX-XXXX-XXXX. It's used to communicate with PentAGI Cloud API.`
+	ServerSettingsLicenseKeyHelp = `PentAgentX License Key in format of XXXX-XXXX-XXXX-XXXX. It's used to communicate with PentAgentX Cloud API.`
 
 	ServerSettingsHostHelp = `Bind address for published port in docker-compose mapping.
 
@@ -1247,7 +1247,7 @@ Examples:
 • 127.0.0.1 — local-only access
 • 0.0.0.0 — expose on all interfaces`
 
-	ServerSettingsPortHelp = `External port for PentAGI UI. Must be available on the host. Example: 8443.`
+	ServerSettingsPortHelp = `External port for PentAgentX UI. Must be available on the host. Example: 8443.`
 
 	ServerSettingsPublicURLHelp = `Set the public base URL used in redirects and links.
 
@@ -1288,7 +1288,7 @@ When enabled, all certificate validation is bypassed, making connections vulnera
 
 	ServerSettingsSSLDirHelp = `Path to directory with server.crt and server.key in PEM format. server.crt may include fullchain. Overrides default generated certificate behavior.`
 
-	ServerSettingsDataDirHelp = `Host directory for persistent data. PentAGI stores agent artifacts under flow-N subdirectories, which map to /work inside worker containers.`
+	ServerSettingsDataDirHelp = `Host directory for persistent data. PentAgentX stores agent artifacts under flow-N subdirectories, which map to /work inside worker containers.`
 
 	ServerSettingsCookieSigningSaltHelp = `Secret salt used to sign cookies. Keep it private.`
 )
@@ -1299,7 +1299,7 @@ const (
 	ToolsAIAgentsSettingsFormTitle       = "AI Agents Settings"
 	ToolsAIAgentsSettingsFormDescription = "Configure global behavior for AI agents"
 	ToolsAIAgentsSettingsFormName        = "AI Agents Settings"
-	ToolsAIAgentsSettingsFormOverview    = `This section configures global behavior of AI agents across PentAGI.
+	ToolsAIAgentsSettingsFormOverview    = `This section configures global behavior of AI agents across PentAgentX.
 
 Basic Settings:
 • Enable User Interaction: allow agents to request user input when needed
@@ -1716,7 +1716,7 @@ Change providers carefully - different embedders produce incompatible vectors re
 	EmbedderProviderIDVoyageAI    = "voyageai"
 	EmbedderProviderIDDisabled    = "none"
 
-	EmbedderHelpGeneral = `Embeddings convert text into vectors for semantic search and knowledge storage. This enables PentAGI to understand meaning rather than just keywords, making search results more relevant and intelligent.
+	EmbedderHelpGeneral = `Embeddings convert text into vectors for semantic search and knowledge storage. This enables PentAgentX to understand meaning rather than just keywords, making search results more relevant and intelligent.
 
 Key benefits:
 • Find documents by meaning, not exact words
@@ -1837,7 +1837,7 @@ const (
 	ApplyChangesFormDescription = "Review and apply your configuration changes"
 
 	// Apply Changes overview and help
-	ApplyChangesFormOverview = `This screen allows you to review all pending configuration changes and apply them to your PentAGI installation.
+	ApplyChangesFormOverview = `This screen allows you to review all pending configuration changes and apply them to your PentAgentX installation.
 
 When you apply changes, the system will:
 • Save all modified environment variables to the .env file
@@ -1859,17 +1859,17 @@ When you apply changes, the system will:
 	ApplyChangesNoChanges = "No configuration changes are pending"
 
 	// Apply Changes installation status
-	ApplyChangesInstallNotFound = `PentAGI is not currently installed on this system.
+	ApplyChangesInstallNotFound = `PentAgentX is not currently installed on this system.
 
 The following actions will be performed:
 • Docker environment setup and validation
 • Creation of docker-compose.yml file
-• Installation and startup of PentAGI core services`
+• Installation and startup of PentAgentX core services`
 
 	ApplyChangesInstallFoundLangfuse      = `• Installation of Langfuse observability stack (docker-compose-langfuse.yml)`
 	ApplyChangesInstallFoundObservability = `• Installation of comprehensive observability stack with Grafana, VictoriaMetrics, and Jaeger (docker-compose-observability.yml)`
 
-	ApplyChangesUpdateFound = `PentAGI is currently installed on this system.
+	ApplyChangesUpdateFound = `PentAgentX is currently installed on this system.
 
 The following actions will be performed:
 • Update environment variables in .env file
@@ -1914,9 +1914,9 @@ const (
 // Maintenance Screen constants
 const (
 	MaintenanceTitle       = "System Maintenance"
-	MaintenanceDescription = "Manage PentAGI services and perform maintenance operations"
+	MaintenanceDescription = "Manage PentAgentX services and perform maintenance operations"
 	MaintenanceName        = "Maintenance"
-	MaintenanceOverview    = `Perform system maintenance operations for PentAGI.
+	MaintenanceOverview    = `Perform system maintenance operations for PentAgentX.
 
 Available operations depend on the current system state and will only be shown when applicable.
 
@@ -1929,38 +1929,38 @@ Operations include:
 Each operation will provide real-time status updates and confirmation when required.`
 
 	// Maintenance menu items
-	MaintenanceStartPentagi            = "Start PentAGI"
-	MaintenanceStartPentagiDesc        = "Start all configured PentAGI services"
-	MaintenanceStopPentagi             = "Stop PentAGI"
-	MaintenanceStopPentagiDesc         = "Stop all running PentAGI services"
-	MaintenanceRestartPentagi          = "Restart PentAGI"
-	MaintenanceRestartPentagiDesc      = "Restart all PentAGI services"
+	MaintenanceStartPentagi            = "Start PentAgentX"
+	MaintenanceStartPentagiDesc        = "Start all configured PentAgentX services"
+	MaintenanceStopPentagi             = "Stop PentAgentX"
+	MaintenanceStopPentagiDesc         = "Stop all running PentAgentX services"
+	MaintenanceRestartPentagi          = "Restart PentAgentX"
+	MaintenanceRestartPentagiDesc      = "Restart all PentAgentX services"
 	MaintenanceDownloadWorkerImage     = "Download Worker Image"
 	MaintenanceDownloadWorkerImageDesc = "Download pentesting container image for worker tasks"
 	MaintenanceUpdateWorkerImage       = "Update Worker Image"
 	MaintenanceUpdateWorkerImageDesc   = "Update pentesting container image to latest version"
-	MaintenanceUpdatePentagi           = "Update PentAGI"
-	MaintenanceUpdatePentagiDesc       = "Update PentAGI to the latest version"
+	MaintenanceUpdatePentagi           = "Update PentAgentX"
+	MaintenanceUpdatePentagiDesc       = "Update PentAgentX to the latest version"
 	MaintenanceUpdateInstaller         = "Update Installer"
 	MaintenanceUpdateInstallerDesc     = "Update this installer to the latest version"
 	MaintenanceFactoryReset            = "Factory Reset"
-	MaintenanceFactoryResetDesc        = "Reset PentAGI to factory defaults"
-	MaintenanceRemovePentagi           = "Remove PentAGI"
-	MaintenanceRemovePentagiDesc       = "Remove PentAGI containers but keep data"
-	MaintenancePurgePentagi            = "Purge PentAGI"
-	MaintenancePurgePentagiDesc        = "Completely remove PentAGI including all data"
+	MaintenanceFactoryResetDesc        = "Reset PentAgentX to factory defaults"
+	MaintenanceRemovePentagi           = "Remove PentAgentX"
+	MaintenanceRemovePentagiDesc       = "Remove PentAgentX containers but keep data"
+	MaintenancePurgePentagi            = "Purge PentAgentX"
+	MaintenancePurgePentagiDesc        = "Completely remove PentAgentX including all data"
 	MaintenanceResetPassword           = "Reset Admin Password"
-	MaintenanceResetPasswordDesc       = "Reset the administrator password for PentAGI"
+	MaintenanceResetPasswordDesc       = "Reset the administrator password for PentAgentX"
 )
 
 // Reset Password Screen constants
 const (
 	ResetPasswordFormTitle       = "Reset Admin Password"
-	ResetPasswordFormDescription = "Reset the administrator password for PentAGI"
+	ResetPasswordFormDescription = "Reset the administrator password for PentAgentX"
 	ResetPasswordFormName        = "Reset Password"
 	ResetPasswordFormOverview    = `Reset the password for the default administrator account (admin@pentagi.com).
 
-This operation requires PentAGI to be running and will update the password in the PostgreSQL database.
+This operation requires PentAgentX to be running and will update the password in the PostgreSQL database.
 
 Enter your new password twice to confirm and press Enter to apply the change.
 
@@ -1975,7 +1975,7 @@ Password requirements:
 	ResetPasswordConfirmPasswordDesc = "Re-enter the new password to confirm"
 
 	// Status messages
-	ResetPasswordNotAvailable = "PentAGI must be running to reset password"
+	ResetPasswordNotAvailable = "PentAgentX must be running to reset password"
 	ResetPasswordAvailable    = "Password reset is available"
 	ResetPasswordInProgress   = "Resetting password..."
 	ResetPasswordSuccess      = "Password has been successfully reset"
@@ -1987,12 +1987,12 @@ Password requirements:
 	ResetPasswordErrorMismatch      = "Passwords do not match"
 
 	// Help content
-	ResetPasswordHelpContent = `Reset the administrator password for accessing PentAGI.
+	ResetPasswordHelpContent = `Reset the administrator password for accessing PentAgentX.
 
 This operation:
 • Updates the password for admin@pentagi.com account
 • Sets the user status to 'active'
-• Requires PentAGI database to be accessible
+• Requires PentAgentX database to be accessible
 • Does not affect other user accounts
 
 The password change takes effect immediately after successful completion.
@@ -2032,7 +2032,7 @@ const (
 	ProcessorOperationResetting   = "Resetting to factory defaults..."
 	ProcessorOperationRemoving    = "Removing containers..."
 	ProcessorOperationPurging     = "Purging all data..."
-	ProcessorOperationInstalling  = "Installing PentAGI services..."
+	ProcessorOperationInstalling  = "Installing PentAgentX services..."
 
 	// Help text templates
 	ProcessorOperationHelpTitle           = "%s Operation"
@@ -2040,8 +2040,8 @@ const (
 	ProcessorOperationHelpContentDownload = "This operation will download %s components."
 	ProcessorOperationHelpContentUpdate   = "This operation will update %s components."
 	// Generic title/description/builders for dynamic operations
-	OperationTitleInstallPentagi    = "Install PentAGI"
-	OperationDescInstallPentagi     = "Install and configure PentAGI services"
+	OperationTitleInstallPentagi    = "Install PentAgentX"
+	OperationDescInstallPentagi     = "Install and configure PentAgentX services"
 	OperationTitleDownload          = "Download %s"
 	OperationDescDownloadComponents = "Download %s components"
 	OperationTitleUpdate            = "Update %s"
@@ -2065,7 +2065,7 @@ const (
 Installation will use your current configuration settings.`
 
 	ProcessorHelpStartPentagi = `This will:
-• Core PentAGI API and web interface
+• Core PentAgentX API and web interface
 • Configured Langfuse analytics (if enabled)
 • Observability stack (if enabled)
 
@@ -2269,18 +2269,18 @@ const (
 	EnvDesc_DOCKER_TLS_VERIFY                = "Docker TLS Verify"
 	EnvDesc_DOCKER_CERT_PATH                 = "Docker Certificate Path"
 
-	EnvDesc_LICENSE_KEY                       = "PentAGI License Key"
-	EnvDesc_PENTAGI_LISTEN_IP                 = "PentAGI Server Host"
-	EnvDesc_PENTAGI_LISTEN_PORT               = "PentAGI Server Port"
-	EnvDesc_PUBLIC_URL                        = "PentAGI Public URL"
-	EnvDesc_CORS_ORIGINS                      = "PentAGI CORS Origins"
-	EnvDesc_COOKIE_SIGNING_SALT               = "PentAGI Cookie Signing Salt"
+	EnvDesc_LICENSE_KEY                       = "PentAgentX License Key"
+	EnvDesc_PENTAGI_LISTEN_IP                 = "PentAgentX Server Host"
+	EnvDesc_PENTAGI_LISTEN_PORT               = "PentAgentX Server Port"
+	EnvDesc_PUBLIC_URL                        = "PentAgentX Public URL"
+	EnvDesc_CORS_ORIGINS                      = "PentAgentX CORS Origins"
+	EnvDesc_COOKIE_SIGNING_SALT               = "PentAgentX Cookie Signing Salt"
 	EnvDesc_PROXY_URL                         = "HTTP/HTTPS Proxy URL"
 	EnvDesc_HTTP_CLIENT_TIMEOUT               = "HTTP Client Timeout (seconds)"
 	EnvDesc_EXTERNAL_SSL_CA_PATH              = "Custom CA Certificate Path"
 	EnvDesc_EXTERNAL_SSL_INSECURE             = "Skip SSL Verification"
-	EnvDesc_PENTAGI_SSL_DIR                   = "PentAGI SSL Directory"
-	EnvDesc_PENTAGI_DATA_DIR                  = "PentAGI Data Directory"
+	EnvDesc_PENTAGI_SSL_DIR                   = "PentAgentX SSL Directory"
+	EnvDesc_PENTAGI_DATA_DIR                  = "PentAgentX Data Directory"
 	EnvDesc_PENTAGI_DOCKER_SOCKET             = "Mount Docker Socket Path"
 	EnvDesc_PENTAGI_DOCKER_CERT_PATH          = "Mount Docker Certificate Path"
 	EnvDesc_PENTAGI_LLM_SERVER_CONFIG_PATH    = "Custom LLM Host Config Path"
@@ -2310,7 +2310,7 @@ const (
 	EnvDesc_OAUTH_GITHUB_CLIENT_SECRET = "OAuth GitHub Client Secret"
 
 	EnvDesc_LANGFUSE_EE_LICENSE_KEY   = "Langfuse Enterprise License Key"
-	EnvDesc_PENTAGI_POSTGRES_PASSWORD = "PentAGI PostgreSQL Password"
+	EnvDesc_PENTAGI_POSTGRES_PASSWORD = "PentAgentX PostgreSQL Password"
 
 	EnvDesc_GRAPHITI_URL        = "Graphiti Server URL"
 	EnvDesc_GRAPHITI_TIMEOUT    = "Graphiti Request Timeout"
@@ -2328,7 +2328,7 @@ const (
 	ProcessorSectionEffects      = "Effects"
 
 	// component labels
-	ProcessorComponentPentagi       = "PentAGI"
+	ProcessorComponentPentagi       = "PentAgentX"
 	ProcessorComponentLangfuse      = "Langfuse"
 	ProcessorComponentObservability = "Observability"
 
@@ -2361,8 +2361,8 @@ const (
 	PlannedWillRestore  = "will restore:"
 
 	// effect notes per operation (concise and practical)
-	EffectsStart           = "PentAGI web UI becomes available. Background services are brought online in the required order."
-	EffectsStop            = "Web UI becomes unavailable. In-progress flows pause safely. When you start PentAGI again, flows resume automatically. A small portion of the current agent step may be lost."
+	EffectsStart           = "PentAgentX web UI becomes available. Background services are brought online in the required order."
+	EffectsStop            = "Web UI becomes unavailable. In-progress flows pause safely. When you start PentAgentX again, flows resume automatically. A small portion of the current agent step may be lost."
 	EffectsRestart         = "Services stop and start again with a clean state. Brief downtime is expected. Flows resume automatically afterwards."
 	EffectsUpdateAll       = "Images are pulled and services are recreated where needed. External or disabled components are skipped. Temporary downtime is expected."
 	EffectsDownloadWorker  = "Running worker containers are not touched. New flows will use the downloaded image. To switch an existing flow to the new image, finish the flow and start a new task or create a new assistant."

@@ -7,11 +7,11 @@ import (
 	"sort"
 	"strings"
 
-	"pentagi/cmd/installer/checker"
-	"pentagi/cmd/installer/files"
-	"pentagi/cmd/installer/loader"
-	"pentagi/cmd/installer/state"
-	"pentagi/cmd/installer/wizard/locale"
+	"pentagentx/cmd/installer/checker"
+	"pentagentx/cmd/installer/files"
+	"pentagentx/cmd/installer/loader"
+	"pentagentx/cmd/installer/state"
+	"pentagentx/cmd/installer/wizard/locale"
 )
 
 const (
@@ -1902,7 +1902,7 @@ func (c *controller) ResetDockerConfig() *DockerConfig {
 	return c.GetDockerConfig()
 }
 
-// ServerSettingsConfig represents PentAGI server settings configuration
+// ServerSettingsConfig represents PentAgentX server settings configuration
 type ServerSettingsConfig struct {
 	// direct form field mappings using loader.EnvVar
 	LicenseKey          loader.EnvVar // LICENSE_KEY
@@ -2055,7 +2055,7 @@ type ChangeInfo struct {
 // ApplyChangesConfig contains information about pending changes and installation status
 type ApplyChangesConfig struct {
 	// installation state
-	IsInstalled bool // whether PentAGI is currently installed
+	IsInstalled bool // whether PentAgentX is currently installed
 
 	// deployment selections
 	LangfuseEnabled      bool // whether Langfuse embedded deployment is selected

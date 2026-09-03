@@ -130,7 +130,7 @@ export const MainSidebar = () => {
                             <Logo className="hover:animate-logo-spin size-6" />
                         </div>
                         <div className="grid flex-1 text-left leading-tight">
-                            <span className="truncate font-semibold">PentAGI</span>
+                            <span className="truncate font-semibold">PentAgentX</span>
                         </div>
                     </SidebarMenuItem>
                 </SidebarMenu>

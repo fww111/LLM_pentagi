@@ -10,10 +10,10 @@ import (
 	"text/template"
 	"time"
 
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/observability/langfuse"
-	"pentagi/pkg/schema"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/observability/langfuse"
+	"pentagentx/pkg/schema"
 
 	"github.com/sirupsen/logrus"
 	"github.com/vxcontrol/langchaingo/documentloaders"

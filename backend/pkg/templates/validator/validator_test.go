@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/pkg/templates"
-	"pentagi/pkg/templates/validator"
+	"pentagentx/pkg/templates"
+	"pentagentx/pkg/templates/validator"
 )
 
 // TestDummyDataCompleteness verifies that createDummyTemplateData contains all variables from PromptVariables

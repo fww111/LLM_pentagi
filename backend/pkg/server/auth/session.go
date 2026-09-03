@@ -35,11 +35,11 @@ func MakeCookieStoreKey(globalSalt string) [][]byte {
 	}, "|"))
 
 	// Auth key (64 bytes) - using salt variant 1
-	authSalt := []byte("pentagi.cookie.auth|" + globalSalt)
+	authSalt := []byte("pentagentx.cookie.auth|" + globalSalt)
 	authKey := pbkdf2.Key(password, authSalt, pbkdf2Iterations, authKeyLength, sha512.New)
 
 	// Encryption key (32 bytes) - using salt variant 2
-	encSalt := []byte("pentagi.cookie.enc|" + globalSalt)
+	encSalt := []byte("pentagentx.cookie.enc|" + globalSalt)
 	encKey := pbkdf2.Key(password, encSalt, pbkdf2Iterations, encKeyLength, sha512.New)
 
 	newKeys := [][]byte{authKey, encKey}
@@ -62,7 +62,7 @@ func MakeJWTSigningKey(globalSalt string) []byte {
 		globalSalt,
 		"09784e190148d13d48885aa47cf8a297",
 	}, "|"))
-	salt := []byte("pentagi.jwt.signing|" + globalSalt)
+	salt := []byte("pentagentx.jwt.signing|" + globalSalt)
 	newKey := pbkdf2.Key(password, salt, pbkdf2Iterations, jwtKeyLength, sha512.New)
 
 	// Store in cache (LoadOrStore handles concurrent access)

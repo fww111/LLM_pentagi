@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"pentagi/cmd/installer/loader"
+	"pentagentx/cmd/installer/loader"
 )
 
 const EULAConsentFile = "eula-consent"

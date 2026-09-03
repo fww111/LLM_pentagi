@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/database"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/database"
 )
 
 const testTavilyAPIKey = "test-key"

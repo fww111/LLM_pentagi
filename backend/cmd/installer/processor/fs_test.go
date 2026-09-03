@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"pentagi/cmd/installer/files"
+	"pentagentx/cmd/installer/files"
 )
 
 // testStackIntegrityOperation is a helper for testing stack integrity operations

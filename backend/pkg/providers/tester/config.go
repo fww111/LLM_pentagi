@@ -1,8 +1,8 @@
 package tester
 
 import (
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/tester/testdata"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/tester/testdata"
 )
 
 // testConfig holds private configuration for test execution

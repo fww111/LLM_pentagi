@@ -49,7 +49,7 @@ const menuItems: readonly MenuItem[] = [
         icon: <Key className="size-4" />,
         id: 'api-tokens',
         path: '/settings/api-tokens',
-        title: 'PentAGI API',
+        title: 'PentAgentX API',
     },
     // {
     //     id: 'mcp-servers',
@@ -115,7 +115,7 @@ const SettingsHeader = () => {
         }
 
         if (path === '/settings/api-tokens') {
-            return 'PentAGI API';
+            return 'PentAgentX API';
         }
 
         // Find matching main section

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/version"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/version"
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"

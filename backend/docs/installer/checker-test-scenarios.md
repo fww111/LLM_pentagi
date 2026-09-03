@@ -95,7 +95,7 @@ This document outlines test scenarios for the installer's system checking functi
 **Setup**: Set DOCKER_HOST, DOCKER_TLS_VERIFY, DOCKER_CERT_PATH
 **Expected**: 
 - Values synchronized to .env on first run via DoSyncNetworkSettings()
-- DOCKER_CERT_PATH migrated to PENTAGI_DOCKER_CERT_PATH (host path) + DOCKER_CERT_PATH set to /opt/pentagi/docker/ssl (container path)
+- DOCKER_CERT_PATH migrated to PENTAGI_DOCKER_CERT_PATH (host path) + DOCKER_CERT_PATH set to /opt/pentagentx/docker/ssl (container path)
 
 ## Edge Cases
 

@@ -3,9 +3,9 @@ package anthropic
 import (
 	"testing"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
 )
 
 func TestConfigLoading(t *testing.T) {

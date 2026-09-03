@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"pentagi/pkg/cast"
+	"pentagentx/pkg/cast"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/vxcontrol/langchaingo/llms"

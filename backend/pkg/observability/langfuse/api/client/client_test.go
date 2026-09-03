@@ -5,7 +5,7 @@ package client
 import (
 	assert "github.com/stretchr/testify/assert"
 	http "net/http"
-	option "pentagi/pkg/observability/langfuse/api/option"
+	option "pentagentx/pkg/observability/langfuse/api/option"
 	testing "testing"
 	time "time"
 )

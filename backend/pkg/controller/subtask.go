@@ -10,10 +10,10 @@ import (
 	"sync"
 	"time"
 
-	"pentagi/pkg/database"
-	obs "pentagi/pkg/observability"
-	"pentagi/pkg/orchestrator"
-	"pentagi/pkg/providers"
+	"pentagentx/pkg/database"
+	obs "pentagentx/pkg/observability"
+	"pentagentx/pkg/orchestrator"
+	"pentagentx/pkg/providers"
 )
 
 type agentExecuteState string

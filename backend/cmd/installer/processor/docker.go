@@ -311,7 +311,7 @@ func (d *dockerOperationsImpl) removeMainImages(ctx context.Context, state *oper
 	return nil
 }
 
-// removeWorkerVolumes removes worker volumes (pentagi-terminal-*-data) in worker environment
+// removeWorkerVolumes removes worker volumes (pentagentx-terminal-*-data) in worker environment
 func (d *dockerOperationsImpl) removeWorkerVolumes(ctx context.Context, state *operationState) error {
 	cli, err := d.createWorkerDockerClient()
 	if err != nil {
@@ -324,7 +324,7 @@ func (d *dockerOperationsImpl) removeWorkerVolumes(ctx context.Context, state *o
 		return err
 	}
 	for _, v := range vols.Volumes {
-		if strings.HasPrefix(v.Name, "pentagi-terminal-") && strings.HasSuffix(v.Name, "-data") {
+		if strings.HasPrefix(v.Name, "pentagentx-terminal-") && strings.HasSuffix(v.Name, "-data") {
 			_ = cli.VolumeRemove(ctx, v.Name, true)
 		}
 	}

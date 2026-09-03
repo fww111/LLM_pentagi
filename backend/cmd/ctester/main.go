@@ -9,22 +9,22 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/providers/anthropic"
-	"pentagi/pkg/providers/bedrock"
-	"pentagi/pkg/providers/custom"
-	"pentagi/pkg/providers/deepseek"
-	"pentagi/pkg/providers/gemini"
-	"pentagi/pkg/providers/glm"
-	"pentagi/pkg/providers/kimi"
-	"pentagi/pkg/providers/ollama"
-	"pentagi/pkg/providers/openai"
-	"pentagi/pkg/providers/pconfig"
-	"pentagi/pkg/providers/provider"
-	"pentagi/pkg/providers/qwen"
-	"pentagi/pkg/providers/tester"
-	"pentagi/pkg/providers/tester/testdata"
-	"pentagi/pkg/version"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/providers/anthropic"
+	"pentagentx/pkg/providers/bedrock"
+	"pentagentx/pkg/providers/custom"
+	"pentagentx/pkg/providers/deepseek"
+	"pentagentx/pkg/providers/gemini"
+	"pentagentx/pkg/providers/glm"
+	"pentagentx/pkg/providers/kimi"
+	"pentagentx/pkg/providers/ollama"
+	"pentagentx/pkg/providers/openai"
+	"pentagentx/pkg/providers/pconfig"
+	"pentagentx/pkg/providers/provider"
+	"pentagentx/pkg/providers/qwen"
+	"pentagentx/pkg/providers/tester"
+	"pentagentx/pkg/providers/tester/testdata"
+	"pentagentx/pkg/version"
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -43,7 +43,7 @@ func main() {
 	verbose := flag.Bool("verbose", false, "Enable verbose output")
 	flag.Parse()
 
-	logrus.Infof("Starting PentAGI Provider Configuration Tester %s", version.GetBinaryVersion())
+	logrus.Infof("Starting PentAgentX Provider Configuration Tester %s", version.GetBinaryVersion())
 
 	if err := godotenv.Load(*envFile); err != nil {
 		log.Println("Warning: Error loading .env file:", err)

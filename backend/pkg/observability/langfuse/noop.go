@@ -3,7 +3,7 @@ package langfuse
 import (
 	"context"
 
-	"pentagi/pkg/observability/langfuse/api"
+	"pentagentx/pkg/observability/langfuse/api"
 )
 
 type noopObserver struct{}

@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"pentagi/pkg/server/auth"
-	"pentagi/pkg/server/models"
+	"pentagentx/pkg/server/auth"
+	"pentagentx/pkg/server/models"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"

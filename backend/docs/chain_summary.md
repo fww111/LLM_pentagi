@@ -68,7 +68,7 @@ flowchart TD
 
 ### ChainAST Structure with Size Tracking
 
-The algorithm operates on ChainAST structure from the `pentagi/pkg/cast` package that includes size tracking:
+The algorithm operates on ChainAST structure from the `pentagentx/pkg/cast` package that includes size tracking:
 
 ```
 ChainAST
@@ -349,7 +349,7 @@ The enhanced algorithm operates in these sequential phases:
 - The last BodyPair in a section is **NEVER** summarized by `summarizeOversizedBodyPairs` or `summarizeLastSection` to preserve reasoning signatures
 - **Idempotent**: calling `SummarizeChain` multiple times on already summarized content does not change it further
 
-The primary algorithm is implemented through the `Summarizer` interface in the `pentagi/pkg/csum` package:
+The primary algorithm is implemented through the `Summarizer` interface in the `pentagentx/pkg/csum` package:
 
 ```go
 // Summarizer interface for chain summarization
@@ -1195,7 +1195,7 @@ classDiagram
     SummarizeHandler -- tools.SummarizeHandler : alias
 ```
 
-The algorithm is implemented through the `Summarizer` interface in the `pentagi/pkg/csum` package, which provides the `SummarizeChain` method. The implementation leverages the `ChainAST` structure from the `pentagi/pkg/cast` package for managing the chain structure.
+The algorithm is implemented through the `Summarizer` interface in the `pentagentx/pkg/csum` package, which provides the `SummarizeChain` method. The implementation leverages the `ChainAST` structure from the `pentagentx/pkg/cast` package for managing the chain structure.
 
 ## Full Process Overview
 

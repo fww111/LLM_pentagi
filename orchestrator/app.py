@@ -19,7 +19,7 @@ except Exception:  # pragma: no cover - fallback for missing optional dependency
 
 
 logging.basicConfig(level=os.getenv("ORCHESTRATOR_LOG_LEVEL", "INFO"))
-LOGGER = logging.getLogger("pentagi-langgraph")
+LOGGER = logging.getLogger("pentagentx-langgraph")
 
 GO_INTERNAL_BASE_URL = os.getenv(
     "PENTAGI_INTERNAL_BASE_URL",
@@ -734,14 +734,14 @@ def _build_graph() -> StateGraph:
 
 
 GRAPH = _build_graph().compile(checkpointer=CHECKPOINTER)
-LOGGER.info("PentAGI LangGraph orchestrator initialized (multi-agent topology)")
+LOGGER.info("PentAgentX LangGraph orchestrator initialized (multi-agent topology)")
 
 
 # ========================================
 # FastAPI app
 # ========================================
 
-app = FastAPI(title="PentAGI LangGraph Orchestrator", version="0.3.0")
+app = FastAPI(title="PentAgentX LangGraph Orchestrator", version="0.3.0")
 
 
 def _serialize_snapshot(task_id: int) -> Dict[str, Any]:

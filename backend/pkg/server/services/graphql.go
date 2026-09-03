@@ -8,15 +8,15 @@ import (
 	"strings"
 	"time"
 
-	"pentagi/pkg/config"
-	"pentagi/pkg/controller"
-	"pentagi/pkg/database"
-	"pentagi/pkg/graph"
-	"pentagi/pkg/graph/subscriptions"
-	"pentagi/pkg/providers"
-	"pentagi/pkg/server/auth"
-	"pentagi/pkg/server/logger"
-	"pentagi/pkg/templates"
+	"pentagentx/pkg/config"
+	"pentagentx/pkg/controller"
+	"pentagentx/pkg/database"
+	"pentagentx/pkg/graph"
+	"pentagentx/pkg/graph/subscriptions"
+	"pentagentx/pkg/providers"
+	"pentagentx/pkg/server/auth"
+	"pentagentx/pkg/server/logger"
+	"pentagentx/pkg/templates"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -60,7 +60,7 @@ func NewGraphqlService(
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
 		DB:              db,
 		Config:          cfg,
-		Logger:          logrus.StandardLogger().WithField("component", "pentagi-gql-bl"),
+		Logger:          logrus.StandardLogger().WithField("component", "pentagentx-gql-bl"),
 		TokenCache:      tokenCache,
 		DefaultPrompter: templates.NewDefaultPrompter(),
 		ProvidersCtrl:   providers,
@@ -68,7 +68,7 @@ func NewGraphqlService(
 		Subscriptions:   subscriptions,
 	}}))
 
-	component := "pentagi-gql"
+	component := "pentagentx-gql"
 	srv.AroundResponses(logger.WithGqlLogger(component))
 	logger := logrus.WithField("component", component)
 

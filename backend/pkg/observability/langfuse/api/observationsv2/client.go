@@ -3,11 +3,11 @@
 package observationsv2
 
 import (
-    core "pentagi/pkg/observability/langfuse/api/core"
-    internal "pentagi/pkg/observability/langfuse/api/internal"
+    core "pentagentx/pkg/observability/langfuse/api/core"
+    internal "pentagentx/pkg/observability/langfuse/api/internal"
     context "context"
-    api "pentagi/pkg/observability/langfuse/api"
-    option "pentagi/pkg/observability/langfuse/api/option"
+    api "pentagentx/pkg/observability/langfuse/api"
+    option "pentagentx/pkg/observability/langfuse/api/option"
 )
 
 
